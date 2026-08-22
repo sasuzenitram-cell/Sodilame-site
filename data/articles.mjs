@@ -5,6 +5,200 @@
 export const articles = [
   // =========================================================================
   {
+    slug: 'subvention-lave-verres-osmoseur',
+    titre: "Lave-verres avec osmoseur : l'Assurance Maladie finance 70 % de votre équipement",
+    titreSeo: "Subvention lave-verres osmoseur : 70 % financés | SODILAME",
+    description:
+      "Coupures à l'essuyage des verres : l'Assurance Maladie finance 70 % d'un lave-verres avec osmoseur pour les entreprises de 1 à 49 salariés. Conditions et démarche.",
+    date: '2026-08-19',
+    dateAffichee: '19 août 2026',
+    categorie: 'Aides & subventions',
+    resume:
+      "Supprimez la trace sur le verre, vous supprimez l'essuyage. Supprimez l'essuyage, vous supprimez l'accident — et l'Assurance Maladie paie 70 % de l'équipement.",
+    corps: `
+<p>C'est un accident si banal qu'on ne le compte plus : un serveur essuie un verre au torchon, le pied casse, la main serre, et la coupure atteint les tendons. Quelques points de suture dans le meilleur des cas, une chirurgie de la main et plusieurs semaines d'arrêt dans le pire.</p>
+<p>Ce que peu d'exploitants savent, c'est que l'Assurance Maladie – Risques Professionnels finance aujourd'hui <b>70 % du coût d'un lave-verres équipé d'un osmoseur</b>, précisément pour faire disparaître ce geste.</p>
+
+<h2>Pourquoi votre équipe essuie les verres</h2>
+<p>Aucun barman n'essuie les verres par plaisir. Il les essuie parce qu'ils sortent tachés. Et ils sortent tachés à cause de la <b>dureté de l'eau</b>.</p>
+<p>L'eau de Provence est calcaire. En séchant sur le verre, elle laisse un voile blanc de sels minéraux. Aucun réglage de machine, aucun produit de rinçage ne fait disparaître complètement ce voile : les minéraux sont dans l'eau, ils restent sur le verre quand l'eau s'évapore.</p>
+<p>La chaîne est donc mécanique, et elle se lit à l'envers :</p>
+<ul>
+<li>Eau calcaire → traces sur le verre</li>
+<li>Traces sur le verre → essuyage manuel au torchon</li>
+<li>Essuyage manuel → le verre casse dans la main</li>
+<li>Verre cassé dans la main → coupure profonde, tendons, nerfs, arrêt de travail</li>
+</ul>
+<div class="callout"><p><b>Supprimez la trace, vous supprimez l'essuyage. Supprimez l'essuyage, vous supprimez l'accident.</b> C'est toute la logique du dispositif de subvention : l'Assurance Maladie ne finance pas un lave-verres pour vous faire plaisir, elle finance la suppression d'un geste accidentogène.</p></div>
+
+<h2>Adoucisseur, osmoseur : ce n'est pas la même chose</h2>
+<p>On confond souvent les deux, et c'est ce qui explique bien des déceptions après achat.</p>
+<p><b>L'adoucisseur</b> retire le calcium et le magnésium. Il protège la machine de l'entartrage — la résistance, le surchauffeur, les bras de lavage. C'est indispensable, mais il laisse dans l'eau d'autres sels minéraux qui, eux, continuent de marquer le verre.</p>
+<p><b>L'osmoseur</b> va plus loin : il pousse l'eau à travers une membrane qui retient la quasi-totalité des sels dissous. L'eau de rinçage ressort déminéralisée. En séchant, elle ne laisse rien. Le verre sort brillant sans qu'on y touche.</p>
+<p>C'est pour cette raison que le dispositif de subvention vise nommément le « <b>lave-verres avec osmoseur</b> » et non le lave-verres seul. Sans osmoseur, l'essuyage revient — et l'objectif de prévention n'est pas atteint.</p>
+
+<h2>Ce que finance l'Assurance Maladie</h2>
+<p>Le dispositif s'appelle la <b>subvention Prévention des risques ergonomiques</b>. Voici ce qu'il prévoyait au moment où nous écrivons ces lignes, en août 2026 :</p>
+<table>
+<tr><th>Élément</th><th>Valeur</th></tr>
+<tr><td>Taux de prise en charge</td><td>70 % du montant HT de l'investissement</td></tr>
+<tr><td>Équipement visé</td><td>« Lave-verres avec osmoseur » (catégorie Équipements spécifiques)</td></tr>
+<tr><td>Entreprises éligibles</td><td>Entreprises de 1 à 49 salariés</td></tr>
+<tr><td>Subvention minimale</td><td>500 € — soit un investissement d'au moins 715 € HT</td></tr>
+<tr><td>Plafond</td><td>75 000 € pour les entreprises de moins de 200 salariés</td></tr>
+<tr><td>Période du dispositif</td><td>2024 – 2027</td></tr>
+</table>
+<div class="callout"><p><b>Vérifiez avant d'engager la dépense.</b> Les montants, les seuils d'effectif et surtout l'enveloppe budgétaire disponible évoluent. Les conditions applicables à votre situation figurent sur <a href="https://www.ameli.fr/entreprise/sante-travail/prevention/aides-financieres/subventions-1-50-salaries/prevention-risques-ergonomiques/equipements" target="_blank" rel="noopener">la page officielle d'ameli.fr</a>, et votre Carsat régionale reste l'interlocuteur qui tranche. Cet article vous donne des repères, pas une garantie d'attribution.</p></div>
+
+<h2>Les conditions à respecter</h2>
+<p>Quatre points bloquent la plupart des dossiers refusés :</p>
+<ol>
+<li><b>Le matériel doit être neuf.</b> L'occasion et le reconditionné sont exclus.</li>
+<li><b>Il doit être conforme au cahier des charges technique</b> publié par l'Assurance Maladie. Ce n'est pas une formalité : un lave-verres sans osmoseur, ou avec un osmoseur non intégré au dossier, sort du champ.</li>
+<li><b>Vous devez être à jour de vos cotisations</b> — une attestation de vigilance Urssaf de moins de six mois est demandée.</li>
+<li><b>La règle des minimis s'applique</b> : le cumul de vos aides publiques sur trois exercices est plafonné.</li>
+</ol>
+<p>Un cinquième point, qui n'est pas une condition mais un fait : <b>l'enveloppe est limitée et attribuée dans l'ordre d'arrivée des dossiers.</b> Un dossier déposé en début d'année a mécaniquement plus de chances qu'un dossier déposé en novembre.</p>
+
+<h2>Comment déposer la demande</h2>
+<p>La demande se fait en ligne, sur le <b>compte AT/MP de votre entreprise via net-entreprises.fr</b>. Les travailleurs indépendants sans salarié passent directement par leur caisse régionale.</p>
+<p>Concrètement, il vous faut réunir :</p>
+<ul>
+<li>Le devis ou la facture acquittée du matériel neuf</li>
+<li>La fiche technique de l'équipement, prouvant la conformité au cahier des charges</li>
+<li>Votre attestation de vigilance Urssaf</li>
+<li>Un RIB</li>
+</ul>
+<p>C'est la fiche technique qui pose le plus de difficultés aux exploitants, parce qu'il faut savoir quoi y chercher.</p>
+
+<h2>Ce que nous faisons chez SODILAME</h2>
+<p>Nous installons des lave-verres et des osmoseurs depuis quarante ans dans les bars, brasseries et hôtels de Provence. Sur ce dispositif, notre rôle est simple :</p>
+<ul class="ul-check">
+<li>Nous mesurons la dureté réelle de votre eau sur place — c'est elle qui détermine la configuration nécessaire</li>
+<li>Nous vous proposons un ensemble conforme au cahier des charges technique du dispositif</li>
+<li>Nous fournissons le devis détaillé et les fiches techniques dans le format attendu par le dossier</li>
+<li>Nous installons, raccordons, réglons le dosage et formons votre équipe</li>
+<li>Nous assurons ensuite l'entretien et le remplacement des membranes et des cartouches</li>
+</ul>
+<p>Nous ne montons pas le dossier à votre place — c'est une démarche qui vous appartient — mais nous vous remettons tout ce dont il a besoin.</p>
+
+<h2>Et si vous n'êtes pas éligible ?</h2>
+<p>L'investissement reste rentable sans subvention, pour une raison qui n'a rien à voir avec la sécurité : <b>le temps d'essuyage</b>. Comptez ce que représente, sur une année, une demi-heure d'essuyage par service. Ajoutez la casse évitée, les verres qui restent présentables plus longtemps, et l'absence d'arrêt de travail à gérer un soir de coup de feu.</p>
+<p>La subvention accélère la décision. Elle ne la crée pas.</p>
+
+<h2>Faire le point sur votre situation</h2>
+<p>Nous passons dans votre établissement, nous mesurons la dureté de votre eau, nous regardons votre lave-verres actuel et nous vous disons franchement si le remplacement se justifie. C'est gratuit et sans engagement : <a href="tel:+33490939888">04 90 93 98 88</a>.</p>
+`,
+    faq: [
+      {
+        q: 'Un adoucisseur seul suffit-il pour ne plus essuyer les verres ?',
+        r: "<p>Non. L'adoucisseur protège la machine du tartre, mais il laisse dans l'eau des sels minéraux qui marquent le verre en séchant. Seul l'osmoseur permet un séchage réellement sans trace, et c'est bien « lave-verres avec osmoseur » que vise le dispositif de subvention.</p>",
+      },
+      {
+        q: 'La subvention concerne-t-elle aussi les lave-vaisselle ?',
+        r: "<p>Le libellé de l'équipement financé porte sur le lave-verres avec osmoseur. D'autres équipements de cuisine figurent par ailleurs dans la liste, comme les meubles bas réfrigérés pour les métiers de bouche. Vérifiez la liste en vigueur sur ameli.fr avant d'engager la dépense, elle évolue.</p>",
+      },
+      {
+        q: 'Puis-je déposer le dossier après avoir acheté le matériel ?',
+        r: "<p>Le dispositif accepte les factures acquittées, dans les conditions et délais fixés par l'Assurance Maladie. Mais comme l'enveloppe est limitée et attribuée par ordre d'arrivée, il est plus prudent de se renseigner auprès de votre Carsat avant l'achat plutôt qu'après.</p>",
+      },
+      {
+        q: 'Combien de temps faut-il pour obtenir la réponse ?',
+        r: "<p>Les délais dépendent de votre caisse régionale et de la période de l'année. C'est une raison de plus pour déposer tôt dans l'exercice, quand l'enveloppe n'est pas encore consommée.</p>",
+      },
+    ],
+  },
+
+  // =========================================================================
+  {
+    slug: 'aides-financieres-equipement-cuisine-professionnelle',
+    titre: "Équiper sa cuisine avec les aides de l'Assurance Maladie : le point pour les CHR",
+    titreSeo: "Aides Carsat pour équiper une cuisine professionnelle | SODILAME",
+    description:
+      "Subvention risques ergonomiques, contrat de prévention Carsat : quels équipements de cuisine et d'hôtellerie sont finançables, à quel taux et sous quelles conditions.",
+    date: '2026-08-19',
+    dateAffichee: '19 août 2026',
+    categorie: 'Aides & subventions',
+    resume:
+      "Trois dispositifs, une même logique : l'Assurance Maladie cofinance les équipements qui suppriment un geste dangereux ou une manutention pénible.",
+    corps: `
+<p>Beaucoup de restaurateurs et d'hôteliers reportent un investissement en pensant qu'aucune aide n'existe pour leur métier. C'est faux : l'Assurance Maladie – Risques Professionnels cofinance depuis plusieurs années des équipements très concrets de cuisine, de laverie et d'hôtellerie, à des taux qui changent la décision.</p>
+<p>La logique est toujours la même. Ces aides ne financent pas du matériel parce qu'il est neuf ou performant, mais <b>parce qu'il supprime un geste dangereux ou une manutention pénible</b>. Comprendre ce raisonnement, c'est comprendre pourquoi tel équipement est dans la liste et tel autre non.</p>
+
+<h2>Les trois dispositifs à connaître</h2>
+
+<h3>1. La subvention Prévention des risques ergonomiques</h3>
+<p>C'est le dispositif le plus simple à mobiliser. Il prend en charge <b>70 % du montant HT</b> d'équipements figurant sur une liste publiée par l'Assurance Maladie, pour les entreprises de 1 à 49 salariés, sur la période 2024-2027. La subvention minimale est de 500 €, soit un investissement d'au moins 715 € HT, avec un plafond de 75 000 € pour les entreprises de moins de 200 salariés.</p>
+<p>La demande se dépose en ligne, depuis le compte AT/MP de l'entreprise sur net-entreprises.fr.</p>
+
+<h3>2. Le contrat de prévention</h3>
+<p>Moins connu et plus exigeant, il s'adresse aux entreprises de moins de 200 salariés relevant d'une branche ayant signé une convention nationale d'objectifs avec l'Assurance Maladie. Le taux d'aide s'échelonne alors <b>de 15 % à 70 %</b> selon les mesures engagées, et le périmètre est bien plus large que la liste d'équipements standard : il se négocie avec votre Carsat autour d'un plan de prévention.</p>
+<p>C'est la voie à explorer pour un projet d'ampleur — une cuisine entièrement repensée, par exemple — plutôt que pour l'achat d'une machine isolée.</p>
+
+<h3>3. Le document unique (DUERP)</h3>
+<p>Ce n'est pas une aide financière mais une obligation, et elle conditionne souvent le reste. L'évaluation des risques professionnels doit être formalisée dans un document unique. Des outils en ligne gratuits existent, spécifiquement conçus pour les métiers de l'hôtellerie et de la restauration.</p>
+<p>Un DUERP à jour qui identifie clairement le risque que votre investissement vient traiter rend votre dossier de subvention nettement plus solide.</p>
+
+<h2>Les équipements finançables qui concernent nos métiers</h2>
+<p>Voici, dans la liste publiée par l'Assurance Maladie, ceux que nous croisons le plus souvent chez nos clients :</p>
+<table>
+<tr><th>Équipement</th><th>Le risque visé</th></tr>
+<tr><td>Lave-verres avec osmoseur</td><td>Coupures à la main lors de l'essuyage manuel des verres</td></tr>
+<tr><td>Meubles bas réfrigérés pour les métiers de bouche</td><td>Postures contraignantes, flexions répétées du dos</td></tr>
+<tr><td>Chariots à assistance électrique pour l'hôtellerie</td><td>Efforts de poussée et de traction sur le linge et l'entretien</td></tr>
+<tr><td>Tables élévatrices motorisées</td><td>Manutention de charges à hauteur inadaptée</td></tr>
+<tr><td>Rolls, bacs et chariots de picking à niveau constant</td><td>Flexions répétées pour atteindre le fond d'un contenant</td></tr>
+<tr><td>Appareils de levage sur rails, potences et monorails</td><td>Port de charges lourdes en réserve ou en laverie</td></tr>
+</table>
+<p>Le <a href="/conseils/subvention-lave-verres-osmoseur">lave-verres avec osmoseur</a> est de loin le plus pertinent pour un bar ou une brasserie ; nous lui avons consacré un article détaillé.</p>
+<p>Les <b>meubles bas réfrigérés</b> méritent qu'on s'y arrête : ils remplacent le va-et-vient vers la chambre froide par un point de froid au poste de travail. Moins de mètres parcourus en service, moins d'ouvertures de chambre froide — donc aussi moins de dérive de température et moins de consommation. C'est un cas où la prévention et l'exploitation vont dans le même sens.</p>
+
+<h2>Les conditions communes</h2>
+<ul class="ul-check">
+<li>Matériel neuf uniquement — l'occasion et le reconditionné sont exclus</li>
+<li>Conformité au cahier des charges technique publié par l'Assurance Maladie</li>
+<li>Attestation de vigilance Urssaf de moins de six mois</li>
+<li>Respect de la règle des minimis sur le cumul d'aides publiques</li>
+<li>Enveloppe budgétaire limitée, attribuée dans l'ordre d'arrivée des dossiers</li>
+</ul>
+<div class="callout"><p><b>Ces informations sont des repères de travail, arrêtés en août 2026.</b> Les listes d'équipements, les taux et les seuils évoluent régulièrement — la liste a d'ailleurs été élargie récemment. Vérifiez systématiquement les conditions en vigueur sur <a href="https://www.ameli.fr/entreprise/sante-travail/prevention/aides-financieres/subventions-1-50-salaries/prevention-risques-ergonomiques/equipements" target="_blank" rel="noopener">ameli.fr</a> et auprès de votre Carsat avant d'engager une dépense. Nous ne sommes ni prescripteur ni instructeur de ces aides.</p></div>
+
+<h2>La bonne méthode, dans l'ordre</h2>
+<ol>
+<li><b>Identifiez le geste qui pose problème</b> dans votre établissement — pas l'équipement que vous voulez acheter. Un dossier qui part du risque est toujours plus solide qu'un dossier qui part du catalogue.</li>
+<li><b>Vérifiez que l'équipement correspondant figure dans la liste</b> en vigueur, et lisez le cahier des charges technique.</li>
+<li><b>Faites établir un devis détaillé</b> avec les fiches techniques du matériel.</li>
+<li><b>Déposez tôt dans l'exercice.</b> L'enveloppe se consomme.</li>
+<li><b>Conservez tout</b> : devis, factures, fiches techniques, rapport d'installation.</li>
+</ol>
+
+<h2>Notre rôle là-dedans</h2>
+<p>Nous ne montons pas les dossiers à votre place, et nous nous méfions de ceux qui promettent le contraire. En revanche, nous savons proposer un matériel conforme au cahier des charges, fournir un devis et des fiches techniques exploitables, et installer proprement l'équipement une fois la décision prise.</p>
+<p>Si vous vous demandez ce qui, dans votre cuisine, relèverait de ces dispositifs, l'<a href="/services/contrat-entretien-cuisine-professionnelle">audit gratuit de votre parc</a> est un bon point de départ : nous listons vos équipements, leur état, et nous vous signalons ceux dont le remplacement pourrait entrer dans le champ.</p>
+<p>Un appel suffit : <a href="tel:+33490939888">04 90 93 98 88</a>.</p>
+`,
+    faq: [
+      {
+        q: "Faut-il être adhérent à un syndicat professionnel pour y avoir droit ?",
+        r: "<p>Non pour la subvention Prévention des risques ergonomiques, qui s'adresse directement aux entreprises cotisant au régime général. Le contrat de prévention, lui, suppose que votre branche ait signé une convention nationale d'objectifs avec l'Assurance Maladie.</p>",
+      },
+      {
+        q: 'Puis-je cumuler plusieurs équipements dans un même dossier ?',
+        r: "<p>Oui, dans la limite des plafonds applicables et de la règle des minimis sur le cumul d'aides publiques. Votre Carsat vous confirmera ce qui est possible dans votre situation précise.</p>",
+      },
+      {
+        q: 'Mon entreprise a plus de 50 salariés, je suis exclu ?',
+        r: "<p>Pas nécessairement. La subvention Prévention des risques ergonomiques cible les petites structures, mais le contrat de prévention s'adresse aux entreprises de moins de 200 salariés. Rapprochez-vous de votre Carsat pour connaître la voie applicable à votre effectif.</p>",
+      },
+      {
+        q: 'SODILAME monte-t-il le dossier de subvention ?',
+        r: "<p>Non. Nous fournissons le devis détaillé, les fiches techniques et tout ce dont votre dossier a besoin, mais la demande relève de l'entreprise et s'instruit auprès de la Carsat. Nous préférons être clairs là-dessus plutôt que de promettre une prise en charge que nous ne maîtrisons pas.</p>",
+      },
+    ],
+  },
+
+  // =========================================================================
+  {
     slug: 'controle-etancheite-f-gas-cuisine-professionnelle',
     titre: "Fluides frigorigènes : quelles obligations pour votre cuisine professionnelle ?",
     titreSeo:

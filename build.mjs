@@ -119,12 +119,6 @@ function accueil() {
       </a>`
         )
         .join('\n      ')}
-      <a class="card" href="/contact?sujet=audit">
-        <div class="ico">${svg('audit')}</div>
-        <h3>Audit gratuit de vos équipements</h3>
-        <p>Un technicien passe dans votre établissement, dresse l'état de votre parc et vous remet un rapport avec les priorités d'intervention.</p>
-        <span class="more">Demander un audit →</span>
-      </a>
     </div>
   </div>
 </section>
@@ -242,8 +236,9 @@ ${blocContact()}`;
 // Helpers de rendu
 // ===========================================================================
 function carte() {
-  const q = encodeURIComponent(`${A.rue}, ${A.codePostal} ${A.ville}`);
-  return `<iframe title="Localisation de ${site.nom} à ${A.ville}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${q}&output=embed"></iframe>`;
+  // Iframe de la fiche Google Business Profile réelle de SODILAME (établissement identifié,
+  // pas une simple recherche d'adresse) — renforce la cohérence avec la fiche Google.
+  return `<iframe title="SODILAME sur Google Maps — ${A.rue}, ${A.codePostal} ${A.ville}" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" src="${site.carteEmbed}"></iframe>`;
 }
 
 function photoPlaceholder(texte) {

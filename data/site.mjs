@@ -15,8 +15,11 @@ export const site = {
   // ---- Coordonnées (NAP — doivent être STRICTEMENT identiques à la fiche Google) ----
   telephone: '04 90 93 98 88',
   telephoneE164: '+33490939888',
-  email: 'contact@sodilame.com',
-  emailDevis: 'contact@sodilame.com',
+  // ⚠️ Adresse réellement relevée aujourd'hui. Elle est sur le domaine .fr, qui n'est pas
+  // affecté par la délégation DNS de sodilame.com vers Vercel. À basculer vers une adresse
+  // @sodilame.com le jour où la messagerie sera migrée.
+  email: 'sodilame@sodilame.fr',
+  emailDevis: 'sodilame@sodilame.fr',
   adresse: {
     rue: '3 impasse des Apprentis',
     complement: 'ZA de la Chapelette',
@@ -24,8 +27,8 @@ export const site = {
     ville: 'Saint-Martin-de-Crau',
     region: "Provence-Alpes-Côte d'Azur",
     pays: 'FR',
-    lat: 43.6389,
-    lng: 4.8047,
+    lat: 43.631914,
+    lng: 4.810175,
   },
   horaires: {
     texte: 'Lundi au jeudi : 8h–12h / 14h–17h15 — Vendredi : 8h–12h / 14h–16h',
@@ -38,10 +41,13 @@ export const site = {
     ],
   },
 
+  // ---- Carte Google (iframe de la fiche Google Business Profile réelle) -------
+  carteEmbed:
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2887.7811382884156!2d4.810175!3d43.631913999999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12b6766a38aff351%3A0x5a2fc4214cf00a07!2sSodilame!5e0!3m2!1sfr!2sfr!4v1787400867232!5m2!1sfr!2sfr',
+
   // ---- Portail client -------------------------------------------------------
-  // ⚠️ Remplacer par l'URL réelle du portail : une seule ligne à changer.
   portail: {
-    url: 'https://my.sodilame.com',
+    url: 'https://mysodilame.app',
     nom: 'MySodilame',
   },
 
@@ -120,7 +126,6 @@ export const navPrincipale = [
   { label: "Zone d'intervention", url: '/zone-intervention' },
   { label: 'Conseils', url: '/conseils' },
   { label: "L'entreprise", url: '/a-propos' },
-  { label: 'Contact', url: '/contact' },
 ];
 
 // ---- Secteurs desservis (bloc réutilisable) ---------------------------------

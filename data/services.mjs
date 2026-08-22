@@ -210,33 +210,33 @@ export const services = [
 
   // =========================================================================
   {
-    slug: 'laverie-buanderie-professionnelle',
-    nomCourt: 'Laverie & buanderie',
-    nom: 'Laverie et buanderie professionnelle',
+    slug: 'laverie-restauration',
+    nomCourt: 'Laverie de restauration',
+    nom: 'Laverie professionnelle pour la restauration',
     icone: 'laverie',
     titreSeo: 'Laverie professionnelle : lave-vaisselle & tunnels | SODILAME',
     description:
-      "Installation de laveries professionnelles en Provence : lave-vaisselle à capot, tunnels de lavage, machines à laver et sèche-linge professionnels.",
+      "Laveries professionnelles en Provence : lave-vaisselle sous-comptoir, à capot, à avancement, tunnels de lavage, lave-verres et traitement d'eau. Devis gratuit.",
     resume:
-      'Lave-vaisselle à capot, tunnels de lavage, laveries complètes, machines à laver et sèche-linge professionnels.',
+      "Lave-vaisselle à capot, tunnels de lavage, lave-verres, laveries inox sur mesure et traitement de l'eau.",
     intro:
-      "La plonge est le poste le plus souvent négligé en conception et le premier à créer un goulot d'étranglement en service. Une laverie bien dimensionnée, correctement alimentée en eau adoucie et bien ventilée, c'est un service qui se termine à l'heure et une équipe qui reste.",
+      "La plonge est le poste le plus souvent négligé en conception et le premier à créer un goulot d'étranglement en service. Une laverie bien dimensionnée, correctement alimentée en eau traitée et bien ventilée, c'est un service qui se termine à l'heure et une équipe qui reste.",
     points: [
       'Lave-vaisselle sous-comptoir, à capot, à avancement automatique et tunnels de lavage',
-      'Laveries complètes en inox : tables d’entrée et de sortie, bacs, douchettes, étagères',
-      'Machines à laver et sèche-linge professionnels pour hôtellerie, campings et EHPAD',
-      'Traitement de l’eau : adoucisseur et osmoseur adaptés à la dureté locale',
+      'Lave-verres et lave-verres avec osmoseur pour les bars et brasseries',
+      "Laveries complètes en inox : tables d'entrée et de sortie, bacs, douchettes, étagères",
+      "Traitement de l'eau : adoucisseur et osmoseur adaptés à la dureté locale",
       'Ventilation et évacuation des buées, souvent oubliées en rénovation',
     ],
     sections: [
       {
-        h2: 'Adoucisseur ou osmoseur : la question qui décide de la durée de vie de votre machine',
+        h2: "Adoucisseur ou osmoseur : la question qui décide de la durée de vie de votre machine",
         html: `<p>L'eau de notre région est calcaire. Sur un lave-vaisselle professionnel, le calcaire entartre la résistance du surchauffeur, réduit le débit des bras de lavage et laisse un voile blanc sur les verres. Résultat : consommation en hausse, résultats de lavage en baisse, et une panne prématurée que beaucoup attribuent à tort à la qualité de la machine.</p>
 <ul>
 <li><b>L'adoucisseur</b> retire le calcaire et protège la machine. C'est le minimum indispensable dans le 13, le 30 et le 84.</li>
 <li><b>L'osmoseur</b> va plus loin en supprimant aussi les sels minéraux : c'est ce qui permet un séchage sans trace, sans essuyage manuel. Indispensable dès que vous servez du verre à pied.</li>
 </ul>
-<p>Le surcoût d'un traitement d'eau se rembourse sur la durée de vie de la machine et sur le temps d'essuyage économisé en fin de service.</p>`,
+<div class="callout"><p><b>Un enjeu qui dépasse la qualité du lavage.</b> L'essuyage manuel des verres est l'une des premières causes de coupure à la main en café-hôtel-restaurant. C'est pour cela que l'Assurance Maladie finance aujourd'hui 70 % d'un lave-verres avec osmoseur. Nous détaillons le dispositif dans <a href="/conseils/subvention-lave-verres-osmoseur">cet article</a>.</p></div>`,
       },
       {
         h2: 'Capot, avancement ou tunnel : dimensionner sur le pic',
@@ -251,9 +251,9 @@ export const services = [
 <p>Ces repères servent à cadrer la discussion : le dimensionnement précis se fait sur votre organisation réelle, la taille des paniers et le personnel affecté à la plonge.</p>`,
       },
       {
-        h2: 'La buanderie, un poste à part entière',
-        html: `<p>Pour les hôtels, campings, EHPAD et cliniques, le linge est une activité industrielle à part entière : machines à laver essoreuses, sèche-linge, calandres. Les points qui font la différence sont l'accès à l'eau chaude, l'évacuation des buées et la charge au sol pour les machines de forte capacité, en particulier lorsque la buanderie n'est pas au rez-de-chaussée.</p>
-<p>Nous étudions ces contraintes avant la commande, parce qu'un plancher qui ne supporte pas l'essorage se découvre trop tard.</p>`,
+        h2: "L'inox sur mesure, et la ventilation qu'on oublie",
+        html: `<p>Tables d'entrée et de sortie, bacs, dosserets, douchettes, étagères hautes : dès qu'on sort du plan rectangulaire idéal, l'inox doit être réalisé aux cotes du local. Nous relevons sur place avant de faire fabriquer.</p>
+<p>Le point systématiquement sous-estimé en rénovation, c'est l'<b>évacuation des buées</b>. Une laverie sans extraction dédiée, c'est de la condensation sur les murs et les plafonds, des moisissures à moyen terme et un poste de travail pénible. Nous le chiffrons dans le projet plutôt que de le découvrir après.</p>`,
       },
     ],
     faq: [
@@ -268,6 +268,79 @@ export const services = [
       {
         q: 'Assurez-vous le dépannage des lave-vaisselle professionnels ?',
         r: "<p>Oui, comme pour l'ensemble du matériel que nous vendons. Les pannes les plus fréquentes (résistance, pompe de vidange, doseur, bras de lavage) sont couvertes par les pièces que nous gardons en stock.</p>",
+      },
+      {
+        q: 'Quelle différence avec la buanderie ?',
+        r: `<p>Ce sont deux métiers distincts, avec des machines, des contraintes de bâtiment et des fournisseurs différents. La laverie traite la vaisselle et la verrerie ; la <a href="/services/buanderie-professionnelle">buanderie</a> traite le linge. Nous couvrons les deux, mais nous ne les traitons pas de la même façon.</p>`,
+      },
+    ],
+  },
+
+  // =========================================================================
+  {
+    slug: 'buanderie-professionnelle',
+    nomCourt: 'Buanderie professionnelle',
+    nom: 'Buanderie professionnelle : lavage, séchage et repassage',
+    icone: 'buanderie',
+    titreSeo: 'Buanderie professionnelle : machines & calandres | SODILAME',
+    description:
+      "Buanderies professionnelles pour hôtels, campings et EHPAD en Provence : laveuses-essoreuses, sèche-linge, calandres. Étude d'accès, installation, mise en service.",
+    resume:
+      'Laveuses-essoreuses, sèche-linge et calandres pour hôtellerie, campings, cliniques et EHPAD.',
+    intro:
+      "Traiter son linge en interne, c'est reprendre la main sur ses délais et sa qualité — à condition que la buanderie soit dimensionnée sur la production réelle et que le bâtiment supporte les machines. C'est un métier à part entière, avec ses contraintes de charge au sol, d'évacuation de buées et d'accès, qui n'ont rien à voir avec celles d'une cuisine.",
+    points: [
+      'Laveuses-essoreuses professionnelles, à cuve suspendue ou rigide',
+      'Sèche-linge professionnels électriques ou gaz',
+      'Calandres et repasseuses à rouleau pour le linge plat',
+      'Étude de faisabilité : charge au sol, accès, évacuation des buées, puissances',
+      'Livraison avec moyens de manutention, installation, raccordement et mise en service',
+    ],
+    sections: [
+      {
+        h2: 'Dimensionner en kilos de linge, pas en nombre de chambres',
+        html: `<p>Le réflexe habituel consiste à raisonner en nombre de chambres ou de lits. C'est insuffisant, parce que deux établissements de taille identique peuvent produire des volumes très différents selon la fréquence de changement, la présence d'un restaurant et le type de linge.</p>
+<p>Le bon calcul part du <b>poids de linge à traiter par jour</b>, ramené au nombre de cycles réalisables dans le temps de travail disponible. Un hôtel qui produit 120 kg par jour ne s'équipe pas comme un camping qui en produit 400 en juillet et 20 en novembre.</p>
+<p>C'est aussi ce calcul qui détermine l'arbitrage entre une grosse machine et deux plus petites. Deux machines offrent de la souplesse et une continuité de service en cas de panne ; une seule coûte moins cher à l'achat et immobilise tout le linge le jour où elle s'arrête.</p>`,
+      },
+      {
+        h2: 'Les trois contraintes de bâtiment qui décident du projet',
+        html: `<p>En buanderie, la machine n'est pas le sujet le plus délicat. Le bâtiment l'est.</p>
+<ul>
+<li><b>La charge au sol.</b> Une laveuse-essoreuse à l'essorage génère des efforts importants. Une calandre pèse facilement plus d'une tonne. Dès que la buanderie n'est pas au rez-de-chaussée sur dalle, la question doit être posée avant la commande.</li>
+<li><b>L'évacuation des buées.</b> Les sèche-linge et les calandres rejettent des volumes d'air chaud et humide considérables. Sans conduit correctement dimensionné, le local devient irrespirable et se dégrade vite.</li>
+<li><b>Le chemin d'accès.</b> C'est le point qui fait échouer les livraisons. Une calandre de 2,40 m de large qui doit franchir un passage intérieur de 1,01 m impose une introduction de chant, sur plateaux roulants, avec chariot élévateur amené sur place.</li>
+</ul>
+<div class="callout"><p><b>Nous relevons systématiquement le parcours avant de commander.</b> Largeur de l'allée de service, cote de la porte d'accès, passage intérieur le plus étroit, hauteur sous linteau, nature du sol. Ce relevé conditionne les moyens de manutention à prévoir — et il évite le camion qui repart chargé.</p></div>`,
+      },
+      {
+        h2: 'Le remplacement d’une machine en une journée',
+        html: `<p>Sur un remplacement à l'identique, notre organisation type tient en une journée : balisage et consignation des énergies le matin, dépose de l'ancienne machine, évacuation et déchargement de la neuve dans la même rotation de camion, mise en place et mise à niveau, raccordements avec contrôle d'étanchéité pour les machines gaz, puis mise en service, essais et prise en main avec votre équipe en fin d'après-midi.</p>
+<p>Nous demandons en contrepartie trois choses : que le local soit dégagé la veille, que l'allée de service soit libre de tout stationnement, et qu'un responsable soit présent pour la réception.</p>
+<p>Un point de méthode que nous appliquons toujours : le devis est établi sur la base des alimentations existantes conservées. Si une mise en conformité apparaît à la dépose — et cela arrive sur des installations anciennes — elle fait l'objet d'un chiffrage complémentaire soumis à votre accord, jamais d'une facture surprise.</p>`,
+      },
+      {
+        h2: 'Qui nous appelle pour une buanderie',
+        html: `<p>Hôtels et résidences de tourisme, campings, gîtes de groupe, cliniques, EHPAD et maisons de retraite, structures d'accueil. Le point commun de ces établissements, c'est que le linge est une contrainte quotidienne dont la défaillance se voit immédiatement — un lit non fait, une chambre non livrée.</p>
+<p>Pour ces clients, la disponibilité du matériel prime sur tout le reste. C'est aussi pour eux que le <a href="/services/contrat-entretien-cuisine-professionnelle">contrat d'entretien</a> prend le plus de sens : une courroie ou un roulement remplacé lors d'une visite planifiée coûte infiniment moins cher qu'une buanderie à l'arrêt en pleine saison.</p>`,
+      },
+    ],
+    faq: [
+      {
+        q: 'Faut-il des machines gaz ou électriques ?',
+        r: "<p>Le gaz reste souvent plus économique à l'usage sur les sèche-linge et les calandres, à condition de disposer d'une alimentation dimensionnée et d'une évacuation conforme des produits de combustion. L'électrique simplifie l'installation. L'arbitrage se fait sur les énergies réellement disponibles dans votre local et sur vos volumes.</p>",
+      },
+      {
+        q: 'Ma buanderie est à l’étage, est-ce possible ?',
+        r: "<p>C'est fréquent, mais cela impose de vérifier deux choses avant tout engagement : la charge admissible du plancher, en particulier pendant l'essorage, et le chemin d'accès pour monter la machine. Nous faisons ce relevé lors de la visite, et nous le disons franchement quand le projet n'est pas réalisable en l'état.</p>",
+      },
+      {
+        q: 'Remplacez-vous une calandre existante ?',
+        r: "<p>Oui, y compris dans des locaux contraints. Nous relevons le parcours de manutention, nous prévoyons les moyens adaptés — camion plateau, chariot élévateur amené sur site, plateaux roulants — et nous réalisons dépose, évacuation et pose dans la même journée.</p>",
+      },
+      {
+        q: 'Assurez-vous l’entretien des machines de buanderie ?',
+        r: "<p>Oui, au même titre que le matériel de cuisine. Le nettoyage des filtres de sèche-linge, le contrôle des courroies, des roulements et de l'équilibrage des laveuses figurent dans nos visites d'entretien préventif.</p>",
       },
     ],
   },

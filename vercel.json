@@ -35,7 +35,10 @@
     { "source": "/depannage", "destination": "/services/depannage-sav-cuisine-professionnelle", "permanent": true },
     { "source": "/froid", "destination": "/services/froid-professionnel", "permanent": true },
     { "source": "/entretien", "destination": "/services/contrat-entretien-cuisine-professionnelle", "permanent": true },
-    { "source": "/mysodilame", "destination": "https://my.sodilame.com", "permanent": false },
-    { "source": "/espace-client", "destination": "https://my.sodilame.com", "permanent": false }
+    { "source": "/services/laverie-buanderie-professionnelle", "destination": "/services/laverie-restauration", "permanent": true },
+    { "source": "/laverie", "destination": "/services/laverie-restauration", "permanent": true },
+    { "source": "/buanderie", "destination": "/services/buanderie-professionnelle", "permanent": true },
+    { "source": "/mysodilame", "destination": "https://mysodilame.app", "permanent": false },
+    { "source": "/espace-client", "destination": "https://mysodilame.app", "permanent": false }
   ]
 }

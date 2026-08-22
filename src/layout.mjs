@@ -17,6 +17,7 @@ export const icones = {
   cuisson: '<path d="M4 8h16v12H4z"/><circle cx="8" cy="14" r="1.6"/><circle cx="16" cy="14" r="1.6"/><path d="M7 8V5m5 3V5m5 3V5"/>',
   froid: '<path d="M5 3h14v18H5z"/><path d="M5 11h14"/><path d="M9 7v1M9 15v1"/>',
   laverie: '<circle cx="12" cy="13" r="6"/><circle cx="12" cy="13" r="2.4"/><path d="M5 5h14"/>',
+  buanderie: '<path d="M12 3.2a1.9 1.9 0 1 1 1.9 1.9c-1 0-1.9.7-1.9 1.6v1.1"/><path d="m12 7.8-8.3 5.9c-.8.6-.4 1.7.6 1.7h15.4c1 0 1.4-1.1.6-1.7z"/><path d="M6 15.4v5.2h12v-5.2"/>',
   installation: '<path d="M3 17V7l9-4 9 4v10l-9 4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
   extraction: '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6"/>',
   depannage: '<path d="M14.7 6.3a4 4 0 0 0 5 5l-8.3 8.3a2.8 2.8 0 0 1-4-4z"/>',
@@ -109,7 +110,7 @@ function entete(chemin) {
     </nav>
     <div class="hd-cta">
       <a class="btn btn-outline btn-sm hide-m" href="${site.portail.url}" target="_blank" rel="noopener">${svg('user')}Espace client</a>
-      <a class="btn btn-primary btn-sm" href="/contact">Demander un devis</a>
+      <a class="btn btn-primary btn-sm" href="/contact">Nous contacter</a>
     </div>
     <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
   </div>
@@ -158,7 +159,7 @@ function pied(servicesNav, villesNav) {
 </footer>
 <div class="mcall">
   <a class="tel" href="tel:${site.telephoneE164}">${site.telephone}</a>
-  <a class="dev" href="/contact">Demander un devis</a>
+  <a class="dev" href="/contact">Nous contacter</a>
 </div>
 <script>
 (function(){
