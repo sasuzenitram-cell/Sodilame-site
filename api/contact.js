@@ -3,12 +3,15 @@
 //
 // Variables d'environnement à définir dans Vercel (Settings → Environment Variables) :
 //   RESEND_API_KEY   clé API Resend (https://resend.com)  — obligatoire
-//   MAIL_DESTINATION adresse qui reçoit les demandes      — ex. contact@sodilame.com
-//   MAIL_EXPEDITEUR  expéditeur vérifié chez Resend       — ex. site@sodilame.com
+//   MAIL_DESTINATION adresse qui reçoit les demandes      — sodilame@sodilame.fr
+//   MAIL_EXPEDITEUR  expéditeur vérifié chez Resend       — SODILAME <site@sodilame.com>
+//
+// Le domaine vérifié chez Resend est sodilame.com (domaine racine, pas un
+// sous-domaine). L'expéditeur doit donc être une adresse @sodilame.com.
 // ---------------------------------------------------------------------------
 
-const DESTINATION = process.env.MAIL_DESTINATION || 'contact@sodilame.com';
-const EXPEDITEUR = process.env.MAIL_EXPEDITEUR || 'SODILAME <onboarding@resend.dev>';
+const DESTINATION = process.env.MAIL_DESTINATION || 'sodilame@sodilame.fr';
+const EXPEDITEUR = process.env.MAIL_EXPEDITEUR || 'SODILAME <site@sodilame.com>';
 const TEL = '04 90 93 98 88';
 
 // Limitation de débit très simple, en mémoire de l'instance (anti-flood basique).
@@ -44,9 +47,13 @@ export default async function handler(req, res) {
     return res.status(429).json({ erreur: `Trop de demandes envoyées. Merci d'appeler le ${TEL}.` });
   }
 
-  let corps = req.body;
-  if (typeof corps === 'string') {
-    try { corps = JSON.parse(corps); } catch { corps = {}; }
+  // req.body est un getter : il lève une exception si le JSON est malformé.
+  let corps;
+  try {
+    corps = req.body;
+    if (typeof corps === 'string') corps = JSON.parse(corps);
+  } catch {
+    return res.status(400).json({ erreur: 'Requête illisible. Merci de réessayer.' });
   }
   corps = corps || {};
 
@@ -156,6 +163,9 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           from: EXPEDITEUR,
           to: [email],
+          // L'adresse d'expédition ne reçoit pas de courrier : si le client
+          // répond à cet accusé de réception, sa réponse doit arriver à SODILAME.
+          reply_to: DESTINATION,
           subject: 'Nous avons bien reçu votre demande — SODILAME',
           text: `Bonjour ${nom},
 
