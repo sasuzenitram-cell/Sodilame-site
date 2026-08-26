@@ -163,6 +163,9 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           from: EXPEDITEUR,
           to: [email],
+          // L'adresse d'expédition ne reçoit pas de courrier : si le client
+          // répond à cet accusé de réception, sa réponse doit arriver à SODILAME.
+          reply_to: DESTINATION,
           subject: 'Nous avons bien reçu votre demande — SODILAME',
           text: `Bonjour ${nom},
 
