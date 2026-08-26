@@ -7,6 +7,7 @@ import { dirname, join } from 'node:path';
 import { site, formules, secteurs } from './data/site.mjs';
 import { services, servicesNav } from './data/services.mjs';
 import { villes, villesNav } from './data/villes.mjs';
+import { zones, zoneDeLaVille, totalCommunes } from './data/zones.mjs';
 import { articles } from './data/articles.mjs';
 import {
   page, ariane, schemaAriane, schemaLocalBusiness, schemaFaq, blocFaq, blocSecteurs,
@@ -53,7 +54,7 @@ function accueil() {
     },
     {
       q: 'Sur quel secteur géographique intervenez-vous ?',
-      r: `<p>Principalement les Bouches-du-Rhône (13), le Gard (30) et le Vaucluse (84) : ${villes.map((v) => v.nom).join(', ')} et leurs alentours. Pour les projets d'installation complète, nous étudions les demandes au-delà de cette zone.</p>`,
+      r: `<p>Nous desservons ${totalCommunes} communes, principalement dans les Bouches-du-Rhône (13), le Gard (30) et le Vaucluse (84), organisées en cinq zones — de Saint-Martin-de-Crau et les Alpilles jusqu'à Aix, Marseille et le Luberon. Pour les projets d'installation complète, nous étudions les demandes au-delà.</p>`,
     },
   ];
 
@@ -160,8 +161,11 @@ ${blocSecteurs()}
       <div>
         <p class="eyebrow">Zone d'intervention</p>
         <h2>Basés à ${A.ville}, présents dans toute la Provence</h2>
-        <p class="lead">Notre atelier et notre magasin de pièces se trouvent ${A.complement}, à ${A.ville}. Cette position centrale nous permet d'intervenir rapidement sur les Bouches-du-Rhône, le Gard et le Vaucluse.</p>
+        <p class="lead">Notre atelier et notre magasin de pièces se trouvent ${A.complement}, à ${A.ville}. Cette position centrale nous permet de desservir ${totalCommunes} communes des Bouches-du-Rhône, du Gard et du Vaucluse, organisées en cinq zones.</p>
         <div class="zone-list">
+          ${zones.map((z) => `<a href="/zone-intervention/${z.slug}">${esc(z.nom)}</a>`).join('\n          ')}
+        </div>
+        <div class="zone-list" style="margin-top:.8rem">
           ${villes.map((v) => `<a href="/zone-intervention/${v.slug}">${v.nom}</a>`).join('\n          ')}
         </div>
         <p style="margin-top:1.6rem;font-size:.92rem;color:var(--muted)">Votre commune n'apparaît pas ? Appelez-nous au <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a>, nous étudions chaque demande.</p>
@@ -188,7 +192,7 @@ ${blocEtapes()}
         </div>
         <div class="btn-row"><a class="btn btn-outline" href="/a-propos">Découvrir l'entreprise</a></div>
       </div>
-      <div class="map-box"><div class="ph dark">${photoPlaceholder("Photo de l'équipe et de l'atelier")}</div></div>
+      <div>${photo({ f: 'hotte-extraction-cuisine-professionnelle', w: 1400, h: 1050, alt: "Hotte inox, gaine d'extraction et compensation d'air neuf installées par SODILAME dans une cuisine professionnelle neuve" }, 'Extraction et compensation d’air neuf — chantier SODILAME')}</div>
     </div>
   </div>
 </section>
@@ -235,10 +239,43 @@ ${blocContact()}`;
 // ===========================================================================
 // Helpers de rendu
 // ===========================================================================
+// Communes qui disposent d'une page ville dédiée
+const VILLE_DE_COMMUNE = {
+  'Saint-Martin-de-Crau': 'saint-martin-de-crau',
+  'Arles': 'arles',
+  'Salon-de-Provence': 'salon-de-provence',
+  'Avignon': 'avignon',
+  'Nîmes': 'nimes',
+  'Aix-en-Provence': 'aix-en-provence',
+  'Marseille': 'marseille',
+  'Istres': 'istres-miramas',
+  'Miramas': 'istres-miramas',
+};
+
+function chipsCommunes(communes) {
+  return communes
+    .map((c) => {
+      const v = VILLE_DE_COMMUNE[c];
+      return v
+        ? `<a href="/zone-intervention/${v}">${esc(c)}</a>`
+        : `<span>${esc(c)}</span>`;
+    })
+    .join('\n      ');
+}
+
 function carte() {
   // Iframe de la fiche Google Business Profile réelle de SODILAME (établissement identifié,
   // pas une simple recherche d'adresse) — renforce la cohérence avec la fiche Google.
   return `<iframe title="SODILAME sur Google Maps — ${A.rue}, ${A.codePostal} ${A.ville}" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" src="${site.carteEmbed}"></iframe>`;
+}
+
+// Photo de chantier SODILAME (toutes filigranées)
+function photo(ph, legende = '') {
+  if (!ph) return '';
+  return `<figure class="ph-fig">
+  <img src="/assets/photos/${ph.f}.jpg" width="${ph.w}" height="${ph.h}" alt="${esc(ph.alt)}" loading="lazy" decoding="async">
+  ${legende ? `<figcaption>${esc(legende)}</figcaption>` : ''}
+</figure>`;
 }
 
 function photoPlaceholder(texte) {
@@ -368,6 +405,7 @@ ${ariane(fil)}
           .join('\n')}
       </div>
       <aside>
+        ${photo(s.photo, `${s.nomCourt} — réalisation SODILAME`)}
         <div class="card" style="position:sticky;top:110px">
           <h2 style="font-size:1.1rem">Ce que comprend la prestation</h2>
           <ul class="ul-check">${s.points.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>
@@ -457,8 +495,8 @@ function zoneHub() {
 <div class="phero">
   <div class="wrap">
     <p class="eyebrow on-dark">Zone d'intervention</p>
-    <h1>Cuisines professionnelles : nous intervenons dans le 13, le 30 et le 84</h1>
-    <p>Notre atelier et notre magasin de pièces sont à ${A.ville}, au centre du triangle Arles – Salon – Avignon. C'est cette position qui nous permet d'annoncer des délais réalistes plutôt que des promesses.</p>
+    <h1>Cuisines professionnelles : ${totalCommunes} communes desservies en Provence et dans le Gard</h1>
+    <p>Notre atelier et notre magasin de pièces sont à ${A.ville}, au centre du triangle Arles – Salon – Avignon. Nous organisons notre couverture en cinq zones, de la plus proche à la plus lointaine — et nous vous disons franchement ce que nous pouvons tenir sur chacune.</p>
   </div>
 </div>
 ${ariane(fil)}
@@ -467,10 +505,14 @@ ${ariane(fil)}
   <div class="wrap">
     <div class="grid2">
       <div>
-        <h2>Une implantation qui n'est pas un détail commercial</h2>
+        <h2>Une zone resserrée, assumée</h2>
         <p class="lead">Beaucoup d'entreprises affichent une « couverture nationale ». Dans notre métier, cela signifie généralement une sous-traitance locale et un délai de pièce qui s'allonge.</p>
-        <p>Nous faisons l'inverse : une zone volontairement resserrée autour de ${A.ville}, des techniciens salariés qui connaissent les établissements, et un stock physique de pièces à moins d'une heure de la plupart de nos clients.</p>
-        <p>Concrètement, cela veut dire qu'une panne de froid sur Arles ou Istres peut être traitée dans la journée quand la pièce est en stock — et que nous vous le dirons franchement quand ce n'est pas le cas.</p>
+        <p>Nous faisons l'inverse : une zone construite autour de ${A.ville}, des techniciens salariés qui connaissent les établissements, et un stock physique de pièces à moins d'une heure de la plupart de nos clients.</p>
+        <p>Concrètement, cela veut dire qu'une panne de froid sur Arles ou Istres peut être traitée dans la journée quand la pièce est en stock — et que nous vous le dirons quand ce n'est pas le cas plutôt que de vous faire attendre.</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="/contact">Demander un devis</a>
+          <a class="btn btn-outline" href="tel:${site.telephoneE164}">${site.telephone}</a>
+        </div>
       </div>
       <div class="map-box">${carte()}</div>
     </div>
@@ -479,20 +521,39 @@ ${ariane(fil)}
 
 <section class="alt">
   <div class="wrap">
-    <div class="sec-head center"><p class="eyebrow">Nos secteurs</p><h2>Choisissez votre commune</h2></div>
+    <div class="sec-head center"><p class="eyebrow">Nos cinq zones</p><h2>Trouvez votre secteur</h2>
+    <p class="lead">Chaque zone correspond à une réalité de terrain : distance depuis l'atelier, type d'établissements, saisonnalité. Cliquez sur la vôtre.</p></div>
     <div class="grid3">
-      ${villes
+      ${zones
         .map(
-          (v) => `<a class="card" href="/zone-intervention/${v.slug}">
-        <div class="ico">${svg('pin')}</div>
-        <h3>${esc(v.nom)}</h3>
-        <p>${esc(v.cp)} · ${esc(v.departement)} — ${esc(v.distance)}</p>
-        <span class="more">Voir la page →</span>
+          (z) => `<a class="card" href="/zone-intervention/${z.slug}">
+        <div class="zone-head"><span class="zone-num ${z.couleur}">${z.numero}</span></div>
+        <h3>${esc(z.nom)}</h3>
+        <p>${esc(z.sousTitre)}</p>
+        <p style="margin-top:.7rem;font-size:.86rem;color:var(--terra);font-weight:600">${z.communes.length} communes</p>
+        <span class="more">Voir la zone →</span>
       </a>`
         )
         .join('\n      ')}
     </div>
-    <p class="center" style="margin-top:2.4rem;color:var(--muted)">Votre commune ne figure pas dans cette liste ? Appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a> : nous étudions chaque demande, en particulier pour les projets d'installation complète.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head center"><p class="eyebrow">Nos principales villes</p><h2>Pages dédiées</h2></div>
+    <div class="grid4">
+      ${villes
+        .map(
+          (v) => `<a class="card" href="/zone-intervention/${v.slug}">
+        <div class="ico">${svg('pin')}</div>
+        <h3 style="font-size:1.05rem">${esc(v.nom)}</h3>
+        <p>${esc(v.cp)} · ${esc(v.departement)}</p>
+      </a>`
+        )
+        .join('\n      ')}
+    </div>
+    <p class="center" style="margin-top:2.4rem;color:var(--muted)">Votre commune ne figure nulle part ? Appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a> : notre zone s'étend au-delà de ces listes et nous vous communiquons les conditions applicables avant toute intervention.</p>
   </div>
 </section>
 
@@ -500,10 +561,141 @@ ${blocCtaFinal('Une intervention à programmer ?', "Dites-nous où vous êtes et
 
   return page(
     {
-      titre: `Zone d'intervention — Cuisine professionnelle 13, 30, 84 | ${site.nom}`,
-      description: `${site.nom} intervient sur les Bouches-du-Rhône, le Gard et le Vaucluse : Arles, Salon, Avignon, Nîmes, Aix, Marseille, Istres. Cuisines professionnelles.`,
+      titre: `Zone d'intervention — ${totalCommunes} communes en Provence | ${site.nom}`,
+      description: `${site.nom} intervient sur ${totalCommunes} communes des Bouches-du-Rhône, du Gard, du Vaucluse et au-delà, organisées en 5 zones. Cuisines professionnelles.`,
       chemin: '/zone-intervention',
-      schemas: [schemaAriane(fil)],
+      schemas: [
+        schemaAriane(fil),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          name: "Zones d'intervention SODILAME",
+          itemListElement: zones.map((z, k) => ({
+            '@type': 'ListItem',
+            position: k + 1,
+            name: z.nom,
+            url: url(`/zone-intervention/${z.slug}`),
+          })),
+        },
+      ],
+    },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
+// ZONE — page zone
+// ===========================================================================
+function zonePage(z) {
+  const fil = [
+    { nom: 'Accueil', url: '/' },
+    { nom: "Zone d'intervention", url: '/zone-intervention' },
+    { nom: z.nom, url: `/zone-intervention/${z.slug}` },
+  ];
+  const villesZone = villes.filter((v) => z.villes.includes(v.slug));
+  const autres = zones.filter((x) => x.slug !== z.slug);
+
+  const faq = [
+    {
+      q: `Ma commune figure dans la zone ${z.numero}, sous quel délai intervenez-vous ?`,
+      r: `<p>Le délai dépend de la nature de la panne et de la disponibilité de la pièce, pas seulement de la distance. Nous qualifions la demande au téléphone, vérifions le stock à ${A.ville} et vous annonçons un créneau réaliste. Les clients sous contrat d'entretien passent en priorité.</p>`,
+    },
+    {
+      q: 'Comment est facturé le déplacement ?',
+      r: `<p>Le déplacement est facturé au forfait, selon votre commune, et il vous est communiqué avant toute intervention. Aucun frais n'apparaît sur la facture sans avoir été annoncé. Appelez le ${site.telephone} pour connaître le forfait applicable chez vous.</p>`,
+    },
+    {
+      q: 'Intervenez-vous sur du matériel que vous n’avez pas installé ?',
+      r: "<p>Oui, toutes marques confondues, dans la mesure où les pièces restent approvisionnables. Communiquez-nous la marque, le modèle et le numéro de série lors de l'appel : nous vérifions avant de nous déplacer.</p>",
+    },
+    {
+      q: 'Ma commune n’est pas dans la liste, que faire ?',
+      r: `<p>Notre zone d'intervention s'étend au-delà de ces listes, en particulier pour les projets d'installation complète. Appelez-nous au ${site.telephone}, nous étudions chaque demande et vous indiquons les conditions applicables.</p>`,
+    },
+  ];
+
+  const lb = schemaLocalBusiness();
+  lb['@id'] = url(`/zone-intervention/${z.slug}#service`);
+  lb.areaServed = z.communes.map((c) => ({ '@type': 'City', name: c }));
+
+  const corps = `
+<div class="phero">
+  <div class="wrap">
+    <p class="eyebrow on-dark">Zone ${z.numero} · ${esc(z.sousTitre)}</p>
+    <h1>${esc(z.nom)} : installation, dépannage et entretien de cuisines professionnelles</h1>
+    <p>${esc(z.accroche)}</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="/contact">Demander un devis</a>
+      <a class="btn btn-ghost" href="tel:${site.telephoneE164}">${svg('tel')}${site.telephone}</a>
+    </div>
+  </div>
+</div>
+${ariane(fil)}
+
+<section>
+  <div class="wrap">
+    <div class="grid-art">
+      <div class="prose">
+        ${z.corps.map((c) => `<h2>${esc(c.h2)}</h2>\n${c.html}`).join('\n')}
+      </div>
+      <aside>
+        <div class="card" style="position:sticky;top:110px">
+          <h2 style="font-size:1.1rem">Nos prestations sur cette zone</h2>
+          <ul class="ul-check">
+            ${services.map((s) => `<li><a href="/services/${s.slug}" style="text-decoration:none">${esc(s.nomCourt)}</a></li>`).join('\n            ')}
+          </ul>
+          <div class="btn-row" style="margin-top:1.4rem">
+            <a class="btn btn-primary btn-sm" href="/contact" style="width:100%;justify-content:center">Être rappelé</a>
+          </div>
+          <p style="font-size:.83rem;color:var(--muted);margin:1rem 0 0;text-align:center">ou appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head center">
+      <p class="eyebrow">Zone ${z.numero}</p>
+      <h2>Les ${z.communes.length} communes de la zone ${esc(z.nom)}</h2>
+      <p class="lead">Les communes en couleur disposent d'une page dédiée. Pour toutes les autres, le fonctionnement est identique : appelez-nous, nous qualifions et nous planifions.</p>
+    </div>
+    <div class="zone-list" style="justify-content:center;max-width:900px;margin:0 auto">
+      ${chipsCommunes(z.communes)}
+    </div>
+    ${
+      villesZone.length
+        ? `<div class="sec-head center" style="margin-top:3rem;margin-bottom:24px"><h2 style="font-size:1.4rem">Pages dédiées de cette zone</h2></div>
+    <div class="grid4">
+      ${villesZone.map((v) => `<a class="card" href="/zone-intervention/${v.slug}"><div class="ico">${svg('pin')}</div><h3 style="font-size:1.05rem">${esc(v.nom)}</h3><p>${esc(v.cp)} · ${esc(v.departement)}</p></a>`).join('\n      ')}
+    </div>`
+        : ''
+    }
+  </div>
+</section>
+
+${blocSecteurs('Les établissements que nous suivons sur cette zone')}
+${blocFaq(faq, `Questions fréquentes — zone ${z.numero}`)}
+
+<section class="alt tight">
+  <div class="wrap">
+    <div class="sec-head center" style="margin-bottom:28px"><h2 style="font-size:1.5rem">Les autres zones d'intervention</h2></div>
+    <div class="zone-list" style="justify-content:center">
+      ${autres.map((x) => `<a href="/zone-intervention/${x.slug}">${esc(x.nom)}</a>`).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+${blocContact({ titre: `Nous contacter depuis la zone ${esc(z.nom)}`, texte: `Projet d'équipement, remplacement de matériel, panne à traiter ou audit de votre parc : décrivez votre besoin, nous répondons sous 24 heures ouvrées.` })}`;
+
+  return page(
+    {
+      titre: z.titreSeo,
+      description: z.description,
+      chemin: `/zone-intervention/${z.slug}`,
+      schemas: [schemaAriane(fil), lb, schemaFaq(faq)],
     },
     corps,
     nav
@@ -559,6 +751,11 @@ ${ariane(fil)}
         ${v.corps.map((c) => `<h2>${esc(c.h2)}</h2>\n${c.html}`).join('\n')}
         <h2>Communes desservies autour de ${esc(v.nom)}</h2>
         <p>${v.communes.map((c) => esc(c)).join(' · ')}</p>
+        ${
+          zoneDeLaVille(v.slug)
+            ? `<div class="callout"><p><b>${esc(v.nom)} fait partie de notre zone ${zoneDeLaVille(v.slug).numero} — ${esc(zoneDeLaVille(v.slug).nom)}.</b> Retrouvez la liste complète des ${zoneDeLaVille(v.slug).communes.length} communes de ce secteur et notre organisation sur <a href="/zone-intervention/${zoneDeLaVille(v.slug).slug}">la page de la zone</a>.</p></div>`
+            : ''
+        }
       </div>
       <aside>
         <div class="card" style="position:sticky;top:110px">
@@ -692,6 +889,7 @@ ${ariane(fil)}
         ${a.faq ? `<h2>Questions fréquentes</h2>${a.faq.map((f) => `<h3>${esc(f.q)}</h3>${f.r}`).join('\n')}` : ''}
       </article>
       <aside>
+        ${photo(a.photo)}
         <div class="card" style="position:sticky;top:110px">
           <h2 style="font-size:1.1rem">Besoin d'un avis sur votre parc ?</h2>
           <p style="font-size:.94rem;color:var(--muted)">Un technicien passe dans votre établissement, recense vos équipements et vous remet un rapport avec les priorités. Gratuit et sans engagement.</p>
@@ -774,7 +972,7 @@ ${ariane(fil)}
           <div class="tier" style="border-color:var(--line)"><b style="color:var(--navy)">Zone</b><span style="color:var(--terra)">13 · 30 · 84</span></div>
           <div class="tier" style="border-color:var(--line)"><b style="color:var(--navy)">Métier</b><span style="color:var(--terra)">Cuisine pro</span></div>
         </div>
-        <div class="map-box"><div class="ph dark">${photoPlaceholder("Photo de l'équipe")}</div></div>
+        ${photo({ f: 'four-mixte-rational-icombi-pro-20-niveaux', w: 1050, h: 1400, alt: 'Four mixte Rational iCombi Pro 20 niveaux mis en service par SODILAME en cuisine de collectivité' }, 'Mise en service d’un four mixte 20 niveaux')}
       </aside>
     </div>
   </div>
@@ -974,7 +1172,8 @@ ${bloc('Pages principales', [
       { nom: 'Contact', url: '/contact' },
     ])}
 ${bloc('Services', services.map((s) => ({ nom: s.nom, url: `/services/${s.slug}` })))}
-${bloc("Zone d'intervention", villes.map((v) => ({ nom: `Cuisine professionnelle à ${v.nom}`, url: `/zone-intervention/${v.slug}` })))}
+${bloc("Zones d'intervention", zones.map((z) => ({ nom: `Zone ${z.numero} — ${z.nom}`, url: `/zone-intervention/${z.slug}` })))}
+${bloc('Villes', villes.map((v) => ({ nom: `Cuisine professionnelle à ${v.nom}`, url: `/zone-intervention/${v.slug}` })))}
 ${bloc('Conseils', articles.map((a) => ({ nom: a.titre, url: `/conseils/${a.slug}` })))}
 ${bloc('Informations', [
       { nom: 'Mentions légales', url: '/mentions-legales' },
@@ -1044,7 +1243,8 @@ await cp('static', OUT, { recursive: true });
 await ecrire('/', accueil(), { priorite: 1.0 });
 await ecrire('/services', servicesHub(), { priorite: 0.9 });
 for (const s of services) await ecrire(`/services/${s.slug}`, servicePage(s), { priorite: 0.9 });
-await ecrire('/zone-intervention', zoneHub(), { priorite: 0.8 });
+await ecrire('/zone-intervention', zoneHub(), { priorite: 0.9 });
+for (const z of zones) await ecrire(`/zone-intervention/${z.slug}`, zonePage(z), { priorite: 0.8 });
 for (const v of villes) await ecrire(`/zone-intervention/${v.slug}`, villePage(v), { priorite: 0.8 });
 await ecrire('/conseils', conseilsHub(), { priorite: 0.7 });
 for (const a of articles) await ecrire(`/conseils/${a.slug}`, articlePage(a), { priorite: 0.6, majParDefaut: a.date });

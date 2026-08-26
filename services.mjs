@@ -69,6 +69,7 @@ export const services = [
   // =========================================================================
   {
     slug: 'materiel-cuisson-professionnel',
+    photo: { f: 'four-mixte-rational-icombi-classic', w: 1050, h: 1400, alt: "Four mixte Rational iCombi Classic en service dans une cuisine professionnelle équipée par SODILAME" },
     nomCourt: 'Matériel de cuisson',
     nom: 'Matériel de cuisson professionnel : vente et installation',
     icone: 'cuisson',
@@ -211,6 +212,7 @@ export const services = [
   // =========================================================================
   {
     slug: 'laverie-restauration',
+    photo: { f: 'lave-verres-winterhalter-uc', w: 1050, h: 1400, alt: "Lave-verres Winterhalter UC Series installé sous comptoir par SODILAME" },
     nomCourt: 'Laverie de restauration',
     nom: 'Laverie professionnelle pour la restauration',
     icone: 'laverie',
@@ -279,6 +281,7 @@ export const services = [
   // =========================================================================
   {
     slug: 'buanderie-professionnelle',
+    photo: { f: 'laveuse-essoreuse-buanderie', w: 480, h: 640, alt: "Laveuse-essoreuse professionnelle installée en buanderie de sous-sol par SODILAME" },
     nomCourt: 'Buanderie professionnelle',
     nom: 'Buanderie professionnelle : lavage, séchage et repassage',
     icone: 'buanderie',
@@ -348,6 +351,7 @@ export const services = [
   // =========================================================================
   {
     slug: 'installation-mise-en-service',
+    photo: { f: 'four-mixte-rational-icombi-pro-20-niveaux', w: 1050, h: 1400, alt: "Four mixte Rational iCombi Pro 20 niveaux en autotest après mise en service par SODILAME" },
     nomCourt: 'Installation & mise en service',
     nom: 'Installation et mise en service de cuisine professionnelle',
     icone: 'installation',
@@ -401,6 +405,7 @@ export const services = [
   // =========================================================================
   {
     slug: 'extraction-ventilation-cuisine',
+    photo: { f: 'hotte-extraction-cuisine-professionnelle', w: 1400, h: 1050, alt: "Hotte inox, gaine d'extraction et compensation d'air neuf installées par SODILAME dans une cuisine professionnelle neuve" },
     nomCourt: 'Extraction & ventilation',
     nom: 'Extraction et ventilation de cuisine professionnelle',
     icone: 'extraction',
@@ -521,6 +526,7 @@ export const services = [
   // =========================================================================
   {
     slug: 'contrat-entretien-cuisine-professionnelle',
+    photo: { f: 'adoucisseur-osmoseur-winterhalter', w: 1050, h: 1400, alt: "Adoucisseur et osmoseur Winterhalter installés sous une table d'entrée de laverie par SODILAME" },
     nomCourt: "Contrat d'entretien",
     nom: "Contrat d'entretien de cuisine professionnelle",
     icone: 'contrat',
