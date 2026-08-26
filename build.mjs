@@ -80,7 +80,7 @@ function accueil() {
         <a class="btn btn-primary" href="/contact">Demander un devis gratuit</a>
         <a class="btn btn-ghost" href="tel:${site.telephoneE164}">${svg('tel')}${site.telephone}</a>
       </div>
-      <p class="hero-note">Panne de froid ou de cuisson ? Nos techniciens interviennent avec pièces détachées en stock — livraison possible sous 2 heures.</p>
+      <p class="hero-note">Panne de froid ou de cuisson ? Nous qualifions la panne au téléphone et partons avec la bonne pièce — pièces d'usure courantes en stock à ${A.ville}.</p>
     </div>
     <div class="hero-card">
       <h2>Pourquoi les professionnels nous choisissent</h2>
@@ -96,7 +96,7 @@ function accueil() {
   <div class="wrap">
     <div><b>${site.ansExperience} ans</b><span>d'expérience en cuisine pro</span></div>
     <div><b>3 départements</b><span>Bouches-du-Rhône · Gard · Vaucluse</span></div>
-    <div><b>2 h</b><span>livraison de pièces en stock</span></div>
+    <div><b>24 h</b><span>réponse à toute demande technique</span></div>
     <div><b>100 %</b><span>techniciens salariés ${site.nom}</span></div>
   </div>
 </div>
