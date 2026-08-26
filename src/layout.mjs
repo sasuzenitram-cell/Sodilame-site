@@ -25,6 +25,8 @@ export const icones = {
   audit: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/>',
   restaurant: '<path d="M7 3v8a3 3 0 0 0 6 0V3M10 11v10"/><path d="M17 3c-1.5 2-2 4-2 6h4c0-2-.5-4-2-6zM17 9v12"/>',
   hotel: '<path d="M3 21V6l9-3 9 3v15"/><path d="M9 21v-5h6v5M7 10h2M11 10h2M15 10h2"/>',
+  bar: '<path d="M4 4h16l-8 8z"/><path d="M12 12v7M8.5 19h7"/>',
+  boucherie: '<path d="M4 9h16v11H4z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/><path d="M8 13h8"/>',
   ecole: '<path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c0 1.5 2.2 3 5 3s5-1.5 5-3v-5"/>',
   sante: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/>',
   mairie: '<path d="M4 20h16M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/>',
@@ -55,7 +57,7 @@ function head({ titre, description, chemin, schemas = [], noindex = false, typeO
 <link rel="canonical" href="${canon}">
 <meta name="robots" content="${noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large'}">
 <meta name="author" content="${site.nom}">
-<meta name="geo.region" content="FR-13">
+${site.googleVerification ? `<meta name="google-site-verification" content="${site.googleVerification}">\n` : ''}<meta name="geo.region" content="FR-13">
 <meta name="geo.placename" content="${A.ville}">
 <meta property="og:type" content="${typeOg}">
 <meta property="og:locale" content="fr_FR">
