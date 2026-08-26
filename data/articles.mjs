@@ -6,6 +6,7 @@ export const articles = [
   // =========================================================================
   {
     slug: 'subvention-lave-verres-osmoseur',
+    photo: { f: 'lave-verres-winterhalter-uc', w: 1050, h: 1400, alt: "Lave-verres Winterhalter UC Series installé par SODILAME chez un client de Provence" },
     titre: "Lave-verres avec osmoseur : l'Assurance Maladie finance 70 % de votre équipement",
     titreSeo: "Subvention lave-verres osmoseur : 70 % financés | SODILAME",
     description:
@@ -112,6 +113,7 @@ export const articles = [
   // =========================================================================
   {
     slug: 'aides-financieres-equipement-cuisine-professionnelle',
+    photo: { f: 'adoucisseur-osmoseur-winterhalter', w: 1050, h: 1400, alt: "Adoucisseur et osmoseur Winterhalter sous une table de laverie, installation SODILAME" },
     titre: "Équiper sa cuisine avec les aides de l'Assurance Maladie : le point pour les CHR",
     titreSeo: "Aides Carsat pour équiper une cuisine professionnelle | SODILAME",
     description:
@@ -393,6 +395,7 @@ export const articles = [
   // =========================================================================
   {
     slug: 'choisir-four-mixte-restaurant',
+    photo: { f: 'four-mixte-rational-icombi-pro-20-niveaux', w: 1050, h: 1400, alt: "Four mixte Rational iCombi Pro 20 niveaux installé en cuisine de collectivité par SODILAME" },
     titre: 'Comment choisir son four mixte : les six critères qui comptent',
     titreSeo: 'Choisir un four mixte professionnel : le guide | SODILAME',
     description:

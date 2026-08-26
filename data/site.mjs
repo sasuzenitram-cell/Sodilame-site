@@ -8,7 +8,7 @@ export const site = {
   baseline: 'Cuisines professionnelles',
   domaine: 'https://www.sodilame.com',
   langue: 'fr',
-  anneeCreation: 1985,
+  anneeCreation: 1986,
   anneeCourante: 2026,
   ansExperience: 40, // valeur affichée (arrondie) — modifier ici uniquement
 
@@ -75,6 +75,12 @@ export const site = {
     instagram: '',
   },
 
+  // ---- Google Search Console -------------------------------------------------
+  // Méthode « balise HTML » : coller ici le SEUL contenu de l'attribut content=
+  // fourni par Search Console (ex. 'AbC123...'), puis redéployer et cliquer Vérifier.
+  // Laisser vide si la vérification est faite par enregistrement DNS TXT côté Vercel.
+  googleVerification: '',
+
   // ---- Analytics ------------------------------------------------------------
   // Laisser vide tant que ce n'est pas configuré (aucun script chargé = aucun bandeau cookie nécessaire)
   gaId: '',
@@ -83,38 +89,26 @@ export const site = {
 // ---- Contrats d'entretien ---------------------------------------------------
 export const formules = [
   {
-    nom: 'Essentiel',
+    nom: 'My Sodilame',
     visites: '1 visite préventive par an',
     pour: 'Établissements à activité saisonnière ou parc d’équipements réduit',
     inclus: [
       'Visite annuelle de contrôle de l’ensemble du parc',
       'Contrôle d’étanchéité réglementaire des équipements frigorifiques concernés',
-      'Rapport d’intervention détaillé',
-      'Tarif main-d’œuvre préférentiel sur les dépannages',
+      'Nettoyage des condenseurs et contrôle des températures',
+      'Rapport d’intervention détaillé, archivé dans votre espace client',
     ],
   },
   {
-    nom: 'Confort',
+    nom: 'My Sodilame Plus',
     visites: '2 visites préventives par an',
-    pour: 'Restaurants et hôtels en activité toute l’année',
+    pour: 'Établissements en activité toute l’année, collectivités et gros parcs',
     inclus: [
-      'Deux visites planifiées (avant et après haute saison)',
+      'Deux visites planifiées, avant et après la haute saison',
       'Contrôle d’étanchéité et tenue du registre F-Gas',
-      'Nettoyage des condenseurs et remplacement des pièces d’usure',
-      'Priorité de passage sur les demandes de dépannage',
-      'Remise sur les pièces détachées',
-    ],
-  },
-  {
-    nom: 'Sérénité',
-    visites: '4 visites préventives par an',
-    pour: 'Collectivités, cuisines centrales, établissements de santé et gros parcs',
-    inclus: [
-      'Quatre visites planifiées dans l’année',
+      'Remplacement anticipé des pièces d’usure',
       'Suivi documentaire complet (F-Gas, HACCP, attestations)',
-      'Priorité maximale d’intervention en cas de panne',
-      'Remise renforcée sur pièces et main-d’œuvre',
-      'Bilan annuel du parc avec plan de renouvellement chiffré',
+      'Suivi renforcé de votre parc tout au long de l’année',
     ],
   },
 ];
@@ -131,19 +125,20 @@ export const navPrincipale = [
 // ---- Secteurs desservis (bloc réutilisable) ---------------------------------
 export const secteurs = [
   { titre: 'Restaurants & brasseries', detail: 'indépendants, chaînes, food-courts', icone: 'restaurant' },
-  { titre: 'Hôtels & campings', detail: 'petits-déjeuners, laverie, room service', icone: 'hotel' },
-  { titre: 'Écoles & cantines', detail: 'self, liaison chaude et froide', icone: 'ecole' },
-  { titre: 'Santé & EHPAD', detail: 'cliniques, maisons de retraite', icone: 'sante' },
-  { titre: 'Collectivités & mairies', detail: 'marchés publics, cuisines centrales', icone: 'mairie' },
+  { titre: 'Bars & snacks', detail: 'verrerie, froid de bar, petite cuisine', icone: 'bar' },
+  { titre: 'Hôtels & campings', detail: 'petits-déjeuners, laverie, buanderie', icone: 'hotel' },
   { titre: 'Boulangeries & pâtisseries', detail: 'fours, chambres de pousse, froid', icone: 'boulangerie' },
+  { titre: 'Boucheries & commerces de bouche', detail: 'vitrines, chambres froides, labo', icone: 'boucherie' },
+  { titre: 'Collectivités, cantines & EHPAD', detail: 'cuisines centrales, marchés publics', icone: 'mairie' },
   { titre: 'Traiteurs & food-trucks', detail: 'équipements mobiles et compacts', icone: 'traiteur' },
   { titre: "Bureaux d'études", detail: "prescripteurs et maîtres d'œuvre", icone: 'bureau' },
 ];
 
 // ---- Étapes du parcours client ----------------------------------------------
 export const etapes = [
-  { titre: 'Prise de contact', texte: 'Vous décrivez votre projet ou votre panne. Nous qualifions le besoin par téléphone ou par mail sous 24 h ouvrées.' },
-  { titre: 'Visite & étude', texte: 'Un technicien se déplace, relève les contraintes du local et propose une implantation ou un diagnostic.' },
-  { titre: 'Devis détaillé', texte: 'Vous recevez un chiffrage clair, poste par poste, avec les délais de livraison et les options possibles.' },
-  { titre: 'Installation & suivi', texte: 'Nous livrons, installons, raccordons et formons vos équipes. Puis nous assurons le SAV et l’entretien.' },
+  { titre: 'Votre appel', texte: 'Vous décrivez la panne ou le projet, nous qualifions le besoin au téléphone.' },
+  { titre: 'Planification', texte: 'Nous fixons ensemble le créneau d’intervention le plus proche.' },
+  { titre: 'Diagnostic', texte: 'Le technicien identifie la panne sur site, outillé et documenté.' },
+  { titre: 'Réparation', texte: 'Pièce en stock : remise en route immédiate. Sinon, devis puis commande.' },
+  { titre: 'Suivi', texte: 'Rapport d’intervention, conseils d’usage et suivi de votre parc.' },
 ];

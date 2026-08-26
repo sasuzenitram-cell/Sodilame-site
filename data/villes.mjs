@@ -18,7 +18,7 @@ export const villes = [
       "Notre atelier, notre magasin de pièces et nos équipes sont ici, ZA de la Chapelette. Saint-Martin-de-Crau n'est pas une ville de plus sur notre carte : c'est notre base depuis quarante ans.",
     corps: [
       {
-        h2: 'Une entreprise martino-craulienne depuis 1985',
+        h2: 'Une entreprise martino-craulienne depuis 1986',
         html: `<p>SODILAME est implantée à Saint-Martin-de-Crau depuis sa création. Nos locaux de la ZA de la Chapelette abritent l'atelier, le magasin de pièces détachées et le stock de matériel neuf. C'est de là que partent chaque matin les camions techniques qui interviennent sur toute la Provence.</p>
 <p>Cette implantation locale a une conséquence très concrète pour les établissements de la commune : quand une pièce est en stock, elle est à quelques minutes de votre cuisine. Nous n'avons ni plateforme logistique lointaine ni sous-traitance de la maintenance.</p>`,
       },
