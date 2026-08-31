@@ -55,10 +55,11 @@ export const site = {
   legal: {
     raisonSociale: 'SODILAME',
     formeJuridique: 'SAS',
-    siret: '', // à compléter
-    rcs: '', // à compléter
-    tvaIntra: '', // à compléter
-    capital: '', // à compléter
+    siren: '334 555 091',
+    siret: '334 555 091 00035',
+    rcs: '334 555 091 R.C.S. Tarascon',
+    tvaIntra: 'FR77334555091',
+    capital: '', // toujours à compléter — montant du capital social en euros
     directeurPublication: 'Mathieu Martinez',
     hebergeur: {
       nom: 'Vercel Inc.',
@@ -69,7 +70,10 @@ export const site = {
 
   // ---- Réseaux (laisser vide pour masquer) ---------------------------------
   reseaux: {
-    google: '', // URL de la fiche Google Business Profile
+    // URL canonique de la fiche Google Business Profile, reconstruite à partir du
+    // CID (0x5a2fc4214cf00a07) contenu dans l'iframe de la carte ci-dessus.
+    // Plus stable qu'un lien share.google, qui peut expirer.
+    google: 'https://maps.google.com/?cid=6498628434622679559',
     linkedin: '',
     facebook: '',
     instagram: '',
@@ -116,6 +120,7 @@ export const formules = [
 // ---- Navigation principale --------------------------------------------------
 export const navPrincipale = [
   { label: 'Nos services', url: '/services' },
+  { label: 'Produits', url: '/produits' },
   { label: "Contrat d'entretien", url: '/services/contrat-entretien-cuisine-professionnelle' },
   { label: "Zone d'intervention", url: '/zone-intervention' },
   { label: 'Conseils', url: '/conseils' },

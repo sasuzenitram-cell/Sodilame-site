@@ -38,6 +38,10 @@ export const icones = {
   horloge: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  goutte: '<path d="M12 2.7s6 6.6 6 10.6a6 6 0 0 1-12 0c0-4 6-10.6 6-10.6z"/><path d="M9.4 14.4a2.7 2.7 0 0 0 2.6 2.2"/>',
+  panier: '<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.55L21 8H6"/><circle cx="10" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>',
+  camion: '<path d="M2 6.5h11v9H2z"/><path d="M13 9.5h4l3 3.2v2.8h-7z"/><circle cx="6.5" cy="18" r="1.7"/><circle cx="17" cy="18" r="1.7"/>',
+  bidon: '<path d="M8 8h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z"/><path d="M10 8V5.5h4V8"/><path d="M15 5.5h2.2a1.3 1.3 0 0 1 1.3 1.3V9"/>',
 };
 export const svg = (nom, cls = '') =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ''} aria-hidden="true">${icones[nom] || ''}</svg>`;
@@ -111,8 +115,9 @@ function entete(chemin) {
       <a class="only-m" href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a>
     </nav>
     <div class="hd-cta">
+      <a class="panier-lien" href="/produits/ma-commande" id="panier-lien" aria-label="Voir ma commande">${svg('panier')}<span class="pc" id="panier-compte" hidden>0</span></a>
       <a class="btn btn-outline btn-sm hide-m" href="${site.portail.url}" target="_blank" rel="noopener">${svg('user')}Espace client</a>
-      <a class="btn btn-primary btn-sm" href="/contact">Nous contacter</a>
+      <a class="btn btn-primary btn-sm" href="/produits">Boutique en ligne</a>
     </div>
     <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
   </div>
@@ -123,7 +128,7 @@ function entete(chemin) {
 // ---------------------------------------------------------------------------
 // Pied de page
 // ---------------------------------------------------------------------------
-function pied(servicesNav, villesNav) {
+function pied(servicesNav, villesNav, produitsNav = []) {
   return `</main>
 <footer>
   <div class="wrap">
@@ -139,6 +144,7 @@ function pied(servicesNav, villesNav) {
       <div>
         <h2>Nos services</h2>
         ${servicesNav.map((s) => `<a href="${s.url}">${s.nomCourt}</a>`).join('\n        ')}
+        ${produitsNav.length ? `<h2 style="margin-top:1.6rem">Produits lessiviels</h2>\n        ${produitsNav.map((p) => `<a href="${p.url}">${p.nom}</a>`).join('\n        ')}\n        <a href="/produits"><b>Voir le catalogue →</b></a>` : ''}
       </div>
       <div>
         <h2>Zone d'intervention</h2>
@@ -171,6 +177,7 @@ function pied(servicesNav, villesNav) {
 })();
 </script>
 <script src="/assets/form.js" defer></script>
+<script src="/assets/panier.js" defer></script>
 </body>
 </html>`;
 }
@@ -219,6 +226,9 @@ export function schemaLocalBusiness() {
     image: url('/assets/logo-sodilame-600.png'),
     priceRange: '€€',
     foundingDate: String(site.anneeCreation),
+    ...(site.legal.siret ? { taxID: site.legal.siret.replace(/\s/g, '') } : {}),
+    ...(site.legal.tvaIntra ? { vatID: site.legal.tvaIntra } : {}),
+    ...(site.legal.siren ? { identifier: { '@type': 'PropertyValue', name: 'SIREN', value: site.legal.siren.replace(/\s/g, '') } } : {}),
     currenciesAccepted: 'EUR',
     address: {
       '@type': 'PostalAddress',
@@ -426,5 +436,25 @@ export function blocContact({ titre = 'Parlons de votre cuisine', texte = "Proje
 // Assemblage d'une page
 // ---------------------------------------------------------------------------
 export function page(meta, corps, nav) {
-  return head(meta) + entete(meta.chemin) + corps + pied(nav.services, nav.villes);
+  return head(meta) + entete(meta.chemin) + corps + pied(nav.services, nav.villes, nav.produits);
+}
+
+// ---------------------------------------------------------------------------
+// Bloc « livraison offerte » — argument différenciant de la boutique
+// ---------------------------------------------------------------------------
+export function blocLivraison() {
+  return `<section class="alt">
+  <div class="wrap">
+    <div class="sec-head center">
+      <p class="eyebrow">Notre différence</p>
+      <h2>Livraison offerte dès un bidon</h2>
+      <p class="lead">Nos techniciens sillonnent la région toute la journée. Votre commande part avec eux, entre deux interventions : nous n'avons pas de frais de port à vous facturer, parce que nous n'en payons pas.</p>
+    </div>
+    <div class="grid3">
+      <div class="avantage"><i>${svg('camion')}</i><b>Aucun minimum de commande</b><span>Un seul bidon suffit. Pas de palette à constituer, pas de seuil de franco à atteindre.</span></div>
+      <div class="avantage"><i>${svg('bidon')}</i><b>Stock permanent à Saint-Martin-de-Crau</b><span>Les références courantes sont dans nos murs, pas chez un grossiste à trois jours de route.</span></div>
+      <div class="avantage"><i>${svg('user')}</i><b>Livré par un technicien, pas un transporteur</b><span>Celui qui vous livre connaît vos machines. Il peut régler un doseur au passage.</span></div>
+    </div>
+  </div>
+</section>`;
 }

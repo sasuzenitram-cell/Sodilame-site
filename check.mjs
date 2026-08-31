@@ -5,6 +5,9 @@ async function walk(d){const out=[];for(const e of await readdir(d,{withFileType
 const files=(await walk(OUT)).filter(f=>f.endsWith('.html'));
 const routes=new Set(files.map(f=>{let r='/'+relative(OUT,f).replace(/index\.html$/,'').replace(/\/$/,'');return r===''?'/':r;}));
 routes.add('/404');
+// Routes servies par des fonctions serverless (voir les rewrites de vercel.json) :
+// elles n'existent pas dans /public mais sont bien accessibles en ligne.
+for(const r of ['/admin','/admin/commandes','/admin/clients','/admin/produits','/espace','/espace/connexion']) routes.add(r);
 const assets=new Set((await walk(OUT)).map(f=>'/'+relative(OUT,f)));
 let bad=0, jsonld=0, jsonldBad=0;
 for(const f of files){

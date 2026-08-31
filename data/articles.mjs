@@ -11,8 +11,8 @@ export const articles = [
     titreSeo: "Subvention lave-verres osmoseur : 70 % financés | SODILAME",
     description:
       "Coupures à l'essuyage des verres : l'Assurance Maladie finance 70 % d'un lave-verres avec osmoseur pour les entreprises de 1 à 49 salariés. Conditions et démarche.",
-    date: '2026-08-19',
-    dateAffichee: '19 août 2026',
+    date: '2026-08-28',
+    dateAffichee: '28 août 2026',
     categorie: 'Aides & subventions',
     resume:
       "Supprimez la trace sur le verre, vous supprimez l'essuyage. Supprimez l'essuyage, vous supprimez l'accident — et l'Assurance Maladie paie 70 % de l'équipement.",
@@ -118,8 +118,8 @@ export const articles = [
     titreSeo: "Aides Carsat pour équiper une cuisine professionnelle | SODILAME",
     description:
       "Subvention risques ergonomiques, contrat de prévention Carsat : quels équipements de cuisine et d'hôtellerie sont finançables, à quel taux et sous quelles conditions.",
-    date: '2026-08-19',
-    dateAffichee: '19 août 2026',
+    date: '2026-08-26',
+    dateAffichee: '26 août 2026',
     categorie: 'Aides & subventions',
     resume:
       "Trois dispositifs, une même logique : l'Assurance Maladie cofinance les équipements qui suppriment un geste dangereux ou une manutention pénible.",
@@ -207,8 +207,8 @@ export const articles = [
       "Contrôle d'étanchéité F-Gas en restauration : vos obligations | SODILAME",
     description:
       "Contrôle d'étanchéité, registre, attestation de capacité : ce que la réglementation F-Gas impose à un restaurant ou une collectivité qui exploite du froid professionnel.",
-    date: '2026-06-12',
-    dateAffichee: '12 juin 2026',
+    date: '2026-08-23',
+    dateAffichee: '23 août 2026',
     categorie: 'Réglementation',
     resume:
       "Qui doit faire contrôler ses équipements frigorifiques, à quelle fréquence, et quels documents faut-il pouvoir présenter en cas de contrôle.",
@@ -280,8 +280,8 @@ export const articles = [
     titreSeo: 'Températures HACCP en restauration : le mémo pratique | SODILAME',
     description:
       "Refroidissement rapide, liaison froide, maintien au chaud : les repères de température à connaître en cuisine professionnelle et le bon matériel.",
-    date: '2026-05-20',
-    dateAffichee: '20 mai 2026',
+    date: '2026-08-21',
+    dateAffichee: '21 août 2026',
     categorie: 'Hygiène & HACCP',
     resume:
       "Les repères de température issus de la réglementation, et surtout : quel équipement permet réellement de les respecter en service.",
@@ -341,8 +341,8 @@ export const articles = [
     titreSeo: 'Éviter une panne de chambre froide en été : 7 gestes | SODILAME',
     description:
       "Les pannes de froid explosent en juillet-août. Voici les sept vérifications simples qui préviennent la majorité d'entre elles dans une cuisine professionnelle.",
-    date: '2026-04-28',
-    dateAffichee: '28 avril 2026',
+    date: '2026-08-20',
+    dateAffichee: '20 août 2026',
     categorie: 'Entretien',
     resume:
       "En Provence, la moitié de nos dépannages froid se concentrent sur juillet et août. La plupart étaient évitables.",
@@ -400,8 +400,8 @@ export const articles = [
     titreSeo: 'Choisir un four mixte professionnel : le guide | SODILAME',
     description:
       "Capacité, mode d'humidification, nettoyage automatique, sonde à cœur, connectivité, SAV : les critères réellement déterminants pour choisir un four mixte en restauration.",
-    date: '2026-03-15',
-    dateAffichee: '15 mars 2026',
+    date: '2026-08-19',
+    dateAffichee: '19 août 2026',
     categorie: 'Équipement',
     resume:
       "Le four mixte est l'investissement le plus structurant d'une cuisine. Voici sur quoi arbitrer, et ce qui ne mérite pas de surcoût.",

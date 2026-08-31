@@ -10,13 +10,16 @@ import { villes, villesNav } from './data/villes.mjs';
 import { zones, zoneDeLaVille, totalCommunes } from './data/zones.mjs';
 import { articles } from './data/articles.mjs';
 import {
+  categoriesProduits, produits, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
+} from './data/produits.mjs';
+import {
   page, ariane, schemaAriane, schemaLocalBusiness, schemaFaq, blocFaq, blocSecteurs,
-  blocEtapes, blocFormules, blocMySodilame, blocCtaFinal, blocContact, formulaire,
+  blocEtapes, blocFormules, blocMySodilame, blocCtaFinal, blocContact, blocLivraison, formulaire,
   svg, esc, url, A,
 } from './src/layout.mjs';
 
 const OUT = 'public';
-const nav = { services: servicesNav, villes: villesNav };
+const nav = { services: servicesNav, villes: villesNav, produits: produitsNav };
 const pages = []; // pour sitemap + plan du site
 
 async function ecrire(chemin, html, { priorite = 0.7, dansSitemap = true, majParDefaut } = {}) {
@@ -282,6 +285,75 @@ function photoPlaceholder(texte) {
   return `<div><img src="/assets/mark@2x.png" alt="" width="80" height="112" style="margin:0 auto 1rem;opacity:.9" loading="lazy"><span style="font-size:.8rem">[ ${esc(texte)} — à intégrer ]</span></div>`;
 }
 
+// ---------------------------------------------------------------------------
+// Maillage interne : quels articles rattacher à quel service.
+// Sans ce bloc, les articles ne reçoivent que le lien du hub /conseils et
+// Google en déduit qu'ils ne comptent pas.
+// ---------------------------------------------------------------------------
+const ARTICLES_PAR_SERVICE = {
+  'conception-cuisine-professionnelle': [
+    'aides-financieres-equipement-cuisine-professionnelle',
+    'choisir-four-mixte-restaurant',
+    'temperatures-haccp-restauration',
+  ],
+  'materiel-cuisson-professionnel': [
+    'choisir-four-mixte-restaurant',
+    'temperatures-haccp-restauration',
+    'aides-financieres-equipement-cuisine-professionnelle',
+  ],
+  'froid-professionnel': [
+    'eviter-panne-chambre-froide-ete',
+    'controle-etancheite-f-gas-cuisine-professionnelle',
+    'temperatures-haccp-restauration',
+  ],
+  'laverie-restauration': [
+    'subvention-lave-verres-osmoseur',
+    'aides-financieres-equipement-cuisine-professionnelle',
+    'temperatures-haccp-restauration',
+  ],
+  'buanderie-professionnelle': [
+    'aides-financieres-equipement-cuisine-professionnelle',
+    'subvention-lave-verres-osmoseur',
+  ],
+  'installation-mise-en-service': [
+    'choisir-four-mixte-restaurant',
+    'aides-financieres-equipement-cuisine-professionnelle',
+    'controle-etancheite-f-gas-cuisine-professionnelle',
+  ],
+  'extraction-ventilation-cuisine': [
+    'temperatures-haccp-restauration',
+    'aides-financieres-equipement-cuisine-professionnelle',
+  ],
+  'depannage-sav-cuisine-professionnelle': [
+    'eviter-panne-chambre-froide-ete',
+    'controle-etancheite-f-gas-cuisine-professionnelle',
+    'choisir-four-mixte-restaurant',
+  ],
+  'contrat-entretien-cuisine-professionnelle': [
+    'controle-etancheite-f-gas-cuisine-professionnelle',
+    'temperatures-haccp-restauration',
+    'eviter-panne-chambre-froide-ete',
+  ],
+};
+
+const articleParSlug = (slug) => articles.find((a) => a.slug === slug);
+
+function blocLectures(slugs, titre = 'À lire aussi dans nos conseils') {
+  const liste = (slugs || []).map(articleParSlug).filter(Boolean);
+  if (!liste.length) return '';
+  return `<section class="alt">
+  <div class="wrap">
+    <div class="sec-head center">
+      <p class="eyebrow">Conseils</p>
+      <h2>${esc(titre)}</h2>
+    </div>
+    <div class="grid3">
+      ${liste.map(carteArticle).join('\n      ')}
+    </div>
+  </div>
+</section>`;
+}
+
 function carteArticle(a) {
   return `<a class="post" href="/conseils/${a.slug}">
         <span class="thumb"></span>
@@ -450,6 +522,7 @@ ${blocFaq(s.faq, `Questions fréquentes — ${s.nomCourt.toLowerCase()}`)}
   </div>
 </section>
 
+${blocLectures(ARTICLES_PAR_SERVICE[s.slug])}
 ${blocContact({ titre: `Un projet de ${s.nomCourt.toLowerCase()} ?`, texte: "Décrivez-nous votre besoin en quelques lignes. Nous revenons vers vous sous 24 heures ouvrées avec des questions précises, et un rendez-vous si le projet le justifie." })}`;
 
   return page(
@@ -850,7 +923,11 @@ function articlePage(a) {
     { nom: 'Conseils', url: '/conseils' },
     { nom: a.titre, url: `/conseils/${a.slug}` },
   ];
-  const autres = articles.filter((x) => x.slug !== a.slug).slice(0, 3);
+  // Sélection glissante : on prend les 3 articles qui SUIVENT celui-ci dans la
+  // liste, en repartant au début si besoin. Chaque article reçoit ainsi le même
+  // nombre de liens entrants, au lieu que les 3 premiers captent tout.
+  const i = articles.findIndex((x) => x.slug === a.slug);
+  const autres = [1, 2, 3].map((d) => articles[(i + d) % articles.length]).filter((x) => x && x.slug !== a.slug);
   const schemas = [
     schemaAriane(fil),
     {
@@ -1166,12 +1243,14 @@ function planDuSite() {
 ${bloc('Pages principales', [
       { nom: 'Accueil', url: '/' },
       { nom: 'Nos services', url: '/services' },
+      { nom: 'Produits lessiviels et d’entretien', url: '/produits' },
       { nom: "Zone d'intervention", url: '/zone-intervention' },
       { nom: 'Conseils', url: '/conseils' },
       { nom: "L'entreprise", url: '/a-propos' },
       { nom: 'Contact', url: '/contact' },
     ])}
 ${bloc('Services', services.map((s) => ({ nom: s.nom, url: `/services/${s.slug}` })))}
+${categoriesProduits.map((c) => bloc(c.nom, produitsDeCategorie(c.slug).map((p) => ({ nom: `${p.marque} ${p.nom} — réf. ${p.ref}`, url: `/produits/${c.slug}/${p.slug}` })))).join('\n')}
 ${bloc("Zones d'intervention", zones.map((z) => ({ nom: `Zone ${z.numero} — ${z.nom}`, url: `/zone-intervention/${z.slug}` })))}
 ${bloc('Villes', villes.map((v) => ({ nom: `Cuisine professionnelle à ${v.nom}`, url: `/zone-intervention/${v.slug}` })))}
 ${bloc('Conseils', articles.map((a) => ({ nom: a.titre, url: `/conseils/${a.slug}` })))}
@@ -1204,6 +1283,490 @@ function page404() {
 </section>`;
   return page(
     { titre: `Page introuvable — ${site.nom}`, description: `La page demandée est introuvable. Retrouvez nos services de cuisine professionnelle ou appelez le ${site.telephone}.`, chemin: '/404', noindex: true },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
+// PRODUITS — helpers
+// ===========================================================================
+const prixTexte = (c) =>
+  typeof c.prix === 'number'
+    ? `<b class="prix">${c.prix.toFixed(2).replace('.', ',')} € HT</b>`
+    : `<span class="prix-nc">Prix sur demande</span>`;
+
+function boutonAjout(p, c, k) {
+  const prix = typeof c.prix === 'number' ? c.prix : '';
+  return `<button class="btn btn-primary btn-sm ajout" type="button"
+    data-ref="${esc(p.ref)}" data-nom="${esc(p.nom)}" data-marque="${esc(p.marque)}"
+    data-cond="${esc(c.label)}" data-prix="${prix}" data-url="/produits/${p.categorie}/${p.slug}" data-k="${p.slug}-${k}">
+    ${svg('panier')}Ajouter</button>`;
+}
+
+function carteProduit(p) {
+  const cat = categorieDuProduit(p);
+  const c0 = p.conditionnements[0];
+  return `<a class="card prod" href="/produits/${p.categorie}/${p.slug}">
+        <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">${esc(p.ref)}</span></span>
+        <h3>${esc(p.nom)}</h3>
+        <p>${esc(p.resume)}</p>
+        <span class="prod-bas">${p.conditionnements.length > 1 ? `<span class="cond">${p.conditionnements.length} conditionnements</span>` : `<span class="cond">${esc(c0.label)}</span>`}<span class="more">Voir →</span></span>
+      </a>`;
+}
+
+const noticePrix = produits.some((p) => p.conditionnements.some((c) => typeof c.prix === 'number'))
+  ? ''
+  : `<div class="notice-prix"><b>Tarifs en cours de mise en ligne.</b> Composez votre commande normalement : nous vous confirmons le montant exact par retour de mail, avant toute expédition et avant toute facturation.</div>`;
+
+// ===========================================================================
+// PRODUITS — page hub
+// ===========================================================================
+function boutiqueHub() {
+  const fil = [{ nom: 'Accueil', url: '/' }, { nom: 'Produits', url: '/produits' }];
+  const faq = [
+    {
+      q: 'La livraison est-elle vraiment offerte, même pour un seul bidon ?',
+      r: `Oui, sans minimum de commande, partout sur notre zone d'intervention. Nos techniciens circulent toute la journée entre deux rendez-vous : votre commande voyage avec eux. Nous ne facturons pas un port que nous ne payons pas.`,
+    },
+    {
+      q: 'Comment se passe le paiement ?',
+      r: `Il n'y a aucun paiement sur le site. Vous composez votre commande, nous la recevons par mail, nous vous la validons avec le montant exact, puis nous vous livrons et nous vous facturons dans les conditions habituelles de votre compte client.`,
+    },
+    {
+      q: 'Dans quel délai suis-je livré ?',
+      r: `Les références courantes sont en stock dans nos locaux de Saint-Martin-de-Crau. La livraison se cale sur la prochaine tournée d'un technicien dans votre secteur — comptez généralement quelques jours ouvrés. Pour une rupture bloquante, appelez le ${site.telephone} : nous trouvons une solution.`,
+    },
+    {
+      q: 'Je ne sais pas quelle référence commander pour mon four ou ma machine.',
+      r: `Envoyez-nous une photo de la plaque signalétique ou appelez-nous. La bonne référence dépend de la génération de l'appareil et, pour les fours Rational, de la présence du système CareControl ou de l'AutoDose. Nous vérifions avant de livrer.`,
+    },
+    {
+      q: 'Puis-je commander si je ne suis pas déjà client ?',
+      r: `Oui. La première commande sert souvent de premier contact. Nous ouvrons le compte à cette occasion et nous en profitons pour faire le point sur votre parc si vous le souhaitez.`,
+    },
+  ];
+
+  const corps = `
+<div class="phero">
+  <div class="wrap">
+    <p class="eyebrow on-dark">Produits lessiviels et d'entretien</p>
+    <h1>Commandez vos consommables, nous vous les livrons</h1>
+    <p>Détergents, liquides de rinçage et produits d'entretien pour vos machines. Vous composez votre commande en ligne, nous vous la confirmons par mail, et un technicien vous la dépose lors de sa prochaine tournée — <b>sans frais de port, dès un seul bidon</b>.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#catalogue">Voir le catalogue</a>
+      <a class="btn btn-ghost" href="tel:${site.telephoneE164}">${svg('tel')}${site.telephone}</a>
+    </div>
+  </div>
+</div>
+${ariane(fil)}
+
+<section id="catalogue">
+  <div class="wrap">
+    ${noticePrix}
+    <div class="sec-head">
+      <p class="eyebrow">Le catalogue</p>
+      <h2>${totalProduits} références en ${categoriesProduits.length} familles</h2>
+      <p class="lead">Nous ne référençons que des produits dont nous savons régler les machines. C'est plus court qu'un catalogue de grossiste, et c'est volontaire.</p>
+    </div>
+    <div class="grid3">
+      ${categoriesProduits
+        .map(
+          (c) => `<a class="card" href="/produits/${c.slug}">
+        <div class="ico">${svg(c.icone)}</div>
+        <h3 style="font-size:1.18rem">${esc(c.nom)}</h3>
+        <p>${esc(c.intro.split('.')[0])}.</p>
+        <span class="more">${produitsDeCategorie(c.slug).length} références →</span>
+      </a>`
+        )
+        .join('\n      ')}
+    </div>
+  </div>
+</section>
+
+${blocLivraison()}
+
+<section>
+  <div class="wrap">
+    <div class="sec-head center">
+      <p class="eyebrow">Les plus commandés</p>
+      <h2>Les références qui tournent le plus</h2>
+    </div>
+    <div class="grid3">
+      ${produits.filter((p) => p.misEnAvant).map(carteProduit).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head center">
+      <p class="eyebrow">Comment ça marche</p>
+      <h2>Quatre étapes, aucun paiement en ligne</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>Vous composez</h3><p>Vous ajoutez vos produits et vos conditionnements à votre commande, sans compte à créer.</p></div>
+      <div class="step"><h3>Vous envoyez</h3><p>Vos coordonnées, votre adresse de livraison, et c'est parti. Aucune carte bancaire demandée.</p></div>
+      <div class="step"><h3>Nous validons</h3><p>Vous recevez par mail la confirmation avec le montant exact et la date de passage prévue.</p></div>
+      <div class="step"><h3>Nous livrons et facturons</h3><p>Un technicien vous dépose la commande. La facture suit dans vos conditions habituelles.</p></div>
+    </div>
+  </div>
+</section>
+
+${blocFaq(faq, 'Questions sur les commandes de consommables')}
+${blocCtaFinal('Un doute sur une référence ?', "Appelez-nous ou envoyez une photo de la plaque signalétique de votre machine : nous confirmons la bonne référence avant de livrer.")}`;
+
+  return page(
+    {
+      titre: `Produits lessiviels et d'entretien — livraison offerte | ${site.nom}`,
+      description: `Détergents, liquides de rinçage et produits d'entretien pour lave-vaisselle, lave-verres et fours professionnels. Livraison offerte dès un bidon en Provence.`,
+      chemin: '/produits',
+      schemas: [
+        schemaAriane(fil),
+        schemaFaq(faq),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          name: 'Familles de produits lessiviels et d’entretien',
+          itemListElement: categoriesProduits.map((c, k) => ({
+            '@type': 'ListItem',
+            position: k + 1,
+            name: c.nom,
+            url: url(`/produits/${c.slug}`),
+          })),
+        },
+      ],
+    },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
+// PRODUITS — page catégorie
+// ===========================================================================
+function categorieProduitPage(c) {
+  const fil = [
+    { nom: 'Accueil', url: '/' },
+    { nom: 'Produits', url: '/produits' },
+    { nom: c.nomCourt, url: `/produits/${c.slug}` },
+  ];
+  const liste = produitsDeCategorie(c.slug);
+  const autres = categoriesProduits.filter((x) => x.slug !== c.slug);
+
+  const corps = `
+<div class="phero">
+  <div class="wrap">
+    <p class="eyebrow on-dark">Produits</p>
+    <h1>${esc(c.nom)}</h1>
+    <p>${esc(c.intro)}</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section>
+  <div class="wrap">
+    ${noticePrix}
+    <div class="prod-liste">
+      ${liste
+        .map(
+          (p) => `<article class="prod-row" id="${esc(p.slug)}">
+        <div class="pr-info">
+          <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">Réf. ${esc(p.ref)}</span></span>
+          <h2><a href="/produits/${p.categorie}/${p.slug}">${esc(p.nom)}</a></h2>
+          <p>${esc(p.resume)}</p>
+          <ul class="pr-carac">${p.caracteristiques.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+          <a class="more" href="/produits/${p.categorie}/${p.slug}">Fiche détaillée →</a>
+        </div>
+        <div class="pr-cond">
+          ${p.conditionnements
+            .map(
+              (cd, k) => `<div class="cond-row">
+            <span class="cl">${esc(cd.label)}</span>
+            ${prixTexte(cd)}
+            ${boutonAjout(p, cd, k)}
+          </div>`
+            )
+            .join('\n          ')}
+        </div>
+      </article>`
+        )
+        .join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="grid2 top">
+      <div>
+        <p class="eyebrow">Le conseil de nos techniciens</p>
+        <h2>Bien choisir dans cette famille</h2>
+        <p class="lead">${esc(c.conseil)}</p>
+        <a class="btn btn-outline" href="/contact?sujet=produits">Demander conseil</a>
+      </div>
+      <div>
+        <h3>Les autres familles</h3>
+        <div class="grid1">
+          ${autres
+            .map(
+              (x) => `<a class="card" href="/produits/${x.slug}"><h3 style="font-size:1.05rem">${esc(x.nom)}</h3><p>${produitsDeCategorie(x.slug).length} références</p><span class="more">Voir →</span></a>`
+            )
+            .join('\n          ')}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+${blocLivraison()}
+${blocCtaFinal('Besoin d’aide pour choisir ?', `Nos techniciens connaissent la dureté de l'eau de votre commune et le modèle de vos machines. Appelez le ${site.telephone}.`)}`;
+
+  return page(
+    {
+      titre: `${c.titreSeo} | ${site.nom}`,
+      description: c.description,
+      chemin: `/produits/${c.slug}`,
+      schemas: [
+        schemaAriane(fil),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          name: c.nom,
+          numberOfItems: liste.length,
+          itemListElement: liste.map((p, k) => ({
+            '@type': 'ListItem',
+            position: k + 1,
+            name: `${p.marque} ${p.nom}`,
+            url: url(`/produits/${p.categorie}/${p.slug}`),
+          })),
+        },
+      ],
+    },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
+// PRODUITS — fiche produit
+// ===========================================================================
+function produitPage(p) {
+  const c = categorieDuProduit(p);
+  const fil = [
+    { nom: 'Accueil', url: '/' },
+    { nom: 'Produits', url: '/produits' },
+    { nom: c.nomCourt, url: `/produits/${c.slug}` },
+    { nom: p.nom, url: `/produits/${c.slug}/${p.slug}` },
+  ];
+  // Sélection glissante, pour que chaque référence reçoive des liens entrants
+  // au lieu que les trois premières de la famille captent tout.
+  const famille = produitsDeCategorie(c.slug);
+  const ip = famille.findIndex((x) => x.slug === p.slug);
+  const memeFamille = [1, 2, 3]
+    .map((d) => famille[(ip + d) % famille.length])
+    .filter((x) => x && x.slug !== p.slug);
+  const prixConnus = p.conditionnements.filter((x) => typeof x.prix === 'number');
+
+  const schemaProduit = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: `${p.marque} ${p.nom}`,
+    sku: p.ref,
+    mpn: p.ref,
+    brand: { '@type': 'Brand', name: p.marque },
+    category: c.nom,
+    description: p.description,
+    url: url(`/produits/${c.slug}/${p.slug}`),
+    offers: p.conditionnements.map((cd) => ({
+      '@type': 'Offer',
+      name: cd.label,
+      ...(typeof cd.prix === 'number'
+        ? { price: cd.prix.toFixed(2), priceCurrency: 'EUR', availability: 'https://schema.org/InStock' }
+        : { availability: 'https://schema.org/InStock' }),
+      url: url(`/produits/${c.slug}/${p.slug}`),
+      seller: { '@id': url('/#entreprise') },
+      areaServed: { '@type': 'AdministrativeArea', name: "Bouches-du-Rhône, Gard, Vaucluse" },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'EUR' },
+        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'FR' },
+      },
+    })),
+  };
+
+  const corps = `
+<div class="phero compact">
+  <div class="wrap">
+    <p class="eyebrow on-dark">${esc(p.marque)} · Réf. ${esc(p.ref)}</p>
+    <h1>${esc(p.nom)}</h1>
+    <p>${esc(p.resume)}</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section>
+  <div class="wrap">
+    <div class="grid-art">
+      <article class="prose">
+        ${noticePrix}
+        <h2>À quoi sert ce produit</h2>
+        <p>${esc(p.description)}</p>
+
+        <h2>Machines et usages concernés</h2>
+        <ul class="ul-check">${p.usages.map((u) => `<li>${esc(u)}</li>`).join('')}</ul>
+
+        <h2>Caractéristiques</h2>
+        <ul>${p.caracteristiques.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+
+        <h2>Livraison et facturation</h2>
+        <p>Ce produit est livré <b>sans frais de port dès une unité</b> sur l'ensemble de notre zone d'intervention, par l'un de nos techniciens lors de sa prochaine tournée dans votre secteur. Aucun paiement n'est demandé sur le site : nous vous confirmons votre commande et son montant par mail, puis nous vous facturons dans les conditions habituelles de votre compte.</p>
+        <p>Vous ne savez pas si cette référence correspond à votre machine ? Envoyez-nous une photo de la plaque signalétique, ou appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a> : nous vérifions avant de livrer.</p>
+      </article>
+
+      <aside>
+        <div class="achat">
+          <h2>Commander</h2>
+          <p class="achat-sub">${p.conditionnements.length > 1 ? 'Choisissez votre conditionnement' : 'Conditionnement disponible'}</p>
+          ${p.conditionnements
+            .map(
+              (cd, k) => `<div class="cond-row">
+            <span class="cl">${esc(cd.label)}${cd.aConfirmer ? ' <i title="Conditionnement à confirmer par nos équipes">*</i>' : ''}</span>
+            ${prixTexte(cd)}
+            ${boutonAjout(p, cd, k)}
+          </div>`
+            )
+            .join('\n          ')}
+          ${p.conditionnements.some((x) => x.aConfirmer) ? `<p class="achat-note">* Conditionnement confirmé par nos équipes lors de la validation de votre commande.</p>` : ''}
+          <div class="achat-plus">
+            <span>${svg('camion')}Livraison offerte dès une unité</span>
+            <span>${svg('bidon')}En stock à Saint-Martin-de-Crau</span>
+            <span>${svg('user')}Aucun paiement en ligne</span>
+          </div>
+          <a class="btn btn-outline btn-sm" href="/produits/ma-commande" style="width:100%;justify-content:center;margin-top:1rem">Voir ma commande →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head center">
+      <p class="eyebrow">${esc(c.nomCourt)}</p>
+      <h2>Autres références de la même famille</h2>
+    </div>
+    <div class="grid3">
+      ${memeFamille.map(carteProduit).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+${blocCtaFinal('Une machine à faire régler en même temps ?', "Le technicien qui vous livre peut contrôler votre doseur et vos températures dans la foulée. Parlez-nous-en à la commande.")}`;
+
+  return page(
+    {
+      titre: `${p.marque} ${p.nom} (${p.ref}) | ${site.nom}`,
+      description: `${p.resume} Livraison offerte dès une unité en Provence par ${site.nom}, stock à Saint-Martin-de-Crau.`,
+      chemin: `/produits/${c.slug}/${p.slug}`,
+      typeOg: 'product',
+      schemas: [schemaAriane(fil), schemaProduit],
+    },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
+// PRODUITS — page « ma commande »
+// ===========================================================================
+function commandePage() {
+  const fil = [
+    { nom: 'Accueil', url: '/' },
+    { nom: 'Produits', url: '/produits' },
+    { nom: 'Ma commande', url: '/produits/ma-commande' },
+  ];
+  const communes = [...new Set(zones.flatMap((z) => z.communes))].sort((a, b) => a.localeCompare(b, 'fr'));
+
+  const corps = `
+<div class="phero compact">
+  <div class="wrap">
+    <p class="eyebrow on-dark">Commande</p>
+    <h1>Votre commande</h1>
+    <p>V\u00e9rifiez votre liste, confirmez l'adresse de livraison et envoyez. Aucun paiement n'est demand\u00e9 ici : nous vous confirmons tout par mail.</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section>
+  <div class="wrap">
+    <div class="grid-art">
+      <div>
+        <div id="panier-vide" class="panier-vide">
+          <p><b>Votre commande est vide.</b></p>
+          <p>Parcourez le catalogue et ajoutez les produits dont vous avez besoin.</p>
+          <a class="btn btn-primary" href="/produits">Voir le catalogue</a>
+        </div>
+        <div id="panier-table" hidden>
+          <table class="panier">
+            <thead><tr><th>Produit</th><th class="num">Qt\u00e9</th><th class="num">Total</th><th></th></tr></thead>
+            <tbody id="panier-lignes"></tbody>
+          </table>
+          <div class="panier-total">
+            <span>Total estim\u00e9 HT</span>
+            <b id="panier-total">\u2014</b>
+          </div>
+          <p class="panier-note" id="panier-note"></p>
+          <p class="panier-note"><b>Livraison offerte</b> sur l'ensemble de notre zone d'intervention, sans minimum de commande.</p>
+        </div>
+      </div>
+
+      <aside>
+        <!-- Visiteur non connect\u00e9 -->
+        <div class="carte-connexion" id="zone-connexion" hidden>
+          <h2>Se connecter pour commander</h2>
+          <p>La commande en ligne est r\u00e9serv\u00e9e aux clients ${site.nom}. Vos coordonn\u00e9es sont d\u00e9j\u00e0 enregistr\u00e9es chez nous : vous n'avez rien \u00e0 ressaisir.</p>
+          <ul class="ul-check">
+            <li>Pas de mot de passe : un lien de connexion par e-mail</li>
+            <li>Coordonn\u00e9es et adresse de livraison pr\u00e9-remplies</li>
+            <li>Historique de vos commandes et suivi de leur avancement</li>
+          </ul>
+          <a class="btn btn-primary" href="/espace/connexion?suite=%2Fproduits%2Fma-commande" style="width:100%;justify-content:center">Me connecter</a>
+          <p class="cx-note">Pas encore d'acc\u00e8s ? Appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a>, nous vous ouvrons un compte. Votre panier est conserv\u00e9.</p>
+        </div>
+
+        <!-- Client connect\u00e9 -->
+        <form class="devis" id="form-commande" method="post" action="/api/commande" novalidate hidden>
+          <h2>Livraison</h2>
+          <p class="cx-client" id="cx-client"></p>
+          <div class="field"><label for="c-adresse">Adresse de livraison *</label><input id="c-adresse" name="adresse" autocomplete="street-address" required></div>
+          <div class="row2">
+            <div class="field"><label for="c-cp">Code postal *</label><input id="c-cp" name="codePostal" inputmode="numeric" autocomplete="postal-code" required></div>
+            <div class="field"><label for="c-commune">Commune *</label>
+              <input id="c-commune" name="commune" list="liste-communes" autocomplete="address-level2" required>
+              <datalist id="liste-communes">${communes.map((x) => `<option value="${esc(x)}">`).join('')}</datalist>
+            </div>
+          </div>
+          <p class="hint">Adresse reprise de votre fiche client. Vous pouvez la modifier pour cette commande. Nous livrons gratuitement les ${communes.length} communes de notre zone. <a href="/zone-intervention">Voir la zone</a>.</p>
+          <div class="field"><label for="c-message">Pr\u00e9cisions</label><textarea id="c-message" name="message" placeholder="R\u00e9f\u00e9rence de vos machines, cr\u00e9neau de livraison souhait\u00e9, num\u00e9ro de commande interne\u2026"></textarea></div>
+          <div class="hp" aria-hidden="true"><label for="societe_web">Ne pas remplir</label><input id="societe_web" name="societe_web" tabindex="-1" autocomplete="off"></div>
+          <button class="btn btn-primary" type="submit" id="btn-commande" style="width:100%;justify-content:center">Envoyer ma commande</button>
+          <p class="formmsg" id="commande-msg" role="status" aria-live="polite"></p>
+          <p style="font-size:.76rem;color:var(--muted);margin:.9rem 0 0;text-align:center">Aucun paiement n'est demand\u00e9. Nous vous confirmons le montant par mail avant livraison.</p>
+        </form>
+      </aside>
+    </div>
+  </div>
+</section>`;
+
+  return page(
+    {
+      titre: `Ma commande \u2014 produits lessiviels | ${site.nom}`,
+      description: `Finalisez votre commande de produits lessiviels et d'entretien. Livraison offerte d\u00e8s un bidon sur notre zone d'intervention, sans paiement en ligne.`,
+      chemin: '/produits/ma-commande',
+      noindex: true,
+      schemas: [schemaAriane(fil)],
+    },
     corps,
     nav
   );
@@ -1246,6 +1809,10 @@ for (const s of services) await ecrire(`/services/${s.slug}`, servicePage(s), { 
 await ecrire('/zone-intervention', zoneHub(), { priorite: 0.9 });
 for (const z of zones) await ecrire(`/zone-intervention/${z.slug}`, zonePage(z), { priorite: 0.8 });
 for (const v of villes) await ecrire(`/zone-intervention/${v.slug}`, villePage(v), { priorite: 0.8 });
+await ecrire('/produits', boutiqueHub(), { priorite: 0.9 });
+for (const c of categoriesProduits) await ecrire(`/produits/${c.slug}`, categorieProduitPage(c), { priorite: 0.8 });
+for (const p of produits) await ecrire(`/produits/${p.categorie}/${p.slug}`, produitPage(p), { priorite: 0.7 });
+await ecrire('/produits/ma-commande', commandePage(), { priorite: 0.1, dansSitemap: false });
 await ecrire('/conseils', conseilsHub(), { priorite: 0.7 });
 for (const a of articles) await ecrire(`/conseils/${a.slug}`, articlePage(a), { priorite: 0.6, majParDefaut: a.date });
 await ecrire('/a-propos', aPropos(), { priorite: 0.7 });

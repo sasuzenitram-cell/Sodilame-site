@@ -11,5 +11,9 @@
     "build": "node build.mjs",
     "dev": "node build.mjs && npx --yes serve public -l 3000",
     "preview": "npx --yes serve public -l 3000"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "pg": "^8.23.0"
   }
 }
