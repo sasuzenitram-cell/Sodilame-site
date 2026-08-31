@@ -13,6 +13,14 @@
 //
 // Les descriptions sont rédigées pour SODILAME : ne pas copier celles des
 // distributeurs concurrents (contenu dupliqué = pénalité Google + risque légal).
+//
+// 📷 LES PHOTOS : champ `photo` de chaque produit.
+//    - `null`  → une vignette de remplacement est générée automatiquement
+//               (pictogramme bidon ou seau + référence). La page reste propre.
+//    - 'nom-du-fichier' → affiche /assets/produits/nom-du-fichier.jpg
+//    Déposer les images dans static/assets/produits/, format carré, 800×800 px.
+//    N'utiliser QUE des photos dont SODILAME a le droit d'usage : les vôtres,
+//    ou celles fournies par le fabricant pour ses distributeurs.
 // ---------------------------------------------------------------------------
 
 export const categoriesProduits = [
@@ -66,6 +74,7 @@ export const produits = [
     slug: 'winterhalter-f300-detergent-universel',
     ref: 'F300',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'detergents-lave-vaisselle',
     nom: 'Détergent universel F300',
     resume: 'Détergent en poudre polyvalent, pour lavage mixte vaisselle et verrerie.',
@@ -82,6 +91,7 @@ export const produits = [
     slug: 'winterhalter-f8500-detergent-ultra-concentre',
     ref: 'F8500',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'detergents-lave-vaisselle',
     nom: 'Détergent universel ultra-concentré F8500',
     resume: 'Poudre ultra-concentrée : moins de produit par cycle, moins de stock à gérer.',
@@ -95,6 +105,7 @@ export const produits = [
     slug: 'winterhalter-f420e-detergent-eau-dure',
     ref: 'F420e',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'detergents-lave-vaisselle',
     nom: 'Détergent écologique eau dure F420e',
     resume: 'Formulé pour les eaux calcaires, sans phosphate.',
@@ -113,6 +124,7 @@ export const produits = [
     slug: 'winterhalter-f6800-detergent-tres-intensif',
     ref: 'F6800',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'detergents-lave-vaisselle',
     nom: 'Détergent très intensif F6800',
     resume: 'Pour les salissures cuites, brûlées ou grasses qui résistent au cycle normal.',
@@ -126,6 +138,7 @@ export const produits = [
     slug: 'winterhalter-f30-detergent-liquide-verres',
     ref: 'F30',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'detergents-lave-vaisselle',
     nom: 'Détergent liquide verres F30',
     resume: 'Détergent liquide non chloré, spécifique lave-verres de bar.',
@@ -140,6 +153,7 @@ export const produits = [
     slug: 'winterhalter-f40-detergent-liquide-verres-chlore',
     ref: 'F40',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'detergents-lave-vaisselle',
     nom: 'Détergent liquide verres chloré F40',
     resume: 'Version chlorée : élimine les traces de thé, café, vin et rouge à lèvres.',
@@ -155,6 +169,7 @@ export const produits = [
     slug: 'winterhalter-b100n-liquide-rincage-universel',
     ref: 'B100N',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'liquides-de-rincage',
     nom: 'Liquide de rinçage universel B100N',
     resume: 'Le rinçage standard : séchage rapide, pas de trace, toutes machines.',
@@ -173,6 +188,7 @@ export const produits = [
     slug: 'winterhalter-b200s-liquide-rincage-universel',
     ref: 'B200S',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'liquides-de-rincage',
     nom: 'Liquide de rinçage universel B200S',
     resume: 'Alternative universelle, adaptée aux eaux traitées ou peu minéralisées.',
@@ -186,6 +202,7 @@ export const produits = [
     slug: 'winterhalter-b220e-liquide-rincage-acide',
     ref: 'B220e',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'liquides-de-rincage',
     nom: 'Liquide de rinçage acide B220e',
     resume: 'Rinçage acide : dissout les dépôts minéraux au fil des cycles.',
@@ -199,6 +216,7 @@ export const produits = [
     slug: 'winterhalter-b170xd-liquide-rincage-plastiques',
     ref: 'B170XD',
     marque: 'Winterhalter',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'liquides-de-rincage',
     nom: 'Liquide de rinçage plastiques B170XD',
     resume: 'Pour gobelets réutilisables et vaisselle plastique, qui sèchent mal.',
@@ -214,6 +232,7 @@ export const produits = [
     slug: 'rational-active-green-tablettes-nettoyantes',
     ref: '56.01.535',
     marque: 'Rational',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'entretien-four-rational',
     nom: 'Tablettes nettoyantes Active Green',
     resume: 'Nettoyage rapide et détartrage automatique des fours iCombi.',
@@ -228,6 +247,7 @@ export const produits = [
     slug: 'rational-tablettes-entretien-carecontrol',
     ref: '56.00.562',
     marque: 'Rational',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'entretien-four-rational',
     nom: 'Tablettes d’entretien CareControl',
     resume: 'Protègent la chaudière du calcaire sur les fours équipés de CareControl.',
@@ -241,6 +261,7 @@ export const produits = [
     slug: 'rational-tablettes-nettoyage-selfcookingcenter',
     ref: '56.00.210',
     marque: 'Rational',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'entretien-four-rational',
     nom: 'Tablettes de nettoyage SelfCookingCenter',
     resume: 'Nettoyage des générations SelfCookingCenter et CombiMaster Plus.',
@@ -254,6 +275,7 @@ export const produits = [
     slug: 'rational-tablettes-rincage',
     ref: '56.00.211',
     marque: 'Rational',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'entretien-four-rational',
     nom: 'Tablettes de rinçage',
     resume: 'Complètent le cycle de nettoyage sur les fours sans CareControl.',
@@ -267,6 +289,7 @@ export const produits = [
     slug: 'rational-tablettes-nettoyage-sans-phosphate',
     ref: '56.02.315E',
     marque: 'Rational',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'entretien-four-rational',
     nom: 'Tablettes de nettoyage sans phosphate',
     resume: 'Formule sans phosphate, compatible avec l’ensemble des générations.',
@@ -280,6 +303,7 @@ export const produits = [
     slug: 'rational-cartouche-active-green',
     ref: '56.01.912',
     marque: 'Rational',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'entretien-four-rational',
     nom: 'Cartouche de nettoyage Active Green',
     resume: 'Cartouche de détergent pour iCombi Pro équipé de l’AutoDose.',
@@ -293,6 +317,7 @@ export const produits = [
     slug: 'rational-cartouche-entretien-care',
     ref: '56.01.914',
     marque: 'Rational',
+    photo: null, // voir l'en-tête du fichier
     categorie: 'entretien-four-rational',
     nom: 'Cartouche d’entretien Care',
     resume: 'Cartouche anticalcaire pour iCombi Pro avec AutoDose.',

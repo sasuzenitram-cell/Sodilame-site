@@ -475,3 +475,90 @@ table.panier a{color:var(--navy)}
   padding:.85rem 1.1rem;font-size:.9rem;line-height:1.55;margin:0 0 1.2rem}
 .cx-client .cx-mail{color:var(--muted);font-size:.84rem}
 .ajout.indispo{background:#EFEAE1;border-color:#EFEAE1;color:var(--muted);cursor:not-allowed}
+
+/* ===========================================================================
+   DÉCLINAISON BOUTIQUE — vert du logo (#408274) en couleur dominante
+   Appliquée à <body class="boutique">, c'est-à-dire à toutes les pages
+   /produits. Le bleu marine reste la couleur du site vitrine : le
+   changement de teinte signale au visiteur qu'il entre dans la boutique.
+   =========================================================================== */
+body.boutique{
+  --navy:#1B4A3E;      /* vert profond, dérivé du vert du logo */
+  --navy-d:#123128;
+  --navy-l:#2E6E5C;
+  --teal:#DFA64F;      /* l'or prend le rôle d'accent secondaire */
+  --terra:#1B4A3E;
+  --cream:#F6F9F5;     /* fond très légèrement verdi */
+  --cream-d:#EAF1EA;
+  --line:#D5E3D8;
+  --shadow:0 1px 2px rgba(27,74,62,.06),0 8px 28px rgba(27,74,62,.10);
+}
+/* La barre supérieure et l'en-tête suivent la bascule */
+body.boutique .topbar{background:var(--navy-d)}
+body.boutique header.site{background:#FBFDFA;border-bottom-color:var(--line)}
+body.boutique .brand .bs{color:#3E7A66}
+body.boutique nav.main a[aria-current]{color:var(--navy)}
+/* Le pied de page passe aussi au vert, sinon la page se coupe en deux */
+body.boutique footer{background:var(--navy-d)}
+/* Les puces de la liste à cocher reprennent le vert */
+body.boutique .ul-check li::before{background:var(--navy-l)}
+/* Le bandeau « tarifs en cours » reste doré : c'est un avertissement, pas une teinte de marque */
+
+/* Nuances de tableau et de fond spécifiques à la boutique */
+body.boutique table.panier th{background:#E6EFE7}
+body.boutique .cond-row{background:#EEF5EF;border-color:var(--line)}
+body.boutique .pr-carac li{background:#EEF5EF;border-color:var(--line)}
+body.boutique .qte button{background:#EEF5EF}
+body.boutique .qte button:hover{background:var(--navy-l);color:#fff}
+
+/* --- Boutons de la boutique -------------------------------------------------
+   Sur fond clair, le bouton principal passe au vert : c'est la couleur de
+   l'univers boutique, et elle rend l'action plus lisible qu'un doré sur crème.
+   Sur les fonds verts foncés (bannières, pied de page, sections pleine largeur),
+   il RESTE doré : un bouton vert sur fond vert disparaîtrait.                */
+body.boutique .btn-primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+body.boutique .btn-primary:hover{background:var(--navy-l);border-color:var(--navy-l)}
+body.boutique .phero .btn-primary,
+body.boutique section.navy .btn-primary,
+body.boutique .mysod .btn-primary,
+body.boutique footer .btn-primary{background:var(--gold);color:#1B2430;border-color:var(--gold)}
+body.boutique .phero .btn-primary:hover,
+body.boutique section.navy .btn-primary:hover,
+body.boutique .mysod .btn-primary:hover,
+body.boutique footer .btn-primary:hover{background:#EBB662;border-color:#EBB662}
+
+/* Le bouton « Boutique en ligne » de l'en-tête est vert partout : c'est la
+   porte d'entrée de l'univers vert, y compris depuis les pages du site vitrine. */
+.hd-cta .btn-primary{background:#1B4A3E;color:#fff;border-color:#1B4A3E}
+.hd-cta .btn-primary:hover{background:#2E6E5C;border-color:#2E6E5C}
+
+/* --- Vignettes produits ----------------------------------------------------- */
+.vign{display:block;width:100%;aspect-ratio:1/1;border-radius:10px;overflow:hidden;
+  background:#fff;border:1px solid var(--line);margin-bottom:1rem}
+.vign img{width:100%;height:100%;object-fit:contain;padding:8%;display:block}
+.vign.vide{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;
+  background:linear-gradient(160deg,#EEF5EF,#E2EDE4);color:#4E7F6E;border-color:var(--line)}
+.vign.vide svg{width:34%;height:auto;stroke-width:1.2;opacity:.75}
+.vign.vide .vr{font-size:.72rem;letter-spacing:.08em;font-weight:700;color:#5C8B7B;
+  font-variant-numeric:tabular-nums}
+.vign.grande{margin-bottom:1.2rem}
+.vign.grande.vide svg{width:30%}
+
+/* Vignette dans la carte produit : plus compacte */
+.card.prod .vign{aspect-ratio:4/3;margin-bottom:.9rem}
+.card.prod .vign.vide svg{width:26%}
+
+/* Ligne de catégorie : vignette à gauche, infos au centre, achat à droite */
+.prod-row{grid-template-columns:132px minmax(0,1.4fr) minmax(0,1fr)}
+.pr-vign .vign{margin-bottom:0}
+.pr-vign .vign.vide svg{width:44%}
+.pr-vign .vign.vide .vr{font-size:.64rem}
+
+@media (max-width:900px){
+  .prod-row{grid-template-columns:96px 1fr}
+  .pr-cond{grid-column:1/-1}
+}
+@media (max-width:560px){
+  .prod-row{grid-template-columns:1fr}
+  .pr-vign{max-width:120px}
+}

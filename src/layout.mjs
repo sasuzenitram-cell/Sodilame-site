@@ -42,6 +42,7 @@ export const icones = {
   panier: '<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.55L21 8H6"/><circle cx="10" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>',
   camion: '<path d="M2 6.5h11v9H2z"/><path d="M13 9.5h4l3 3.2v2.8h-7z"/><circle cx="6.5" cy="18" r="1.7"/><circle cx="17" cy="18" r="1.7"/>',
   bidon: '<path d="M8 8h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z"/><path d="M10 8V5.5h4V8"/><path d="M15 5.5h2.2a1.3 1.3 0 0 1 1.3 1.3V9"/>',
+  seau: '<path d="M5.5 8h13l-1.4 11.2a2 2 0 0 1-2 1.8H8.9a2 2 0 0 1-2-1.8z"/><path d="M4 8h16"/><path d="M8 8V6.4a4 4 0 0 1 8 0V8"/>',
 };
 export const svg = (nom, cls = '') =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ''} aria-hidden="true">${icones[nom] || ''}</svg>`;
@@ -49,7 +50,7 @@ export const svg = (nom, cls = '') =>
 // ---------------------------------------------------------------------------
 // <head>
 // ---------------------------------------------------------------------------
-function head({ titre, description, chemin, schemas = [], noindex = false, typeOg = 'website' }) {
+function head({ titre, description, chemin, schemas = [], noindex = false, typeOg = 'website', theme = '' }) {
   const canon = url(chemin);
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -81,7 +82,7 @@ ${site.googleVerification ? `<meta name="google-site-verification" content="${si
 <link rel="stylesheet" href="/assets/style.css">
 ${schemas.map((s) => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n')}
 </head>
-<body>
+<body${theme ? ` class="${theme}"` : ''}>
 <a class="skip" href="#contenu">Aller au contenu</a>`;
 }
 
@@ -111,12 +112,13 @@ function entete(chemin) {
     </a>
     <nav class="main" id="nav" aria-label="Navigation principale">
       ${navPrincipale.map(lien).join('\n      ')}
-      <a class="only-m" href="${site.portail.url}" target="_blank" rel="noopener">Espace client ${site.portail.nom} ↗</a>
+      <a class="only-m" href="/produits"><b>Boutique en ligne</b></a>
+      <a class="only-m" href="${site.portail.url}" target="_blank" rel="noopener">My SODILAME ↗</a>
       <a class="only-m" href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a>
     </nav>
     <div class="hd-cta">
       <a class="panier-lien" href="/produits/ma-commande" id="panier-lien" aria-label="Voir ma commande">${svg('panier')}<span class="pc" id="panier-compte" hidden>0</span></a>
-      <a class="btn btn-outline btn-sm hide-m" href="${site.portail.url}" target="_blank" rel="noopener">${svg('user')}Espace client</a>
+      <a class="btn btn-outline btn-sm hide-m" href="${site.portail.url}" target="_blank" rel="noopener">${svg('user')}My SODILAME</a>
       <a class="btn btn-primary btn-sm" href="/produits">Boutique en ligne</a>
     </div>
     <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
@@ -436,7 +438,10 @@ export function blocContact({ titre = 'Parlons de votre cuisine', texte = "Proje
 // Assemblage d'une page
 // ---------------------------------------------------------------------------
 export function page(meta, corps, nav) {
-  return head(meta) + entete(meta.chemin) + corps + pied(nav.services, nav.villes, nav.produits);
+  // Les pages boutique basculent sur la déclinaison verte du thème :
+  // le visiteur voit immédiatement qu'il change d'univers.
+  const theme = meta.theme ?? (meta.chemin?.startsWith('/produits') ? 'boutique' : '');
+  return head({ ...meta, theme }) + entete(meta.chemin) + corps + pied(nav.services, nav.villes, nav.produits);
 }
 
 // ---------------------------------------------------------------------------

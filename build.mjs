@@ -1304,10 +1304,23 @@ function boutonAjout(p, c, k) {
     ${svg('panier')}Ajouter</button>`;
 }
 
+// Vignette produit : la vraie photo si elle existe, sinon une vignette de
+// remplacement cohérente avec la charte. Jamais d'image cassée, jamais d'image
+// dont nous n'avons pas les droits.
+function vignetteProduit(p, taille = '') {
+  if (p.photo) {
+    return `<span class="vign${taille}"><img src="/assets/produits/${p.photo}.jpg" width="800" height="800" alt="${esc(p.marque)} ${esc(p.nom)} — référence ${esc(p.ref)}" loading="lazy" decoding="async"></span>`;
+  }
+  const liquide = p.caracteristiques.some((c) => /liquide/i.test(c));
+  const icone = liquide ? 'bidon' : 'seau';
+  return `<span class="vign vide${taille}" aria-hidden="true">${svg(icone)}<span class="vr">${esc(p.ref)}</span></span>`;
+}
+
 function carteProduit(p) {
   const cat = categorieDuProduit(p);
   const c0 = p.conditionnements[0];
   return `<a class="card prod" href="/produits/${p.categorie}/${p.slug}">
+        ${vignetteProduit(p)}
         <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">${esc(p.ref)}</span></span>
         <h3>${esc(p.nom)}</h3>
         <p>${esc(p.resume)}</p>
@@ -1471,6 +1484,7 @@ ${ariane(fil)}
       ${liste
         .map(
           (p) => `<article class="prod-row" id="${esc(p.slug)}">
+        <div class="pr-vign">${vignetteProduit(p)}</div>
         <div class="pr-info">
           <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">Réf. ${esc(p.ref)}</span></span>
           <h2><a href="/produits/${p.categorie}/${p.slug}">${esc(p.nom)}</a></h2>
@@ -1626,6 +1640,7 @@ ${ariane(fil)}
 
       <aside>
         <div class="achat">
+          ${vignetteProduit(p, ' grande')}
           <h2>Commander</h2>
           <p class="achat-sub">${p.conditionnements.length > 1 ? 'Choisissez votre conditionnement' : 'Conditionnement disponible'}</p>
           ${p.conditionnements

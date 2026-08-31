@@ -120,8 +120,6 @@ export const formules = [
 // ---- Navigation principale --------------------------------------------------
 export const navPrincipale = [
   { label: 'Nos services', url: '/services' },
-  { label: 'Produits', url: '/produits' },
-  { label: "Contrat d'entretien", url: '/services/contrat-entretien-cuisine-professionnelle' },
   { label: "Zone d'intervention", url: '/zone-intervention' },
   { label: 'Conseils', url: '/conseils' },
   { label: "L'entreprise", url: '/a-propos' },
