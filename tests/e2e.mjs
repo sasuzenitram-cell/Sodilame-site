@@ -129,7 +129,7 @@ console.log('\n═══ 1. Contrôle d\'accès (personne n\'est connecté) ═�
   verifier('la page de connexion est publique', r4.statut === 200 && r4.texte.includes('Recevoir mon lien'), String(r4.statut));
   verifier('les pages applicatives sont en noindex', r4.entetes.get('x-robots-tag')?.includes('noindex'));
   const r5 = await appel('anon', '/api/commande', { methode: 'POST', corps: { lignes: [] } });
-  verifier('commander sans compte est refusé (401)', r5.statut === 401, String(r5.statut));
+  verifier('commander sans compte n\'est plus refusé pour cause de session', r5.statut !== 401, String(r5.statut));
   const r6 = await appel('anon', '/api/moi');
   verifier('/api/moi répond « non connecté »', JSON.parse(r6.texte).connecte === false);
 }
@@ -255,6 +255,43 @@ console.log('\n═══ 7. Connexion client et commande ═══');
   verifier('le client reçoit un accusé de réception', mails.some((x) => x.subject?.includes(j.reference) && x.to[0] === 'contact@lemas.fr'));
 }
 
+console.log('\n═══ 7 bis. Commande d\'un visiteur non connecté ═══');
+{
+  const base = {
+    etablissement: 'Bar du Port', nom: 'Luc Martin', telephone: '0490112233',
+    email: 'luc@bardu port.fr'.replace(' ', ''), adresse: '4 quai du Canal',
+    codePostal: '13200', commune: 'Arles', consentement: true,
+    lignes: [{ ref: 'F420e', cond: 'Seau de 12 kg', qte: 1 }],
+  };
+  const r = await appel('visiteur', '/api/commande', { methode: 'POST', corps: base });
+  const j = JSON.parse(r.texte);
+  verifier('un visiteur peut commander', r.statut === 200 && j.ok, r.texte.slice(0, 120));
+
+  const c = (await q(`SELECT * FROM commandes WHERE reference=$1`, [j.reference]))[0];
+  verifier('la commande est enregistrée avec ses coordonnées', c && c.etablissement === 'Bar du Port' && c.email === 'luc@barduport.fr');
+  verifier('le prix reste calculé côté serveur', Number(c.total_ht) === 78.5, String(c.total_ht));
+  verifier('aucune fiche client n\'est rattachée', c.client_id === null);
+
+  const sansCoord = await appel('visiteur', '/api/commande', {
+    methode: 'POST', corps: { ...base, etablissement: '', nom: '', email: '' },
+  });
+  verifier('les coordonnées restent obligatoires', sansCoord.statut === 400 && /établissement/.test(sansCoord.texte), String(sansCoord.statut));
+
+  const sansConsent = await appel('visiteur', '/api/commande', { methode: 'POST', corps: { ...base, consentement: false } });
+  verifier('le consentement est exigé du visiteur', sansConsent.statut === 400 && /confidentialité/.test(sansConsent.texte));
+
+  const horsZone = await appel('visiteur', '/api/commande', { methode: 'POST', corps: { ...base, commune: 'Lyon', codePostal: '69000' } });
+  verifier('la commune reste le vrai filtre', horsZone.statut === 400 && /Lyon/.test(horsZone.texte));
+
+  // Un visiteur qui utilise l'e-mail d'un client connu est rattaché à sa fiche.
+  const rattache = await appel('visiteur', '/api/commande', {
+    methode: 'POST', corps: { ...base, email: 'accueil@alpilles.fr', etablissement: 'Hôtel des Alpilles' },
+  });
+  const j2 = JSON.parse(rattache.texte);
+  const c2 = (await q(`SELECT client_id FROM commandes WHERE reference=$1`, [j2.reference]))[0];
+  verifier('un e-mail connu rattache la commande à la fiche client', c2.client_id !== null, String(c2.client_id));
+}
+
 console.log('\n═══ 8. Ce qu\'un client ne doit pas pouvoir faire ═══');
 {
   const a = await appel('client', '/admin');
@@ -354,7 +391,7 @@ console.log('\n═══ 11. Désactivation d\'un compte ═══');
     methode: 'POST',
     corps: { adresse: 'x', codePostal: '13200', commune: 'Arles', lignes: [{ ref: 'F420e', cond: 'Seau de 12 kg', qte: 1 }] },
   });
-  verifier('un compte désactivé ne peut plus commander', cmd.statut === 403, String(cmd.statut));
+  verifier('un compte désactivé ne peut plus commander avec sa session', cmd.statut === 403, String(cmd.statut));
 
   const avant = mails.length;
   await appel('anon', '/api/auth?action=demande', { methode: 'POST', corps: { email: 'contact@lemas.fr' } });
