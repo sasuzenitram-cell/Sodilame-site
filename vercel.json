@@ -144,6 +144,21 @@
       "permanent": true
     },
     {
+      "source": "/produits/detergents-lave-vaisselle",
+      "destination": "/produits?famille=detergents-lave-vaisselle#catalogue",
+      "permanent": true
+    },
+    {
+      "source": "/produits/liquides-de-rincage",
+      "destination": "/produits?famille=liquides-de-rincage#catalogue",
+      "permanent": true
+    },
+    {
+      "source": "/produits/entretien-four-rational",
+      "destination": "/produits?famille=entretien-four-rational#catalogue",
+      "permanent": true
+    },
+    {
       "source": "/connexion",
       "destination": "/espace/connexion",
       "permanent": false

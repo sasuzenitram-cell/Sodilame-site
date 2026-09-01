@@ -11,8 +11,10 @@ import { zones, zoneDeLaVille, totalCommunes } from './data/zones.mjs';
 import { articles } from './data/articles.mjs';
 import {
   categoriesProduits, produits, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
+  machinesCatalogue, marquesCatalogue,
 } from './data/produits.mjs';
 import { pageQr, pagePanne, pageAudit } from './src/qr.mjs';
+import { SCRIPT_FILTRES, groupeFiltres } from './src/catalogue.mjs';
 import {
   page, ariane, schemaAriane, schemaLocalBusiness, schemaFaq, blocFaq, blocSecteurs,
   blocEtapes, blocFormules, blocMySodilame, blocCtaFinal, blocContact, blocLivraison, formulaire,
@@ -1320,7 +1322,10 @@ function vignetteProduit(p, taille = '') {
 function carteProduit(p) {
   const cat = categorieDuProduit(p);
   const c0 = p.conditionnements[0];
-  return `<a class="card prod" href="/produits/${p.categorie}/${p.slug}">
+  // Les data-* portent les critères de filtrage : le script du catalogue ne
+  // lit que ça, il n'a aucune connaissance du contenu des cartes.
+  return `<a class="card prod" href="/produits/${p.categorie}/${p.slug}"
+        data-produit data-famille="${esc(p.categorie)}" data-marque="${esc(p.marque)}" data-machines="${esc((p.machines || []).join(' '))}">
         ${vignetteProduit(p)}
         <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">${esc(p.ref)}</span></span>
         <h3>${esc(p.nom)}</h3>
@@ -1335,6 +1340,9 @@ const noticePrix = produits.some((p) => p.conditionnements.some((c) => typeof c.
 
 // ===========================================================================
 // PRODUITS — page hub
+// ===========================================================================
+// ===========================================================================
+// PRODUITS — catalogue filtrable (page unique)
 // ===========================================================================
 function boutiqueHub() {
   const fil = [{ nom: 'Accueil', url: '/' }, { nom: 'Produits', url: '/produits' }];
@@ -1361,6 +1369,10 @@ function boutiqueHub() {
     },
   ];
 
+  const nbFamille = (s) => produitsDeCategorie(s).length;
+  const nbMarque = (m) => produits.filter((p) => p.marque === m).length;
+  const nbMachine = (s) => produits.filter((p) => (p.machines || []).includes(s)).length;
+
   const corps = `
 <div class="phero">
   <div class="wrap">
@@ -1375,42 +1387,46 @@ function boutiqueHub() {
 </div>
 ${ariane(fil)}
 
-<section id="catalogue">
+<section id="boutique">
   <div class="wrap">
     ${noticePrix}
     <div class="sec-head">
       <p class="eyebrow">Le catalogue</p>
-      <h2>${totalProduits} références en ${categoriesProduits.length} familles</h2>
+      <h2>${totalProduits} références en stock</h2>
       <p class="lead">Nous ne référençons que des produits dont nous savons régler les machines. C'est plus court qu'un catalogue de grossiste, et c'est volontaire.</p>
     </div>
-    <div class="grid3">
-      ${categoriesProduits
-        .map(
-          (c) => `<a class="card" href="/produits/${c.slug}">
-        <div class="ico">${svg(c.icone)}</div>
-        <h3 style="font-size:1.18rem">${esc(c.nom)}</h3>
-        <p>${esc(c.intro.split('.')[0])}.</p>
-        <span class="more">${produitsDeCategorie(c.slug).length} références →</span>
-      </a>`
-        )
-        .join('\n      ')}
+
+    <div class="filtres" id="barre-filtres" hidden>
+      ${groupeFiltres('Type de produit', 'famille', categoriesProduits.map((c) => ({ slug: c.slug, nom: c.nomCourt, n: nbFamille(c.slug) })), esc)}
+      ${groupeFiltres('Machine', 'machine', machinesCatalogue.map((m) => ({ slug: m.slug, nom: m.nom, n: nbMachine(m.slug) })), esc)}
+      ${groupeFiltres('Marque', 'marque', marquesCatalogue.map((m) => ({ slug: m, nom: m, n: nbMarque(m) })), esc)}
+      <div class="fbilan">
+        <span id="compte">${totalProduits} références</span>
+        <button type="button" id="reinit" class="freinit" hidden>Tout afficher</button>
+      </div>
     </div>
+
+    ${categoriesProduits
+      .map(
+        (c) => `<div class="conseil-famille" data-conseil="${c.slug}" hidden>
+      <b>${esc(c.nomCourt)} — le conseil de nos techniciens.</b> ${esc(c.conseil)}
+    </div>`
+      )
+      .join('\n    ')}
+
+    <div class="grid3" id="catalogue">
+      ${produits.map(carteProduit).join('\n      ')}
+    </div>
+
+    <p class="aucun-resultat" id="aucun" hidden>
+      Aucune référence ne correspond à cette combinaison. <b>Cela ne veut pas dire que nous ne l'avons pas</b> :
+      notre catalogue en ligne est plus court que notre stock. Appelez le
+      <a href="tel:${site.telephoneE164}">${site.telephone}</a> ou <a href="/contact?sujet=produits">écrivez-nous</a>.
+    </p>
   </div>
 </section>
 
 ${blocLivraison()}
-
-<section>
-  <div class="wrap">
-    <div class="sec-head center">
-      <p class="eyebrow">Les plus commandés</p>
-      <h2>Les références qui tournent le plus</h2>
-    </div>
-    <div class="grid3">
-      ${produits.filter((p) => p.misEnAvant).map(carteProduit).join('\n      ')}
-    </div>
-  </div>
-</section>
 
 <section class="alt">
   <div class="wrap">
@@ -1428,12 +1444,13 @@ ${blocLivraison()}
 </section>
 
 ${blocFaq(faq, 'Questions sur les commandes de consommables')}
-${blocCtaFinal('Un doute sur une référence ?', "Appelez-nous ou envoyez une photo de la plaque signalétique de votre machine : nous confirmons la bonne référence avant de livrer.")}`;
+${blocCtaFinal('Un doute sur une référence ?', "Appelez-nous ou envoyez une photo de la plaque signalétique de votre machine : nous confirmons la bonne référence avant de livrer.")}
+<script>${SCRIPT_FILTRES}</script>`;
 
   return page(
     {
       titre: `Produits lessiviels et d'entretien — livraison offerte | ${site.nom}`,
-      description: `Détergents, liquides de rinçage et produits d'entretien pour lave-vaisselle, lave-verres et fours professionnels. Livraison offerte dès un bidon en Provence.`,
+      description: `Détergents, liquides de rinçage et produits d'entretien pour lave-vaisselle, lave-verres et fours professionnels. ${totalProduits} références, livraison offerte dès un bidon en Provence.`,
       chemin: '/produits',
       schemas: [
         schemaAriane(fil),
@@ -1441,115 +1458,9 @@ ${blocCtaFinal('Un doute sur une référence ?', "Appelez-nous ou envoyez une ph
         {
           '@context': 'https://schema.org',
           '@type': 'ItemList',
-          name: 'Familles de produits lessiviels et d’entretien',
-          itemListElement: categoriesProduits.map((c, k) => ({
-            '@type': 'ListItem',
-            position: k + 1,
-            name: c.nom,
-            url: url(`/produits/${c.slug}`),
-          })),
-        },
-      ],
-    },
-    corps,
-    nav
-  );
-}
-
-// ===========================================================================
-// PRODUITS — page catégorie
-// ===========================================================================
-function categorieProduitPage(c) {
-  const fil = [
-    { nom: 'Accueil', url: '/' },
-    { nom: 'Produits', url: '/produits' },
-    { nom: c.nomCourt, url: `/produits/${c.slug}` },
-  ];
-  const liste = produitsDeCategorie(c.slug);
-  const autres = categoriesProduits.filter((x) => x.slug !== c.slug);
-
-  const corps = `
-<div class="phero">
-  <div class="wrap">
-    <p class="eyebrow on-dark">Produits</p>
-    <h1>${esc(c.nom)}</h1>
-    <p>${esc(c.intro)}</p>
-  </div>
-</div>
-${ariane(fil)}
-
-<section>
-  <div class="wrap">
-    ${noticePrix}
-    <div class="prod-liste">
-      ${liste
-        .map(
-          (p) => `<article class="prod-row" id="${esc(p.slug)}">
-        <div class="pr-vign">${vignetteProduit(p)}</div>
-        <div class="pr-info">
-          <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">Réf. ${esc(p.ref)}</span></span>
-          <h2><a href="/produits/${p.categorie}/${p.slug}">${esc(p.nom)}</a></h2>
-          <p>${esc(p.resume)}</p>
-          <ul class="pr-carac">${p.caracteristiques.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-          <a class="more" href="/produits/${p.categorie}/${p.slug}">Fiche détaillée →</a>
-        </div>
-        <div class="pr-cond">
-          ${p.conditionnements
-            .map(
-              (cd, k) => `<div class="cond-row">
-            <span class="cl">${esc(cd.label)}</span>
-            ${prixTexte(cd)}
-            ${boutonAjout(p, cd, k)}
-          </div>`
-            )
-            .join('\n          ')}
-        </div>
-      </article>`
-        )
-        .join('\n      ')}
-    </div>
-  </div>
-</section>
-
-<section class="alt">
-  <div class="wrap">
-    <div class="grid2 top">
-      <div>
-        <p class="eyebrow">Le conseil de nos techniciens</p>
-        <h2>Bien choisir dans cette famille</h2>
-        <p class="lead">${esc(c.conseil)}</p>
-        <a class="btn btn-outline" href="/contact?sujet=produits">Demander conseil</a>
-      </div>
-      <div>
-        <h3>Les autres familles</h3>
-        <div class="grid1">
-          ${autres
-            .map(
-              (x) => `<a class="card" href="/produits/${x.slug}"><h3 style="font-size:1.05rem">${esc(x.nom)}</h3><p>${produitsDeCategorie(x.slug).length} références</p><span class="more">Voir →</span></a>`
-            )
-            .join('\n          ')}
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-${blocLivraison()}
-${blocCtaFinal('Besoin d’aide pour choisir ?', `Nos techniciens connaissent la dureté de l'eau de votre commune et le modèle de vos machines. Appelez le ${site.telephone}.`)}`;
-
-  return page(
-    {
-      titre: `${c.titreSeo} | ${site.nom}`,
-      description: c.description,
-      chemin: `/produits/${c.slug}`,
-      schemas: [
-        schemaAriane(fil),
-        {
-          '@context': 'https://schema.org',
-          '@type': 'ItemList',
-          name: c.nom,
-          numberOfItems: liste.length,
-          itemListElement: liste.map((p, k) => ({
+          name: 'Catalogue des produits lessiviels et d’entretien',
+          numberOfItems: produits.length,
+          itemListElement: produits.map((p, k) => ({
             '@type': 'ListItem',
             position: k + 1,
             name: `${p.marque} ${p.nom}`,
@@ -1571,7 +1482,7 @@ function produitPage(p) {
   const fil = [
     { nom: 'Accueil', url: '/' },
     { nom: 'Produits', url: '/produits' },
-    { nom: c.nomCourt, url: `/produits/${c.slug}` },
+    { nom: c.nomCourt, url: `/produits?famille=${c.slug}#catalogue` },
     { nom: p.nom, url: `/produits/${c.slug}/${p.slug}` },
   ];
   // Sélection glissante, pour que chaque référence reçoive des liens entrants
@@ -1830,7 +1741,6 @@ await ecrire('/qr', pageQr(), { dansSitemap: false });
 await ecrire('/qr/panne', pagePanne(), { dansSitemap: false });
 await ecrire('/qr/audit', pageAudit(), { dansSitemap: false });
 await ecrire('/produits', boutiqueHub(), { priorite: 0.9 });
-for (const c of categoriesProduits) await ecrire(`/produits/${c.slug}`, categorieProduitPage(c), { priorite: 0.8 });
 for (const p of produits) await ecrire(`/produits/${p.categorie}/${p.slug}`, produitPage(p), { priorite: 0.7 });
 await ecrire('/produits/ma-commande', commandePage(), { priorite: 0.1, dansSitemap: false });
 await ecrire('/conseils', conseilsHub(), { priorite: 0.7 });

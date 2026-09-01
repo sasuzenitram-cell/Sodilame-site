@@ -72,6 +72,7 @@ export const produits = [
   // ---- Détergents lave-vaisselle / lave-verres -----------------------------
   {
     slug: 'winterhalter-f300-detergent-universel',
+    machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'F300',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -89,6 +90,7 @@ export const produits = [
   },
   {
     slug: 'winterhalter-f8500-detergent-ultra-concentre',
+    machines: ['lave-vaisselle'],
     ref: 'F8500',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -103,6 +105,7 @@ export const produits = [
   },
   {
     slug: 'winterhalter-f420e-detergent-eau-dure',
+    machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'F420e',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -122,6 +125,7 @@ export const produits = [
   },
   {
     slug: 'winterhalter-f6800-detergent-tres-intensif',
+    machines: ['lave-vaisselle'],
     ref: 'F6800',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -136,6 +140,7 @@ export const produits = [
   },
   {
     slug: 'winterhalter-f30-detergent-liquide-verres',
+    machines: ['lave-verres'],
     ref: 'F30',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -151,6 +156,7 @@ export const produits = [
   },
   {
     slug: 'winterhalter-f40-detergent-liquide-verres-chlore',
+    machines: ['lave-verres'],
     ref: 'F40',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -167,6 +173,7 @@ export const produits = [
   // ---- Liquides de rinçage -------------------------------------------------
   {
     slug: 'winterhalter-b100n-liquide-rincage-universel',
+    machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'B100N',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -186,6 +193,7 @@ export const produits = [
   },
   {
     slug: 'winterhalter-b200s-liquide-rincage-universel',
+    machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'B200S',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -200,6 +208,7 @@ export const produits = [
   },
   {
     slug: 'winterhalter-b220e-liquide-rincage-acide',
+    machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'B220e',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -214,6 +223,7 @@ export const produits = [
   },
   {
     slug: 'winterhalter-b170xd-liquide-rincage-plastiques',
+    machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'B170XD',
     marque: 'Winterhalter',
     photo: null, // voir l'en-tête du fichier
@@ -230,6 +240,7 @@ export const produits = [
   // ---- Entretien fours Rational -------------------------------------------
   {
     slug: 'rational-active-green-tablettes-nettoyantes',
+    machines: ['four'],
     ref: '56.01.535',
     marque: 'Rational',
     photo: null, // voir l'en-tête du fichier
@@ -245,6 +256,7 @@ export const produits = [
   },
   {
     slug: 'rational-tablettes-entretien-carecontrol',
+    machines: ['four'],
     ref: '56.00.562',
     marque: 'Rational',
     photo: null, // voir l'en-tête du fichier
@@ -259,6 +271,7 @@ export const produits = [
   },
   {
     slug: 'rational-tablettes-nettoyage-selfcookingcenter',
+    machines: ['four'],
     ref: '56.00.210',
     marque: 'Rational',
     photo: null, // voir l'en-tête du fichier
@@ -273,6 +286,7 @@ export const produits = [
   },
   {
     slug: 'rational-tablettes-rincage',
+    machines: ['four'],
     ref: '56.00.211',
     marque: 'Rational',
     photo: null, // voir l'en-tête du fichier
@@ -287,6 +301,7 @@ export const produits = [
   },
   {
     slug: 'rational-tablettes-nettoyage-sans-phosphate',
+    machines: ['four'],
     ref: '56.02.315E',
     marque: 'Rational',
     photo: null, // voir l'en-tête du fichier
@@ -301,6 +316,7 @@ export const produits = [
   },
   {
     slug: 'rational-cartouche-active-green',
+    machines: ['four'],
     ref: '56.01.912',
     marque: 'Rational',
     photo: null, // voir l'en-tête du fichier
@@ -315,6 +331,7 @@ export const produits = [
   },
   {
     slug: 'rational-cartouche-entretien-care',
+    machines: ['four'],
     ref: '56.01.914',
     marque: 'Rational',
     photo: null, // voir l'en-tête du fichier
@@ -330,10 +347,30 @@ export const produits = [
 ];
 
 // ---------------------------------------------------------------------------
+// Types de machine — troisième axe de filtrage du catalogue.
+//
+// Le champ `machines` de chaque produit est déduit de ses usages réels, pas de
+// la famille : un liquide de rinçage universel sert aussi bien au lave-vaisselle
+// qu'au lave-verres et apparaît donc sous les deux. Un produit mal classé ici
+// envoie un client sur la mauvaise référence — à vérifier avant toute reprise.
+// ---------------------------------------------------------------------------
+export const machinesCatalogue = [
+  { slug: 'lave-vaisselle', nom: 'Lave-vaisselle', icone: 'laverie' },
+  { slug: 'lave-verres', nom: 'Lave-verres', icone: 'goutte' },
+  { slug: 'four', nom: 'Four mixte', icone: 'cuisson' },
+];
+
+export const marquesCatalogue = [...new Set(produits.map((p) => p.marque))].sort();
+
+// ---------------------------------------------------------------------------
 // Aides
 // ---------------------------------------------------------------------------
 export const produitsDeCategorie = (slugCat) => produits.filter((p) => p.categorie === slugCat);
 export const categorieDuProduit = (p) => categoriesProduits.find((c) => c.slug === p.categorie);
-export const produitsNav = categoriesProduits.map((c) => ({ nom: c.nomCourt, url: `/produits/${c.slug}` }));
+// Les familles ne sont plus des pages : ce sont des filtres du catalogue.
+export const produitsNav = categoriesProduits.map((c) => ({
+  nom: c.nomCourt,
+  url: `/produits?famille=${c.slug}`,
+}));
 export const totalProduits = produits.length;
 export const auMoinsUnPrix = produits.some((p) => p.conditionnements.some((c) => typeof c.prix === 'number'));

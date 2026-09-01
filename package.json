@@ -10,7 +10,9 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs && npx --yes serve public -l 3000",
-    "preview": "npx --yes serve public -l 3000"
+    "preview": "npx --yes serve public -l 3000",
+    "check": "node build.mjs && node check.mjs",
+    "test": "node build.mjs && node tests/catalogue.mjs && node tests/sav.mjs && node tests/e2e.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

@@ -378,8 +378,56 @@ footer .fbrand .bs{font-size:.57rem;letter-spacing:.155em;text-transform:upperca
 .notice-prix{background:#FBF0DC;border:1px solid #E8CE9B;border-left:4px solid var(--gold);
   border-radius:9px;padding:14px 18px;margin:0 0 2rem;font-size:.94rem;color:#5A4520;line-height:1.6}
 
+/* ---------------------------------------------------------------------------
+   Barre de filtres du catalogue
+   Masquée par défaut (attribut hidden) et révélée par le script : sans
+   JavaScript, des boutons inertes seraient pires que pas de boutons du tout.
+   --------------------------------------------------------------------------- */
+.filtres{background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:1.1rem 1.3rem 1.2rem;margin:0 0 1.8rem;box-shadow:var(--shadow)}
+.fgroupe{display:flex;align-items:baseline;gap:1rem;padding:.55rem 0;flex-wrap:wrap}
+.fgroupe + .fgroupe{border-top:1px solid var(--line)}
+.flabel{flex:0 0 10rem;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;color:var(--muted)}
+.fboutons{display:flex;flex-wrap:wrap;gap:.5rem;flex:1 1 16rem}
+.fbtn{display:inline-flex;align-items:center;gap:.45rem;font:inherit;font-size:.9rem;
+  font-weight:600;color:var(--navy);background:var(--cream);border:1.5px solid var(--line);
+  border-radius:999px;padding:.42rem .95rem;cursor:pointer;
+  transition:background .12s,border-color .12s,color .12s}
+.fbtn:hover{border-color:var(--navy-l)}
+.fbtn .fn{font-size:.74rem;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.fbtn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.fbtn[aria-pressed="true"] .fn{color:rgba(255,255,255,.72)}
+.fbtn:focus-visible{outline:2px solid var(--navy-l);outline-offset:2px}
+.fbilan{display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  margin-top:.7rem;padding-top:.8rem;border-top:1px solid var(--line);
+  font-size:.88rem;font-weight:600;color:var(--muted)}
+.freinit{font:inherit;font-size:.86rem;font-weight:600;color:var(--navy);background:none;
+  border:0;border-bottom:1.5px solid currentColor;padding:0 0 1px;cursor:pointer}
+.freinit:hover{color:var(--navy-l)}
+
+/* Conseil technique : n'apparaît que lorsqu'une seule famille est filtrée */
+.conseil-famille{background:var(--cream-d);border-left:4px solid var(--navy-l);
+  border-radius:0 10px 10px 0;padding:1rem 1.3rem;margin:0 0 1.8rem;
+  font-size:.94rem;line-height:1.65;color:var(--ink)}
+.conseil-famille b{color:var(--navy)}
+
+.aucun-resultat{background:var(--cream-d);border:1px dashed var(--line);border-radius:12px;
+  padding:1.6rem 1.8rem;margin:1.6rem 0 0;text-align:center;font-size:.96rem;line-height:1.7}
+
+@media (max-width:640px){
+  .filtres{padding:1rem}
+  .fgroupe{gap:.5rem}
+  .flabel{flex:1 1 100%}
+  .fbtn{font-size:.86rem;padding:.38rem .8rem}
+}
+
 /* Cartes produit */
 .card.prod{display:flex;flex-direction:column}
+/* `display:flex` ci-dessus l'emporte sur le display:none que le navigateur
+   applique à [hidden] : sans cette règle, le filtrage compte juste mais
+   n'escamote rien. Même piège que le compteur du panier. */
+.card.prod[hidden]{display:none}
 .prod-top{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
 .prod-top .marque{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--navy)}
 .prod-top .ref{font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
