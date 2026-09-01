@@ -209,35 +209,38 @@
 
 
   // ---- Qui est connecté ? ---------------------------------------------------
+  // La commande est ouverte à tous. Un client connecté voit simplement ses
+  // coordonnées reprises de sa fiche au lieu d'avoir à les ressaisir.
   function preparerCommande() {
     var f = document.getElementById('form-commande');
-    var cx = document.getElementById('zone-connexion');
-    if (!f || !cx) return;
+    if (!f) return;
+    var ident = document.getElementById('zone-identite');
+    var bloc = document.getElementById('cx-client');
 
     fetch('/api/moi', { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        if (d && d.connecte && d.client) {
-          f.hidden = false;
-          cx.hidden = true;
-          var c = d.client;
-          document.getElementById('cx-client').innerHTML =
-            '<b>' + c.etablissement + '</b><br>' + (c.contact ? c.contact + ' \u00b7 ' : '') + c.telephone +
-            '<br><span class="cx-mail">' + c.email + '</span>';
-          if (!document.getElementById('c-adresse').value) document.getElementById('c-adresse').value = c.adresse || '';
-          if (!document.getElementById('c-cp').value) document.getElementById('c-cp').value = c.codePostal || '';
-          if (!document.getElementById('c-commune').value) document.getElementById('c-commune').value = c.commune || '';
-        } else if (d && d.connecte && d.role === 'admin') {
-          cx.hidden = false;
-          cx.querySelector('h2').textContent = 'Compte administrateur';
-          cx.querySelector('p').textContent =
-            'Vous \u00eates connect\u00e9 en tant qu\u2019administrateur : la commande en ligne est r\u00e9serv\u00e9e aux comptes clients.';
-        } else {
-          cx.hidden = false;
-          f.hidden = true;
-        }
+        if (!d || !d.connecte || !d.client) return; // visiteur : formulaire complet
+        var c = d.client;
+
+        // Coordonnées connues : on masque la saisie et on retire l'obligation.
+        ident.hidden = true;
+        ident.querySelectorAll('input').forEach(function (i) { i.required = false; i.disabled = true; });
+        var cons = document.getElementById('c-consent');
+        if (cons) { cons.hidden = true; cons.querySelector('input').required = false; }
+        var hf = document.getElementById('hint-fiche');
+        if (hf) hf.hidden = false;
+
+        bloc.hidden = false;
+        bloc.innerHTML =
+          '<b>' + c.etablissement + '</b><br>' + (c.contact ? c.contact + ' \u00b7 ' : '') + c.telephone +
+          '<br><span class="cx-mail">' + c.email + '</span>';
+
+        if (!document.getElementById('c-adresse').value) document.getElementById('c-adresse').value = c.adresse || '';
+        if (!document.getElementById('c-cp').value) document.getElementById('c-cp').value = c.codePostal || '';
+        if (!document.getElementById('c-commune').value) document.getElementById('c-commune').value = c.commune || '';
       })
-      .catch(function () { cx.hidden = false; });
+      .catch(function () { /* visiteur : le formulaire complet reste affiché */ });
   }
 
   // ---- Envoi de la commande -------------------------------------------------
@@ -261,12 +264,18 @@
       }
 
       var d = new FormData(f);
-      // L'identit\u00e9 du client vient de sa session c\u00f4t\u00e9 serveur, jamais d'ici.
+      // Un client connect\u00e9 est identifi\u00e9 par sa session : les champs d'identit\u00e9
+      // sont alors d\u00e9sactiv\u00e9s et le serveur ignore ce qui arrive d'ici.
       var charge = {
+        etablissement: d.get('etablissement'),
+        nom: d.get('nom'),
+        telephone: d.get('telephone'),
+        email: d.get('email'),
         adresse: d.get('adresse'),
         codePostal: d.get('codePostal'),
         commune: d.get('commune'),
         message: d.get('message'),
+        consentement: !!d.get('consentement'),
         societe_web: d.get('societe_web'),
         lignes: lignes.map(function (l) {
           return { ref: l.ref, cond: l.cond, qte: l.qte };

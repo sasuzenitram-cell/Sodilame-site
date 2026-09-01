@@ -562,3 +562,8 @@ body.boutique footer .btn-primary:hover{background:#EBB662;border-color:#EBB662}
   .prod-row{grid-template-columns:1fr}
   .pr-vign{max-width:120px}
 }
+
+/* Invitation discrète à se connecter, sur la page de commande */
+.cx-invite{background:var(--cream);border:1px solid var(--line);border-radius:9px;
+  padding:.7rem 1rem;font-size:.85rem;color:var(--muted);margin:0 0 1.3rem;line-height:1.5}
+.cx-invite a{font-weight:600}
