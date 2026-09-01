@@ -12,6 +12,7 @@ import { articles } from './data/articles.mjs';
 import {
   categoriesProduits, produits, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
 } from './data/produits.mjs';
+import { pageQr, pagePanne, pageAudit } from './src/qr.mjs';
 import {
   page, ariane, schemaAriane, schemaLocalBusiness, schemaFaq, blocFaq, blocSecteurs,
   blocEtapes, blocFormules, blocMySodilame, blocCtaFinal, blocContact, blocLivraison, formulaire,
@@ -1737,23 +1738,23 @@ ${ariane(fil)}
       </div>
 
       <aside>
-        <!-- Visiteur non connect\u00e9 -->
-        <div class="carte-connexion" id="zone-connexion" hidden>
-          <h2>Se connecter pour commander</h2>
-          <p>La commande en ligne est r\u00e9serv\u00e9e aux clients ${site.nom}. Vos coordonn\u00e9es sont d\u00e9j\u00e0 enregistr\u00e9es chez nous : vous n'avez rien \u00e0 ressaisir.</p>
-          <ul class="ul-check">
-            <li>Pas de mot de passe : un lien de connexion par e-mail</li>
-            <li>Coordonn\u00e9es et adresse de livraison pr\u00e9-remplies</li>
-            <li>Historique de vos commandes et suivi de leur avancement</li>
-          </ul>
-          <a class="btn btn-primary" href="/espace/connexion?suite=%2Fproduits%2Fma-commande" style="width:100%;justify-content:center">Me connecter</a>
-          <p class="cx-note">Pas encore d'acc\u00e8s ? Appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a>, nous vous ouvrons un compte. Votre panier est conserv\u00e9.</p>
-        </div>
+        <form class="devis" id="form-commande" method="post" action="/api/commande" novalidate>
+          <!-- Client reconnu : coordonn\u00e9es reprises de sa fiche -->
+          <p class="cx-client" id="cx-client" hidden></p>
 
-        <!-- Client connect\u00e9 -->
-        <form class="devis" id="form-commande" method="post" action="/api/commande" novalidate hidden>
+          <!-- Visiteur : coordonn\u00e9es \u00e0 saisir -->
+          <div id="zone-identite">
+            <p class="cx-invite">D\u00e9j\u00e0 client&nbsp;? <a href="/espace/connexion?suite=%2Fproduits%2Fma-commande">Connectez-vous</a> pour ne rien ressaisir et suivre vos commandes.</p>
+            <h2>Vos coordonn\u00e9es</h2>
+            <div class="field"><label for="c-etab">\u00c9tablissement *</label><input id="c-etab" name="etablissement" autocomplete="organization" required placeholder="Restaurant Le Mas"></div>
+            <div class="field"><label for="c-nom">Nom du contact *</label><input id="c-nom" name="nom" autocomplete="name" required></div>
+            <div class="row2">
+              <div class="field"><label for="c-tel">T\u00e9l\u00e9phone *</label><input id="c-tel" name="telephone" type="tel" autocomplete="tel" required></div>
+              <div class="field"><label for="c-email">E-mail *</label><input id="c-email" name="email" type="email" autocomplete="email" required></div>
+            </div>
+          </div>
+
           <h2>Livraison</h2>
-          <p class="cx-client" id="cx-client"></p>
           <div class="field"><label for="c-adresse">Adresse de livraison *</label><input id="c-adresse" name="adresse" autocomplete="street-address" required></div>
           <div class="row2">
             <div class="field"><label for="c-cp">Code postal *</label><input id="c-cp" name="codePostal" inputmode="numeric" autocomplete="postal-code" required></div>
@@ -1762,9 +1763,10 @@ ${ariane(fil)}
               <datalist id="liste-communes">${communes.map((x) => `<option value="${esc(x)}">`).join('')}</datalist>
             </div>
           </div>
-          <p class="hint">Adresse reprise de votre fiche client. Vous pouvez la modifier pour cette commande. Nous livrons gratuitement les ${communes.length} communes de notre zone. <a href="/zone-intervention">Voir la zone</a>.</p>
+          <p class="hint"><span id="hint-fiche" hidden>Adresse reprise de votre fiche client, modifiable pour cette commande. </span>Nous livrons gratuitement les ${communes.length} communes de notre zone. <a href="/zone-intervention">Voir la zone</a>.</p>
           <div class="field"><label for="c-message">Pr\u00e9cisions</label><textarea id="c-message" name="message" placeholder="R\u00e9f\u00e9rence de vos machines, cr\u00e9neau de livraison souhait\u00e9, num\u00e9ro de commande interne\u2026"></textarea></div>
           <div class="hp" aria-hidden="true"><label for="societe_web">Ne pas remplir</label><input id="societe_web" name="societe_web" tabindex="-1" autocomplete="off"></div>
+          <label class="consent" id="c-consent"><input type="checkbox" name="consentement" required> J'accepte que mes informations soient utilis\u00e9es pour traiter cette commande. <a href="/politique-de-confidentialite">Politique de confidentialit\u00e9</a>.</label>
           <button class="btn btn-primary" type="submit" id="btn-commande" style="width:100%;justify-content:center">Envoyer ma commande</button>
           <p class="formmsg" id="commande-msg" role="status" aria-live="polite"></p>
           <p style="font-size:.76rem;color:var(--muted);margin:.9rem 0 0;text-align:center">Aucun paiement n'est demand\u00e9. Nous vous confirmons le montant par mail avant livraison.</p>
@@ -1824,6 +1826,9 @@ for (const s of services) await ecrire(`/services/${s.slug}`, servicePage(s), { 
 await ecrire('/zone-intervention', zoneHub(), { priorite: 0.9 });
 for (const z of zones) await ecrire(`/zone-intervention/${z.slug}`, zonePage(z), { priorite: 0.8 });
 for (const v of villes) await ecrire(`/zone-intervention/${v.slug}`, villePage(v), { priorite: 0.8 });
+await ecrire('/qr', pageQr(), { dansSitemap: false });
+await ecrire('/qr/panne', pagePanne(), { dansSitemap: false });
+await ecrire('/qr/audit', pageAudit(), { dansSitemap: false });
 await ecrire('/produits', boutiqueHub(), { priorite: 0.9 });
 for (const c of categoriesProduits) await ecrire(`/produits/${c.slug}`, categorieProduitPage(c), { priorite: 0.8 });
 for (const p of produits) await ecrire(`/produits/${p.categorie}/${p.slug}`, produitPage(p), { priorite: 0.7 });

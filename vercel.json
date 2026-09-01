@@ -61,6 +61,15 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/qr(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ],
   "redirects": [
@@ -142,6 +151,21 @@
     {
       "source": "/mon-compte",
       "destination": "/espace",
+      "permanent": false
+    },
+    {
+      "source": "/sav",
+      "destination": "/qr/panne",
+      "permanent": false
+    },
+    {
+      "source": "/audit",
+      "destination": "/qr/audit",
+      "permanent": false
+    },
+    {
+      "source": "/machine",
+      "destination": "/qr",
       "permanent": false
     }
   ],

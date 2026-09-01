@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checkup SEO — sodilame.com</title>
+<style>
+  :root{
+    --navy:#183253; --navy-2:#22456f; --gold:#DFA64F; --cream:#FAF6EF;
+    --ink:#1B2430; --muted:#5A6675; --line:#E4DACA; --card:#fff;
+    --ok:#1F7A56; --warn:#B4761B; --bad:#A8352C;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);
+    font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:0 22px 90px}
+
+  header{background:var(--navy);color:#fff;padding:46px 0 40px;margin-bottom:38px}
+  header .wrap{padding-bottom:0}
+  .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}
+  header h1{font-size:clamp(26px,4.4vw,38px);line-height:1.18;margin:0 0 14px;font-weight:700}
+  header p{margin:0;color:#C3D0E0;max-width:58ch;font-size:15px}
+
+  .verdict{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--gold);
+    border-radius:10px;padding:22px 26px;margin:0 0 40px}
+  .verdict p{margin:0 0 12px}
+  .verdict p:last-child{margin-bottom:0}
+
+  h2{font-size:22px;margin:52px 0 6px;letter-spacing:-.01em}
+  h2 .n{color:var(--gold);font-variant-numeric:tabular-nums;margin-right:10px}
+  h2+.sub{color:var(--muted);font-size:14px;margin:0 0 22px}
+  h3{font-size:16px;margin:30px 0 8px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(184px,1fr));gap:14px;margin:22px 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .stat b{display:block;font-size:27px;line-height:1.1;font-variant-numeric:tabular-nums}
+  .stat span{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
+  .stat.ok b{color:var(--ok)} .stat.warn b{color:var(--warn)} .stat.bad b{color:var(--bad)}
+
+  .tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:520px}
+  th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#F3ECE0;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  tr:last-child td{border-bottom:0}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .t-ok{background:#E2F1EA;color:var(--ok)} .t-warn{background:#FBF0DC;color:var(--warn)} .t-bad{background:#F8E4E2;color:var(--bad)}
+
+  .item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 22px;margin:14px 0}
+  .item.p1{border-left:5px solid var(--bad)}
+  .item.p2{border-left:5px solid var(--warn)}
+  .item.p3{border-left:5px solid var(--muted)}
+  .item h3{margin:0 0 8px;font-size:16.5px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .item p{margin:0 0 10px;font-size:15px}
+  .item p:last-child{margin-bottom:0}
+  .fix{background:var(--cream);border-radius:7px;padding:11px 15px;font-size:14px;margin-top:12px}
+  .fix b{color:var(--navy)}
+
+  ul{padding-left:20px;margin:10px 0} li{margin:6px 0}
+  code{background:#EFE7DA;padding:2px 6px;border-radius:4px;font-size:13.5px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .note{color:var(--muted);font-size:13.5px;font-style:italic;margin-top:10px}
+  footer{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">SODILAME · 31 août 2026</p>
+    <h1>Checkup du site et du référencement naturel</h1>
+    <p>État technique de sodilame.com, position réelle de sodilame.fr, volumes de recherche du marché et plan d'action priorisé.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="verdict">
+  <p><b>En une phrase :</b> les fondations techniques sont saines — mieux que la plupart des sites d'artisans que l'on trouve sur ce marché — et le site que tu quittes ne pèse presque rien, donc tu perds très peu en changeant de domaine. Ce qui manque n'est pas technique : c'est <b>la fiche Google, les avis clients et le maillage vers les articles</b>.</p>
+  <p><b>La vraie découverte de cet audit :</b> ton plan de blog CARSAT vise juste. « subvention carsat » fait <b>880 recherches par mois</b> avec une concurrence quasi nulle. Mais la première page est verrouillée par ameli.fr et les neuf sites régionaux de la CARSAT — il faut attaquer par la longue traîne, pas par la tête. Détail au chapitre 4.</p>
+</div>
+
+<h2><span class="n">1</span>Santé technique du site</h2>
+<p class="sub">38 pages analysées, une par une, sur le code réellement publié.</p>
+
+<div class="grid">
+  <div class="stat ok"><b>0</b><span>lien interne cassé</span></div>
+  <div class="stat ok"><b>101</b><span>blocs de données structurées, 0 invalide</span></div>
+  <div class="stat ok"><b>0</b><span>image sans texte alternatif</span></div>
+  <div class="stat ok"><b>38/38</b><span>pages avec canonique + image de partage</span></div>
+</div>
+
+<div class="tw">
+<table>
+  <tr><th>Point de contrôle</th><th>Constat</th><th>État</th></tr>
+  <tr><td>Titres de page</td><td>38 titres uniques, de 42 à 76 caractères — dans la fenêtre affichée par Google</td><td><span class="tag t-ok">Bon</span></td></tr>
+  <tr><td>Un seul H1 par page</td><td>Vérifié sur les 38 pages</td><td><span class="tag t-ok">Bon</span></td></tr>
+  <tr><td>Volume de contenu</td><td>De 781 mots (page ville la plus courte) à 1 789 mots (accueil). Aucune page mince.</td><td><span class="tag t-ok">Bon</span></td></tr>
+  <tr><td>Données structurées</td><td>LocalBusiness + HomeAndConstructionBusiness sur 16 pages, FAQPage sur 29, Article sur les 6 conseils, fil d'Ariane partout</td><td><span class="tag t-ok">Bon</span></td></tr>
+  <tr><td>Sitemap &amp; robots</td><td>37 URL déclarées, sitemap référencé dans robots.txt, seul <code>/api/</code> est bloqué</td><td><span class="tag t-ok">Bon</span></td></tr>
+  <tr><td>Poids des pages</td><td>Page la plus lourde : 44 Ko de HTML. Aucun script tiers, aucune police externe.</td><td><span class="tag t-ok">Bon</span></td></tr>
+  <tr><td>Version en ligne</td><td>Vérifié en direct : sodilame.com sert bien la dernière version (zones et 104 communes présentes)</td><td><span class="tag t-ok">Bon</span></td></tr>
+  <tr><td>Maillage vers les articles</td><td>2 à 9 liens entrants par article, contre 38 pour chaque page service</td><td><span class="tag t-bad">À corriger</span></td></tr>
+  <tr><td>Champ <code>sameAs</code> de la fiche entreprise</td><td>Vide : aucun lien déclaré vers la fiche Google, LinkedIn ou Facebook</td><td><span class="tag t-bad">À corriger</span></td></tr>
+  <tr><td>Mentions légales</td><td>SIRET, RCS, TVA et capital social absents</td><td><span class="tag t-bad">À corriger</span></td></tr>
+  <tr><td>Avis clients</td><td>Aucun avis affiché, aucune note structurée</td><td><span class="tag t-warn">À construire</span></td></tr>
+</div>
+
+<h2><span class="n">2</span>Ce que pèse vraiment sodilame.fr</h2>
+<p class="sub">La question qui compte avant de basculer : qu'est-ce qu'on perd ?</p>
+
+<p>Réponse courte : <b>presque rien</b>. Voici ce que le site de Futur Digital rapporte réellement, mesuré sur la base Semrush France.</p>
+
+<div class="grid">
+  <div class="stat"><b>17</b><span>mots-clés positionnés au total</span></div>
+  <div class="stat"><b>56</b><span>visites organiques estimées par mois</span></div>
+  <div class="stat"><b>1</b><span>seule position dans le top 10 hors marque</span></div>
+  <div class="stat"><b>0 €</b><span>valeur du trafic organique</span></div>
+</div>
+
+<p>Sur ces 17 mots-clés, un seul apporte du trafic : le mot « sodilame » lui-même, en première position, 70 recherches par mois. C'est ta marque — elle te suit, elle n'appartient pas au site. Tout le reste est positionné entre la 19<sup>e</sup> et la 65<sup>e</sup> place, c'est-à-dire nulle part.</p>
+
+<div class="tw">
+<table>
+  <tr><th>Requête</th><th class="num">Position</th><th class="num">Vol./mois</th><th>Lecture</th></tr>
+  <tr><td>sodilame</td><td class="num">1</td><td class="num">70</td><td>Ta marque. Le seul trafic réel.</td></tr>
+  <tr><td>installateur laverie automatique</td><td class="num">8</td><td class="num">170</td><td>Le seul vrai actif du site. Voir encadré.</td></tr>
+  <tr><td>laverie salon de provence</td><td class="num">19</td><td class="num">210</td><td>Trop bas pour exister</td></tr>
+  <tr><td>cuisiniste arles</td><td class="num">25</td><td class="num">110</td><td>Trop bas pour exister</td></tr>
+  <tr><td>magasin de cuisine avignon</td><td class="num">31</td><td class="num">50</td><td>Trop bas pour exister</td></tr>
+  <tr><td>dépanneur cuisine professionnelle</td><td class="num">52</td><td class="num">50</td><td>Trop bas pour exister</td></tr>
+</table>
+</div>
+
+<div class="item p2">
+  <h3>Un point à trancher <span class="tag t-warn">Question pour toi</span></h3>
+  <p>Le seul contenu de sodilame.fr qui performe est une page sur <b>l'installation de laveries automatiques en libre-service dans les Bouches-du-Rhône</b> — 8<sup>e</sup> position nationale sur une requête à 170 recherches mensuelles.</p>
+  <p>Ce service n'existe nulle part sur le nouveau site. Est-ce que SODILAME le fait toujours ? Si oui, c'est une page à créer en priorité : c'est le seul actif SEO récupérable de l'ancien site, et il est déjà à moitié gagné. Si non, on l'abandonne sans regret.</p>
+</div>
+
+<p><b>Sur le nouveau domaine :</b> sodilame.com n'apparaît encore dans aucune base. C'est parfaitement normal — le site a moins de trois semaines. Compter deux à trois mois avant que les premières positions se dessinent, six à neuf mois pour un référencement local installé.</p>
+
+<h2><span class="n">3</span>Le marché : combien de gens cherchent vraiment</h2>
+<p class="sub">Volumes mensuels France, données Semrush.</p>
+
+<div class="tw">
+<table>
+  <tr><th>Requête</th><th class="num">Vol./mois</th><th class="num">CPC</th><th>Page qui la vise</th></tr>
+  <tr><td>lave-verre professionnel</td><td class="num">2 400</td><td class="num">1,47 €</td><td>Laverie restauration</td></tr>
+  <tr><td>cuisine professionnelle</td><td class="num">1 900</td><td class="num">1,40 €</td><td>Accueil</td></tr>
+  <tr><td>four mixte professionnel</td><td class="num">1 000</td><td class="num">1,16 €</td><td>Matériel de cuisson + article four mixte</td></tr>
+  <tr><td>matériel CHR</td><td class="num">880</td><td class="num">3,05 €</td><td><b>Aucune</b> — angle mort</td></tr>
+  <tr><td>équipement cuisine professionnelle</td><td class="num">590</td><td class="num">1,41 €</td><td>Services (faiblement)</td></tr>
+  <tr><td>hotte cuisine professionnelle</td><td class="num">590</td><td class="num">1,13 €</td><td>Extraction &amp; ventilation</td></tr>
+  <tr><td>chambre froide professionnelle</td><td class="num">320</td><td class="num">1,22 €</td><td>Froid professionnel</td></tr>
+  <tr><td>installateur cuisine professionnelle</td><td class="num">260</td><td class="num">1,80 €</td><td>Installation &amp; mise en service</td></tr>
+  <tr><td>laverie professionnelle</td><td class="num">210</td><td class="num">1,12 €</td><td>Laverie restauration</td></tr>
+  <tr><td>installateur laverie automatique</td><td class="num">170</td><td class="num">0,84 €</td><td><b>Aucune</b> — voir encadré ci-dessus</td></tr>
+  <tr><td>dépannage chambre froide</td><td class="num">70</td><td class="num">2,48 €</td><td>Dépannage SAV</td></tr>
+  <tr><td>dépannage cuisine professionnelle</td><td class="num">50</td><td class="num">1,09 €</td><td>Dépannage SAV</td></tr>
+</table>
+</div>
+
+<div class="item p1">
+  <h3>Le décalage à connaître sur les pages ville <span class="tag t-bad">Important</span></h3>
+  <p>Les huit pages ville sont titrées « Cuisine professionnelle à [ville] ». Or ces requêtes exactes ne sont pratiquement <b>pas tapées</b> : « cuisine professionnelle avignon » fait 0 recherche mensuelle mesurable, « cuisine professionnelle marseille » en fait 20.</p>
+  <p>Ce qui est tapé, c'est <b>« cuisiniste + ville »</b> : Avignon 320, Nîmes 320, Aix 320, Salon 140, Arles 110. Mais attention, ces requêtes sont majoritairement B2C — les gens qui les tapent cherchent une cuisine pour leur maison, et la première page est occupée par Ixina et Cuisinella. Se battre là serait attirer du trafic qui ne t'achètera jamais rien.</p>
+  <p>La conclusion n'est pas « supprime les pages ville ». Elle est plus utile que ça : <b>en B2B de proximité, le référencement local ne se joue pas sur le volume de recherche web classique.</b> Il se joue sur le pack local Google — la carte avec les trois fiches et les étoiles, qui s'affiche avant les résultats bleus. Ce pack est alimenté par ta fiche Google Business Profile, pas par tes pages web. C'est pour ça que le chapitre 5 met la fiche Google en toute première priorité.</p>
+  <div class="fix"><b>Ce que les pages ville servent vraiment :</b> elles renforcent la cohérence de ton adresse et de ta zone aux yeux de Google, et elles convertissent le visiteur qui arrive par la fiche Google. Elles ne sont pas là pour capter du volume. Gardons-les, mais n'en attendons pas de miracle en direct.</div>
+</div>
+
+<h2><span class="n">4</span>L'opportunité CARSAT — chiffrée</h2>
+<p class="sub">Ton intuition sur le blog prévention était la bonne. Voici la mesure.</p>
+
+<div class="tw">
+<table>
+  <tr><th>Requête</th><th class="num">Vol./mois</th><th class="num">Concurrence</th><th>Commentaire</th></tr>
+  <tr><td>subvention carsat</td><td class="num">880</td><td class="num">0,12</td><td>Tête de gondole. Verrouillée, voir plus bas.</td></tr>
+  <tr><td>carsat subvention</td><td class="num">720</td><td class="num">0,18</td><td>Même intention</td></tr>
+  <tr><td>carsat subvention matériel</td><td class="num">260</td><td class="num">0,21</td><td><b>Ta cible directe</b></td></tr>
+  <tr><td>aide carsat entreprise</td><td class="num">260</td><td class="num">0,37</td><td>Cible large</td></tr>
+  <tr><td>subvention carsat 2026</td><td class="num">170</td><td class="num">0,02</td><td><b>Concurrence quasi nulle et en forte hausse</b></td></tr>
+  <tr><td>subvention carsat ergonomie</td><td class="num">210</td><td class="num">0,14</td><td>Angle TMS / plonge / manutention</td></tr>
+  <tr><td>subvention carsat autolaveuse</td><td class="num">50</td><td class="num">0,15</td><td>Adjacent à ton métier laverie</td></tr>
+  <tr><td>subvention carsat restauration</td><td class="num">40</td><td class="num">0,15</td><td>Faible volume, mais 100 % ta cible</td></tr>
+</table>
+</div>
+
+<h3>La nuance qui change la stratégie</h3>
+<p>J'ai regardé qui occupe réellement la première page sur « subvention carsat ». Les dix résultats sont <b>ameli.fr et neuf sites régionaux de la CARSAT</b>. Aucun site privé. Sur ce type de requête institutionnelle, Google ne laisse pas passer une entreprise — c'est structurel, pas une question d'effort.</p>
+<p>Donc : on n'attaque pas la tête. On attaque là où l'institution ne descend pas, c'est-à-dire <b>le croisement subvention × équipement précis × métier</b>. La CARSAT écrit sur le dispositif ; elle n'écrira jamais « quel lave-verres choisir pour que le dossier passe » ou « ce que la CARSAT attend exactement d'un devis d'osmoseur ». Toi si — et c'est là que se trouve le lecteur qui a un budget.</p>
+<p>Ton article <i>Subvention lave-verres osmoseur : 70 % financés</i> est déjà exactement dans cet axe. C'est le bon modèle, il faut le répliquer.</p>
+
+<div class="fix">
+  <b>La page qui manque :</b> un article pilier « Subventions CARSAT 2026 : ce qu'une entreprise de restauration peut faire financer », qui recense tous les équipements éligibles et renvoie vers chaque article détaillé. C'est lui qui capte « subvention carsat 2026 » (concurrence 0,02) et qui distribue l'autorité aux autres. À écrire en premier.
+</div>
+
+<h2><span class="n">5</span>Plan d'action</h2>
+<p class="sub">Classé par impact réel, pas par facilité.</p>
+
+<div class="item p1">
+  <h3>1. Reprendre la fiche Google Business Profile <span class="tag t-bad">Priorité absolue</span></h3>
+  <p>Pour un installateur local, la fiche Google pèse plus lourd que tout le reste du référencement réuni. C'est elle qui déclenche les appels.</p>
+  <ul>
+    <li>Changer le site web de la fiche : <code>sodilame.fr</code> → <code>https://www.sodilame.com</code></li>
+    <li>Recopier l'adresse <b>caractère pour caractère</b> comme sur le site : « 3 impasse des Apprentis, ZA de la Chapelette, 13310 Saint-Martin-de-Crau ». Une virgule de différence suffit à brouiller le signal.</li>
+    <li>Déclarer les 9 services, un par un, avec les mêmes intitulés que les pages du site</li>
+    <li>Charger tes photos filigranées — les mêmes que sur le site</li>
+    <li><b>Lancer une campagne d'avis.</b> C'est le levier n°1 du pack local et le seul que tes concurrents ne peuvent pas te copier. Vise 20 avis en trois mois : demande à chaque client satisfait, à chaud, juste après une intervention réussie.</li>
+  </ul>
+</div>
+
+<div class="item p1">
+  <h3>2. Sortir les articles de l'isolement <span class="tag t-bad">Correction technique</span></h3>
+  <p>Chaque page service reçoit 38 liens internes ; chaque article n'en reçoit que 2 à 9. Google interprète le nombre de liens internes comme une déclaration d'importance : dans l'état actuel, on lui dit que les articles ne comptent pas.</p>
+  <div class="fix"><b>Correction :</b> ajouter en bas de chaque page service un bloc « À lire aussi » pointant vers les 2 ou 3 articles du même thème, et croiser les articles entre eux. C'est une modification du générateur, je peux la faire — une trentaine de minutes, une seule remise en ligne.</div>
+</div>
+
+<div class="item p1">
+  <h3>3. Compléter la carte d'identité de l'entreprise <span class="tag t-bad">Obligation légale</span></h3>
+  <p>Les mentions légales n'affichent ni SIRET, ni RCS, ni numéro de TVA, ni capital social. C'est une obligation, et c'est aussi un signal de fiabilité que Google lit.</p>
+  <p>En parallèle, le champ <code>sameAs</code> de la fiche entreprise du site est vide : il doit pointer vers la fiche Google, LinkedIn et Facebook. C'est ce champ qui dit à Google « ce site et cette fiche Google sont la même entreprise ».</p>
+  <div class="fix"><b>Ce dont j'ai besoin :</b> SIRET, RCS et ville d'immatriculation, TVA intracommunautaire, capital social, et l'URL de ta fiche Google. Tu me les donnes, je livre en une fois.</div>
+</div>
+
+<div class="item p2">
+  <h3>4. Écrire l'article pilier CARSAT 2026 <span class="tag t-warn">Fort potentiel</span></h3>
+  <p>Le seul contenu du site capable de générer du trafic national à court terme, sur une requête à concurrence 0,02. Il fait aussi office de hub pour tous les articles prévention à venir.</p>
+</div>
+
+<div class="item p2">
+  <h3>5. Trancher la question de la laverie automatique <span class="tag t-warn">Décision métier</span></h3>
+  <p>170 recherches mensuelles, une 8<sup>e</sup> place déjà acquise sur l'ancien domaine. Si le service existe encore, c'est la page la plus rentable à écrire de tout le site.</p>
+</div>
+
+<div class="item p3">
+  <h3>6. Poursuivre la série prévention <span class="tag t-warn">Fond de campagne</span></h3>
+  <p>Sur le modèle de l'article lave-verres : TMS en plonge, chariots électriques, meubles bas réfrigérés, brûlures en cuisine, bruit en laverie, chutes de plain-pied, DUERP. Un article toutes les deux semaines suffit — la régularité compte davantage que le volume.</p>
+</div>
+
+<div class="item p3">
+  <h3>7. Détail à corriger au passage <span class="tag t-warn">Cosmétique</span></h3>
+  <p>Les six articles portent des dates de publication comprises entre mars et mai 2026, alors que le site est en ligne depuis août. L'incohérence est visible dans le code. À aligner sur les dates réelles de mise en ligne.</p>
+</div>
+
+<h2><span class="n">6</span>Ce qu'il ne faut pas attendre</h2>
+<p>Un mot sur le calendrier, pour éviter la déception. Un domaine neuf met du temps : Google doit d'abord découvrir le site, puis lui accorder progressivement du crédit. Les premières impressions dans Search Console arrivent sous deux à quatre semaines, les premières positions utiles vers le troisième mois, et un référencement local installé demande six à neuf mois de régularité.</p>
+<p>Dans l'intervalle, ce qui produira des appels, ce n'est pas le site : <b>c'est la fiche Google et les avis</b>. Le site les soutient et convertit les visiteurs, mais il n'est pas le déclencheur à court terme. C'est pour ça que le plan commence par la fiche.</p>
+
+<footer>
+  Audit réalisé le 31 août 2026 sur le code publié de sodilame.com (38 pages) et sur les données de positionnement Semrush, base France.
+  Les volumes de recherche sont des estimations mensuelles moyennes sur douze mois.
+</footer>
+
+</div>
+</body>
+</html>
