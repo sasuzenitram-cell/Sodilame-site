@@ -1,0 +1,21 @@
+PHOTOS PRODUITS
+===============
+
+Déposer ici les photos, au format :  <nom-du-fichier>.jpg
+Puis renseigner le champ `photo` du produit dans data/produits.mjs.
+
+Exemple :
+  fichier          static/assets/produits/winterhalter-f420e.jpg
+  dans le code     photo: 'winterhalter-f420e',
+
+Format recommandé : carré, 800 x 800 px, fond clair et uni, JPEG qualité 80.
+
+⚠️ DROITS D'USAGE
+N'utiliser que des images dont SODILAME a le droit de se servir :
+  - vos propres photos du stock (le plus simple et le plus différenciant) ;
+  - les visuels fournis par le fabricant à ses distributeurs, sur demande.
+Ne jamais reprendre une image trouvée sur le site d'un fabricant ou d'un
+concurrent sans autorisation écrite.
+
+Tant qu'un produit n'a pas de photo, le site affiche une vignette de
+remplacement propre (pictogramme + référence). Rien n'est cassé.
