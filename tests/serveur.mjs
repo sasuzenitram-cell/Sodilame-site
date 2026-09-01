@@ -64,6 +64,7 @@ const serveur = createServer(async (req, res) => {
     }
     if (p === '/espace') { req.url = '/api/espace' + qs; return espace(req, res); }
     if (p === '/espace/connexion') { req.url = '/api/espace?vue=connexion' + (qs ? '&' + qs.slice(1) : ''); return espace(req, res); }
+    if (p === '/espace/diagnostic') { req.url = '/api/espace?vue=diagnostic'; return espace(req, res); }
     if (await statique(p === '/' ? '/index.html' : p, res)) return;
     res.statusCode = 404;
     res.end('non trouvé');

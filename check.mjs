@@ -7,7 +7,7 @@ const routes=new Set(files.map(f=>{let r='/'+relative(OUT,f).replace(/index\.htm
 routes.add('/404');
 // Routes servies par des fonctions serverless (voir les rewrites de vercel.json) :
 // elles n'existent pas dans /public mais sont bien accessibles en ligne.
-for(const r of ['/admin','/admin/commandes','/admin/clients','/admin/produits','/espace','/espace/connexion']) routes.add(r);
+for(const r of ['/admin','/admin/commandes','/admin/clients','/admin/produits','/espace','/espace/connexion','/espace/diagnostic']) routes.add(r);
 const assets=new Set((await walk(OUT)).map(f=>'/'+relative(OUT,f)));
 let bad=0, jsonld=0, jsonldBad=0;
 for(const f of files){

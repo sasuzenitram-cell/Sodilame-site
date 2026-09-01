@@ -3,8 +3,8 @@
 //   /espace            → mes commandes et mes coordonnées
 //   /espace/connexion  → demande d'un lien de connexion
 // ---------------------------------------------------------------------------
-import { q, q1, initSchema, baseDisponible, STATUTS } from '../lib/db.mjs';
-import { lireSession } from '../lib/auth.mjs';
+import { q, q1, initSchema, baseDisponible, urlBase, STATUTS } from '../lib/db.mjs';
+import { lireSession, estAdmin } from '../lib/auth.mjs';
 import { pageApp, html, esc, euros, dateFr, dateHeureFr, flash, etiquetteStatut } from '../lib/vue.mjs';
 import { TEL } from '../lib/mail.mjs';
 
@@ -14,6 +14,9 @@ export default async function handler(req, res) {
   const u = new URL(req.url, 'http://x');
   const query = Object.fromEntries(u.searchParams);
   const vue = query.vue || '';
+
+  // ---- Diagnostic de configuration (public, sans secret) ------------------
+  if (vue === 'diagnostic') return html(res, 200, await pageDiagnostic());
 
   // ---- Page de connexion (publique) ---------------------------------------
   if (vue === 'connexion') {
@@ -161,7 +164,8 @@ function pageConnexion(query) {
 
     <p class="aide" style="margin-top:18px">L'accès à la commande en ligne est réservé aux clients SODILAME. Vous n'avez pas encore d'accès ? Appelez-nous au <b>${TEL}</b>, nous vous ouvrons un compte.</p>
   </div>
-  <p style="text-align:center"><a href="/produits">← Retour au catalogue</a></p>
+  <p style="text-align:center;font-size:13px"><a href="/produits">← Retour au catalogue</a>
+    &nbsp;·&nbsp; <a href="/espace/diagnostic">Vérifier la configuration</a></p>
 </div>
 
 <script>
@@ -192,5 +196,126 @@ function pageConnexion(query) {
   });
 })();
 </script>`,
+  });
+}
+
+
+// ---------------------------------------------------------------------------
+// Diagnostic de configuration
+//
+// Volontairement accessible sans être connecté : sans lui, une variable
+// d'environnement oubliée est indiscernable d'un système qui fonctionne —
+// puisque, par sécurité, une adresse non déclarée ne reçoit aucun message.
+//
+// N'expose AUCUNE valeur secrète : seulement « définie » ou « absente ».
+// ---------------------------------------------------------------------------
+function masquer(email) {
+  const [avant, apres] = String(email).split('@');
+  if (!apres) return '???';
+  return avant.slice(0, 1) + '***@' + apres;
+}
+
+async function pageDiagnostic() {
+  const admins = (process.env.ADMINS || '')
+    .split(',').map((x) => x.trim().toLowerCase()).filter(Boolean);
+  const secret = process.env.SESSION_SECRET || '';
+  const base = urlBase();
+
+  let baseOk = false;
+  let baseErreur = '';
+  let nbClients = null;
+  let refus = [];
+  if (base.url) {
+    try {
+      await initSchema();
+      baseOk = true;
+      nbClients = (await q1(`SELECT COUNT(*)::int n FROM clients`))?.n ?? 0;
+      refus = await q(
+        `SELECT qui, quand FROM journal WHERE action = 'connexion_refusee' ORDER BY quand DESC LIMIT 5`
+      );
+    } catch (e) {
+      baseErreur = e?.message || 'connexion impossible';
+    }
+  }
+
+  const points = [
+    {
+      nom: 'Base de données',
+      ok: baseOk,
+      detail: !base.url
+        ? 'Aucune variable Postgres trouvée. Dans Vercel : Storage → Neon → Connect to Project, puis redéployer.'
+        : baseOk
+        ? `Connectée via la variable ${base.nom}. ${nbClients} client${nbClients > 1 ? 's' : ''} enregistré${nbClients > 1 ? 's' : ''}.`
+        : `Variable ${base.nom} trouvée, mais la connexion échoue : ${baseErreur}`,
+    },
+    {
+      nom: 'Clé de session',
+      ok: secret.length >= 24,
+      detail: !secret
+        ? 'SESSION_SECRET absente. Sans elle, aucune connexion n’est possible. Ajoute-la dans Vercel → Settings → Environment Variables, puis redéploie.'
+        : secret.length < 24
+        ? `SESSION_SECRET trop courte (${secret.length} caractères, 24 minimum).`
+        : `Définie (${secret.length} caractères).`,
+    },
+    {
+      nom: 'Administrateurs déclarés',
+      ok: admins.length > 0,
+      detail: admins.length
+        ? `${admins.length} adresse${admins.length > 1 ? 's' : ''} : ${admins.map(masquer).join(', ')}. Seules ces adresses reçoivent un lien vers /admin.`
+        : 'ADMINS est vide. Aucune adresse n’est reconnue comme administrateur, donc aucun lien n’est envoyé — et par sécurité le formulaire ne le dit pas. C’est très probablement la cause de votre problème.',
+    },
+    {
+      nom: 'Envoi des e-mails',
+      ok: !!process.env.RESEND_API_KEY,
+      detail: process.env.RESEND_API_KEY
+        ? `Clé Resend présente. Expéditeur : ${esc(process.env.MAIL_EXPEDITEUR || 'SODILAME <contact@sodilame.com> (valeur par défaut)')}.`
+        : 'RESEND_API_KEY absente : aucun e-mail ne peut partir.',
+    },
+  ];
+
+  const tout = points.every((p) => p.ok);
+
+  return pageApp({
+    titre: 'Diagnostic',
+    corps: `
+<div style="max-width:720px;margin:30px auto">
+  <h1>Diagnostic de configuration</h1>
+  <p class="sous">Cette page indique si chaque brique est en place. Elle n’affiche aucune valeur secrète.</p>
+
+  <div class="msg ${tout ? 'ok' : 'ko'}">
+    ${tout
+      ? '<b>Tout est configuré.</b> La connexion par lien e-mail doit fonctionner.'
+      : '<b>Configuration incomplète.</b> Les points en rouge ci-dessous empêchent la connexion.'}
+  </div>
+
+  ${points
+    .map(
+      (p) => `<div class="carte">
+    <div class="ent"><h2 style="margin:0">${esc(p.nom)}</h2>
+      <span class="et ${p.ok ? 'vert' : 'rouge'}">${p.ok ? 'OK' : 'À corriger'}</span></div>
+    <p class="sous" style="margin:6px 0 0">${p.detail}</p>
+  </div>`
+    )
+    .join('')}
+
+  ${
+    refus.length
+      ? `<div class="carte">
+    <h2 style="margin-top:0">Dernières demandes refusées</h2>
+    <p class="sous">Ces adresses ont demandé un lien de connexion sans être reconnues. Si la vôtre y figure, c’est qu’elle n’est pas dans ADMINS ou pas enregistrée comme client.</p>
+    <table style="min-width:0">${refus
+      .map((r) => `<tr><td>${esc(masquer(r.qui))}</td><td class="num">${dateHeureFr(r.quand)}</td></tr>`)
+      .join('')}</table>
+  </div>`
+      : ''
+  }
+
+  <div class="carte">
+    <h2 style="margin-top:0">Après toute correction</h2>
+    <p class="sous">Les variables d’environnement ne sont lues qu’au déploiement. Après en avoir ajouté ou modifié une : <b>Vercel → Deployments → … → Redeploy</b>. Puis rechargez cette page.</p>
+  </div>
+
+  <p style="text-align:center"><a href="/espace/connexion">← Retour à la connexion</a></p>
+</div>`,
   });
 }

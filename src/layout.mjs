@@ -1,7 +1,26 @@
 // ---------------------------------------------------------------------------
 // Gabarit commun : <head>, en-tête, pied de page, composants réutilisables
 // ---------------------------------------------------------------------------
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { site, navPrincipale, secteurs, etapes, formules } from '../data/site.mjs';
+
+// ---------------------------------------------------------------------------
+// Empreinte des fichiers statiques (anti-cache)
+//
+// Les assets sont servis avec un cache d'un an (immutable). Sans empreinte
+// dans l'URL, un visiteur déjà venu garderait l'ancienne feuille de style
+// pendant des mois : le HTML serait à jour, la mise en page non. L'empreinte
+// change à chaque modification du fichier, donc le navigateur retélécharge.
+// ---------------------------------------------------------------------------
+const empreinte = (chemin) => {
+  try {
+    return createHash('sha1').update(readFileSync(`static${chemin}`)).digest('hex').slice(0, 8);
+  } catch {
+    return String(Date.now()).slice(-8);
+  }
+};
+export const versionne = (chemin) => `${chemin}?v=${empreinte(chemin)}`;
 
 export const A = site.adresse;
 export const esc = (s = '') =>
@@ -79,7 +98,7 @@ ${site.googleVerification ? `<meta name="google-site-verification" content="${si
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="${versionne('/assets/style.css')}">
 ${schemas.map((s) => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n')}
 </head>
 <body${theme ? ` class="${theme}"` : ''}>
@@ -178,8 +197,8 @@ function pied(servicesNav, villesNav, produitsNav = []) {
   n.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('open');b.setAttribute('aria-expanded','false');});});}
 })();
 </script>
-<script src="/assets/form.js" defer></script>
-<script src="/assets/panier.js" defer></script>
+<script src="${versionne('/assets/form.js')}" defer></script>
+<script src="${versionne('/assets/panier.js')}" defer></script>
 </body>
 </html>`;
 }

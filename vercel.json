@@ -159,6 +159,10 @@
       "destination": "/api/espace"
     },
     {
+      "source": "/espace/diagnostic",
+      "destination": "/api/espace?vue=diagnostic"
+    },
+    {
       "source": "/espace/connexion",
       "destination": "/api/espace?vue=connexion"
     }
