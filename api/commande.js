@@ -1,14 +1,17 @@
 // ---------------------------------------------------------------------------
 // POST /api/commande — enregistrement d'une commande de produits lessiviels
 //
-// Réservé aux clients invités (session ouverte). Aucun paiement n'est traité :
-// la commande est enregistrée, notifiée par e-mail à SODILAME, puis validée et
-// facturée dans les conditions habituelles du compte client.
+// Ouverte à tous : aucun compte n'est nécessaire pour commander. Le filtrage
+// se fait sur la commune de livraison — hors zone d'intervention, la commande
+// est refusée. Un client connecté voit simplement ses coordonnées pré-remplies
+// et retrouve sa commande dans son espace.
 //
-// SÉCURITÉ : ni l'identité du client ni les prix ne viennent du navigateur.
-// Le client est lu depuis la session, les prix depuis la base (ou, à défaut,
-// depuis le catalogue du code). Le navigateur ne choisit que des références,
-// des conditionnements et des quantités.
+// Aucun paiement n'est traité : la commande est enregistrée, notifiée par
+// e-mail, puis validée et facturée dans les conditions habituelles.
+//
+// SÉCURITÉ : les PRIX ne viennent jamais du navigateur. Ils sont relus depuis
+// la base (ou, à défaut, depuis le catalogue du code). Le navigateur ne choisit
+// que des références, des conditionnements et des quantités.
 // ---------------------------------------------------------------------------
 import { q, q1, initSchema, baseDisponible, tracer } from '../lib/db.mjs';
 import { lireSession } from '../lib/auth.mjs';
@@ -57,18 +60,12 @@ export default async function handler(req, res) {
     return json(res, 429, { erreur: `Trop de commandes envoyées. Merci d'appeler le ${TEL}.` });
   }
 
-  // ---- Le client doit être connecté ---------------------------------------
+  // ---- Connexion facultative ----------------------------------------------
   let session = null;
   try {
     session = lireSession(req);
   } catch {
     session = null;
-  }
-  if (!session || session.role !== 'client') {
-    return json(res, 401, {
-      erreur: 'La commande en ligne est réservée aux clients SODILAME.',
-      connexion: '/espace/connexion?suite=%2Fproduits%2Fma-commande',
-    });
   }
 
   if (!baseDisponible()) {
@@ -91,22 +88,48 @@ export default async function handler(req, res) {
     return json(res, 503, { erreur: `Service indisponible. Merci d'appeler le ${TEL}.` });
   }
 
-  const client = await q1(`SELECT * FROM clients WHERE id = $1`, [session.clientId]);
-  if (!client || !client.actif) {
-    return json(res, 403, { erreur: `Votre compte n'est plus actif. Merci d'appeler le ${TEL}.` });
+  // ---- Identité : le compte s'il existe, sinon le formulaire ---------------
+  let client = null;
+  if (session?.role === 'client') {
+    client = await q1(`SELECT * FROM clients WHERE id = $1`, [session.clientId]);
+    if (client && !client.actif) {
+      return json(res, 403, { erreur: `Votre compte n'est plus actif. Merci d'appeler le ${TEL}.` });
+    }
   }
 
-  // ---- Livraison : celle du compte, sauf remplacement explicite ------------
-  const adresse = nettoyer(corps.adresse, 200) || client.adresse;
-  const codePostal = nettoyer(corps.codePostal, 10) || client.code_postal;
-  const commune = nettoyer(corps.commune, 120) || client.commune;
+  const etablissement = client ? client.etablissement : nettoyer(corps.etablissement, 160);
+  const contact = client ? client.contact : nettoyer(corps.nom, 120);
+  const email = client ? client.email : nettoyer(corps.email, 160).toLowerCase();
+  const telephone = client ? client.telephone : nettoyer(corps.telephone, 40);
+
+  const adresse = nettoyer(corps.adresse, 200) || client?.adresse || '';
+  const codePostal = nettoyer(corps.codePostal, 10) || client?.code_postal || '';
+  const commune = nettoyer(corps.commune, 120) || client?.commune || '';
   const message = nettoyer(corps.message, 2000);
 
   const manquants = [];
+  // Un client connecté est identifié par sa fiche : on ne lui redemande rien,
+  // même si sa fiche est incomplète (un contact ou un téléphone peut manquer
+  // après un import Dolibarr). Un visiteur, lui, doit tout renseigner.
+  if (!client) {
+    if (!etablissement) manquants.push('établissement');
+    if (!contact) manquants.push('nom du contact');
+    if (!telephone || telephone.replace(/\D/g, '').length < 9) manquants.push('téléphone valide');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(email)) manquants.push('e-mail valide');
+    if (!corps.consentement) manquants.push('acceptation de la politique de confidentialité');
+  }
   if (!adresse) manquants.push('adresse de livraison');
   if (!/^\d{5}$/.test(codePostal)) manquants.push('code postal à 5 chiffres');
   if (!commune) manquants.push('commune');
   if (manquants.length) return json(res, 400, { erreur: `Merci de renseigner : ${manquants.join(', ')}.` });
+
+  // Un visiteur qui commande avec l'e-mail d'un client connu est rattaché à sa
+  // fiche : la commande apparaît dans son espace, et l'historique reste entier.
+  let clientId = client?.id ?? null;
+  if (!clientId) {
+    const connu = await q1(`SELECT id, actif FROM clients WHERE email = $1`, [email]);
+    if (connu?.actif) clientId = connu.id;
+  }
 
   if (!COMMUNES.has(normaliser(commune))) {
     return json(res, 400, {
@@ -166,7 +189,7 @@ export default async function handler(req, res) {
         adresse, code_postal, commune, message, total_ht, statut)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'recue') RETURNING id`,
     [
-      reference, client.id, client.etablissement, client.contact, client.email, client.telephone,
+      reference, clientId, etablissement, contact, email, telephone,
       adresse, codePostal, commune, message, avecPrix.length ? total.toFixed(2) : null,
     ]
   );
@@ -179,7 +202,7 @@ export default async function handler(req, res) {
     );
   }
 
-  await tracer(client.email, 'commande_recue', `${reference} — ${lignes.length} lignes`);
+  await tracer(email, 'commande_recue', `${reference} — ${lignes.length} lignes`);
 
   // ---- Notifications --------------------------------------------------------
   const rows = lignes
@@ -209,15 +232,15 @@ export default async function handler(req, res) {
 
   await envoyer({
     to: DESTINATION,
-    replyTo: client.email,
-    sujet: `[Commande ${reference}] ${client.etablissement} — ${commune}`,
+    replyTo: email,
+    sujet: `[Commande ${reference}] ${etablissement} — ${commune}`,
     html: gabarit(
       `Nouvelle commande ${reference}`,
       `<table role="presentation" style="font-size:14px;width:100%;margin-bottom:14px">
-        <tr><td style="padding:4px 14px 4px 0;color:#5A6675">Établissement</td><td><b>${echapper(client.etablissement)}</b></td></tr>
-        <tr><td style="padding:4px 14px 4px 0;color:#5A6675">Contact</td><td><b>${echapper(client.contact)}</b></td></tr>
-        <tr><td style="padding:4px 14px 4px 0;color:#5A6675">Téléphone</td><td><b>${echapper(client.telephone)}</b></td></tr>
-        <tr><td style="padding:4px 14px 4px 0;color:#5A6675">E-mail</td><td><b>${echapper(client.email)}</b></td></tr>
+        <tr><td style="padding:4px 14px 4px 0;color:#5A6675">Établissement</td><td><b>${echapper(etablissement)}</b></td></tr>
+        <tr><td style="padding:4px 14px 4px 0;color:#5A6675">Contact</td><td><b>${echapper(contact)}</b></td></tr>
+        <tr><td style="padding:4px 14px 4px 0;color:#5A6675">Téléphone</td><td><b>${echapper(telephone)}</b></td></tr>
+        <tr><td style="padding:4px 14px 4px 0;color:#5A6675">E-mail</td><td><b>${echapper(email)}</b></td></tr>
         <tr><td style="padding:4px 14px 4px 0;color:#5A6675;vertical-align:top">Livraison</td><td><b>${echapper(adresse)}<br>${echapper(codePostal)} ${echapper(commune)}</b></td></tr>
       </table>
       ${tableau}
@@ -227,10 +250,10 @@ export default async function handler(req, res) {
     texte: [
       `NOUVELLE COMMANDE — ${reference}`,
       ``,
-      `Établissement : ${client.etablissement}`,
-      `Contact       : ${client.contact}`,
-      `Téléphone     : ${client.telephone}`,
-      `E-mail        : ${client.email}`,
+      `Établissement : ${etablissement}`,
+      `Contact       : ${contact}`,
+      `Téléphone     : ${telephone}`,
+      `E-mail        : ${email}`,
       `Livraison     : ${adresse}, ${codePostal} ${commune}`,
       ``,
       ...lignes.map((l) => `  ${l.qte} × ${l.nom} (${l.marque} ${l.ref}) — ${l.cond} — ${l.prix === null ? 'à chiffrer' : euros(l.prix * l.qte)}`),
@@ -243,13 +266,13 @@ export default async function handler(req, res) {
 
   // Accusé de réception au client — échec silencieux, la commande est enregistrée.
   envoyer({
-    to: client.email,
+    to: email,
     replyTo: DESTINATION,
     sujet: `Votre commande ${reference} — SODILAME`,
     html: gabarit(
       `Commande ${reference}`,
-      `<p>Bonjour${client.contact ? ' ' + echapper(client.contact) : ''},</p>
-       <p>Nous avons bien reçu votre commande pour <b>${echapper(client.etablissement)}</b>.</p>
+      `<p>Bonjour${contact ? ' ' + echapper(contact) : ''},</p>
+       <p>Nous avons bien reçu votre commande pour <b>${echapper(etablissement)}</b>.</p>
        ${tableau}
        <p style="margin-top:18px">Livraison prévue, <b>sans frais de port</b>, à l'adresse suivante :<br>
        ${echapper(adresse)}<br>${echapper(codePostal)} ${echapper(commune)}</p>
