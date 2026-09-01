@@ -59,7 +59,7 @@ export const site = {
     siret: '334 555 091 00035',
     rcs: '334 555 091 R.C.S. Tarascon',
     tvaIntra: 'FR77334555091',
-    capital: '', // toujours à compléter — montant du capital social en euros
+    capital: '52 000 €',
     directeurPublication: 'Mathieu Martinez',
     hebergeur: {
       nom: 'Vercel Inc.',
