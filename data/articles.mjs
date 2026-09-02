@@ -5,6 +5,159 @@
 export const articles = [
   // =========================================================================
   {
+    slug: 'plan-de-maitrise-sanitaire-restaurant',
+    photo: null,
+    titre: "Plan de maîtrise sanitaire : ce qu'il doit contenir, et ce que l'inspecteur regarde en premier",
+    titreSeo: "Plan de maîtrise sanitaire (PMS) restaurant : contenu et obligations | SODILAME",
+    description:
+      "Le PMS est obligatoire pour tout restaurant. Ses quatre parties, ce que le contrôle vérifie en priorité, et la part qui dépend directement de vos équipements.",
+    date: '2026-09-01',
+    dateAffichee: '1er septembre 2026',
+    categorie: 'Hygiène & HACCP',
+    resume:
+      "Un classeur épais ne protège personne. Ce qui tient devant un contrôle, ce sont des relevés cohérents et du matériel qui fait ce qu'il prétend faire.",
+    corps: `
+<p>Le plan de maîtrise sanitaire — le PMS — est le document qui prouve que vous maîtrisez la sécurité sanitaire de votre production. Il est <b>obligatoire pour tout établissement qui manipule des denrées alimentaires</b>, du restaurant de vingt couverts à la cuisine centrale.</p>
+<p>Nous ne sommes pas un cabinet d'hygiène et nous n'allons pas vous vendre un PMS. Mais nous entrons dans des cuisines tous les jours, nous voyons ce que les contrôles relèvent, et nous constatons une chose : <b>une bonne moitié des non-conformités portent sur des équipements, pas sur des procédures</b>. C'est cette moitié-là que nous connaissons.</p>
+
+<h2>Sur quoi repose l'obligation</h2>
+<p>Trois textes se superposent :</p>
+<ul>
+<li>Le <b>règlement (CE) n° 852/2004</b>, dont l'article 5 impose à toute entreprise alimentaire une procédure fondée sur les principes HACCP ;</li>
+<li>L'<b>arrêté du 21 décembre 2009</b>, qui fixe les règles sanitaires applicables aux activités de commerce de détail et de restauration ;</li>
+<li>La <b>note de service DGAL/SDSSA/N2012-8119</b>, qui précise ce que l'administration française attend concrètement dans le document.</li>
+</ul>
+<p>L'absence de PMS lors d'un contrôle donne lieu à une mise en demeure avec délai de mise en conformité. En cas de danger avéré, la fermeture administrative est immédiate.</p>
+
+<h2>Les quatre parties du document</h2>
+
+<h3>1. Les bonnes pratiques d'hygiène</h3>
+<p>Ce sont les programmes prérequis : hygiène du personnel, plan de nettoyage et de désinfection, lutte contre les nuisibles, <b>maîtrise des températures</b>, qualité de l'eau, <b>maintenance des équipements</b>, contrôle à réception. Deux de ces sept programmes reposent entièrement sur votre matériel.</p>
+
+<h3>2. Le plan HACCP</h3>
+<p>L'analyse des dangers propre à votre production : les sept principes, les douze étapes, l'identification de vos points critiques et les limites que vous vous fixez. C'est la partie qui doit être <b>écrite pour votre cuisine</b>. Un HACCP téléchargé et rempli au nom de l'établissement se repère en trois minutes — il décrit des flux qui ne correspondent pas au local.</p>
+
+<h3>3. La traçabilité et la gestion des non-conformités</h3>
+<p>D'où viennent vos produits, ce que vous en faites, comment vous les étiquetez en interne, et surtout : <b>ce que vous faites quand quelque chose sort des clous</b>. Un relevé qui montre une chambre froide à 8 °C sans aucune action associée est plus accablant qu'un relevé absent.</p>
+
+<h3>4. La gestion des allergènes</h3>
+<p>Les quatorze allergènes à déclaration obligatoire, leur présence dans vos préparations, et les procédures qui évitent la contamination croisée.</p>
+
+<h2>Ce que le contrôle regarde en premier</h2>
+<p>D'après ce que nos clients nous rapportent après leurs visites, l'ordre est assez constant.</p>
+<p><b>Les relevés de température, et leur cohérence.</b> Pas leur existence — leur cohérence. Un cahier où la chambre froide fait 3 °C tous les jours de l'année, week-ends compris, dimanches de fermeture compris, ne prouve rien : il prouve que quelqu'un remplit un cahier. Un relevé crédible respire, il montre des variations, des dégivrages, et des actions quand ça dérape.</p>
+<div class="callout"><p><b>C'est l'argument décisif pour l'enregistrement automatique.</b> Un enregistreur relié à vos chambres froides produit une courbe réelle, horodatée, que personne ne peut avoir écrite le matin même. Il coûte moins cher qu'une seule journée de fermeture administrative.</p></div>
+<p><b>Le refroidissement rapide.</b> La réglementation impose de passer de +63 °C à +10 °C en moins de deux heures. C'est une performance de matériel, pas de bonne volonté : aucune chambre froide ne fait ce travail, et une <a href="/services/froid-professionnel">cellule de refroidissement</a> sous-dimensionnée pour votre production réelle ne le fera pas non plus. C'est le point sur lequel les cuisines de collectivité sont le plus souvent reprises.</p>
+<p><b>Le plan de nettoyage, et sa preuve.</b> Quels produits, à quelle dilution, sur quelles surfaces, à quelle fréquence, par qui. Avec les fiches de données de sécurité disponibles. C'est aussi pour ça que nous ne vendons que des <a href="/produits">produits dont nous pouvons fournir la documentation</a> : un bidon sans fiche est un trou dans votre PMS.</p>
+<p><b>L'entretien des équipements, et ses justificatifs.</b> Rapports d'intervention, attestations de contrôle d'étanchéité pour les installations frigorifiques, dégraissage des <a href="/services/extraction-ventilation-cuisine">hottes et conduits d'extraction</a>. Un <a href="/services/contrat-entretien-cuisine-professionnelle">contrat d'entretien</a> produit cette documentation automatiquement — c'est même son intérêt le moins souvent cité.</p>
+
+<h2>Les trois erreurs que nous voyons le plus</h2>
+<p><b>Le classeur acheté et jamais ouvert.</b> Il rassure au moment de l'achat et ne résiste pas à la première question précise. Un PMS qui ne décrit pas votre cuisine ne vous protège pas.</p>
+<p><b>Les relevés rattrapés.</b> Une semaine remplie d'un coup, même encre, même stylo, même écriture régulière. C'est visible, et ça détruit la crédibilité de tout le reste du dossier.</p>
+<p><b>Le matériel qui ne peut pas tenir les valeurs déclarées.</b> C'est le plus fréquent, et c'est celui dont on parle le moins. Vous pouvez écrire ce que vous voulez sur le refroidissement rapide : si votre cellule est dimensionnée pour 20 kg et que vous en passez 40, elle ne descendra pas dans les temps. Le PMS décrit alors une maîtrise qui n'existe pas — et c'est exactement ce que le contrôle cherche.</p>
+
+<h2>Ce que nous pouvons faire</h2>
+<p>Pas votre PMS. En revanche, l'<a href="/services/contrat-entretien-cuisine-professionnelle">audit technique de votre parc</a> est gratuit : un technicien passe, relève les températures réelles de vos équipements, mesure les temps de descente de votre cellule et vous remet un rapport écrit. Vous savez alors si le matériel peut effectivement tenir ce que votre document promet.</p>
+<p>C'est le préalable de bon sens. Écrire une procédure que le matériel ne peut pas honorer, c'est documenter sa propre non-conformité.</p>`,
+    faq: [
+      {
+        q: 'Le plan de maîtrise sanitaire est-il obligatoire pour un petit restaurant ?',
+        r: `<p>Oui. L'obligation ne dépend pas de la taille : elle s'applique à toute entreprise du secteur alimentaire, y compris un établissement de quelques couverts. Le contenu, lui, est proportionné à l'activité — le PMS d'un snack ne fait pas le même volume que celui d'une cuisine centrale.</p>`,
+      },
+      {
+        q: 'Peut-on utiliser un modèle de PMS téléchargé ?',
+        r: `<p>Comme point de départ, oui. Tel quel, non. Un PMS doit décrire votre cuisine : vos flux, vos équipements, vos fournisseurs, vos points critiques. Un modèle générique se repère immédiatement lors d'un contrôle, parce qu'il décrit des circulations qui ne correspondent pas au local visité.</p>`,
+      },
+      {
+        q: 'Combien de temps faut-il conserver les relevés de température ?',
+        r: `<p>La pratique courante est de les conserver au moins un an, et il est prudent d'aller au-delà pour les documents d'entretien et les attestations réglementaires. En cas de toxi-infection alimentaire collective, ce sont ces relevés qui permettent d'établir ce qui s'est passé — et ce qui ne s'est pas passé chez vous.</p>`,
+      },
+      {
+        q: 'Un enregistreur automatique de température est-il obligatoire ?',
+        r: `<p>Non, le relevé manuel reste accepté. Mais l'enregistrement automatique produit une preuve qu'on ne peut pas reconstituer après coup, et il alerte en cas de dérive avant que la marchandise soit perdue. Sur une chambre froide de stockage, il se rentabilise sur un seul incident évité.</p>`,
+      },
+    ],
+  },
+
+  // =========================================================================
+  {
+    slug: 'bac-a-graisses-restaurant',
+    photo: null,
+    titre: "Bac à graisses en restaurant : obligation, dimensionnement et entretien",
+    titreSeo: "Bac à graisses restaurant : obligation, taille et vidange | SODILAME",
+    description:
+      "Le bac à graisses est obligatoire pour la plupart des restaurants. Comment le dimensionner sur votre activité réelle, à quelle fréquence le faire vidanger, et ce que vous risquez sans.",
+    date: '2026-09-02',
+    dateAffichee: '2 septembre 2026',
+    categorie: 'Réglementation',
+    resume:
+      "Sous-dimensionné dans neuf cas sur dix, vidangé trop tard dans les mêmes proportions. C'est pourtant l'équipement le moins cher de votre cuisine.",
+    corps: `
+<p>C'est l'équipement dont personne ne parle jusqu'au jour où il déborde. Le bac à graisses — ou séparateur à graisses — retient les matières grasses de vos eaux de plonge et de cuisine avant qu'elles ne partent au réseau. Sans lui, elles se figent en refroidissant dans les canalisations et finissent par les boucher, chez vous d'abord, dans le collecteur public ensuite.</p>
+
+<h2>Ce qui rend le bac à graisses obligatoire</h2>
+<p>Il n'existe pas un texte unique « bac à graisses obligatoire ». L'obligation naît du croisement de plusieurs règles :</p>
+<ul>
+<li>Le <b>code de la santé publique</b> (art. L 1331-2) interdit de déverser au réseau des matières susceptibles de nuire à son bon fonctionnement ;</li>
+<li>Le <b>règlement sanitaire départemental</b> reprend et précise cette interdiction — c'est lui qui s'applique concrètement à votre établissement ;</li>
+<li>La norme <b>NF EN 1825</b> encadre la conception (partie 1) et l'installation, l'utilisation et l'entretien (partie 2) des séparateurs à graisses. Le marquage CE est requis.</li>
+</ul>
+<div class="callout"><p><b>Le point à vérifier avant tout le reste :</b> votre convention de rejet et le règlement sanitaire de votre département. Les seuils, les obligations de vidange et les justificatifs demandés varient d'un territoire à l'autre. Votre service d'assainissement vous les fournit sur simple demande — et c'est lui qui contrôlera.</p></div>
+
+<h2>Le dimensionnement : là où presque tout le monde se trompe</h2>
+<p>Le réflexe est de choisir le bac sur le nombre de couverts. C'est insuffisant, et c'est la raison pour laquelle tant d'installations saturent en quelques semaines.</p>
+<p>La norme NF EN 1825 dimensionne sur le <b>débit</b>, pas sur les couverts, avec une formule qui corrige ce débit par trois facteurs :</p>
+<ul>
+<li>la <b>densité des graisses</b> rejetées ;</li>
+<li>la présence de <b>détergents</b>, qui émulsionnent les graisses et rendent leur séparation plus difficile — c'est un facteur majorant important ;</li>
+<li>la <b>température de l'eau</b> : plus elle est chaude, moins les graisses se figent et se séparent.</li>
+</ul>
+<p>Ce dernier point mérite qu'on s'y arrête, parce qu'il explique la plupart des échecs. Une cuisine qui a installé un <a href="/services/laverie-restauration">lave-vaisselle professionnel</a> rejette de l'eau à 60 °C chargée en détergent alcalin. Dans ces conditions, la graisse ne remonte pas : elle traverse le bac en émulsion et va se figer plus loin, dans une canalisation froide. Le bac est propre, et le bouchon est quand même là.</p>
+<p><b>Conséquence pratique :</b> le bac se dimensionne sur votre équipement réel, pas sur votre carte. Deux restaurants de cinquante couverts n'ont pas le même besoin si l'un lave à la main et l'autre a une machine à capot.</p>
+
+<h2>L'entretien : ce qui se fait chaque semaine, et ce qui se fait deux fois par an</h2>
+<p>La norme distingue deux gestes que l'on confond souvent.</p>
+<p><b>Le panier de dégrossissage</b> retient les résidus solides. Il se vide <b>une à deux fois par semaine</b>, par votre personnel. C'est un geste de plonge, pas une opération technique.</p>
+<p><b>La vidange complète</b> retire la couche de graisses et les boues déposées au fond. En usage standard, elle intervient <b>toutes les six à huit semaines</b> — une cuisine de friture ou une activité intense l'exigera plus souvent. Elle est réalisée par une entreprise spécialisée, qui vous remet un bordereau de suivi des déchets.</p>
+<p><b>Conservez ces bordereaux au moins trois ans.</b> C'est le seul document qui prouve que vous entretenez l'installation, et il vous sera demandé lors d'un contrôle d'assainissement. Il a aussi sa place dans votre <a href="/conseils/plan-de-maitrise-sanitaire-restaurant">plan de maîtrise sanitaire</a>, au titre de la maintenance des équipements.</p>
+
+<h2>Comment reconnaître un bac saturé avant qu'il ne déborde</h2>
+<ul>
+<li><b>Une odeur qui remonte en plonge</b>, plus forte le matin à l'ouverture. C'est le premier signal, et il est fiable.</li>
+<li><b>Un écoulement qui ralentit</b> sur la plonge ou le siphon de sol.</li>
+<li><b>Une croûte de graisse épaisse</b> à l'ouverture du couvercle : au-delà de quelques centimètres, la capacité utile est déjà largement entamée.</li>
+<li><b>Des mouches de drain</b> en cuisine — elles se reproduisent dans les dépôts gras.</li>
+</ul>
+<p>Attendre le débordement coûte beaucoup plus cher que la vidange : nettoyage du local, arrêt de service, et parfois une remise en état de canalisation à laquelle personne n'avait pensé.</p>
+
+<h2>Ce que vous risquez sans</h2>
+<p>Le gestionnaire du réseau peut vous mettre en demeure de vous équiper, majorer votre redevance d'assainissement, et vous facturer les frais de curage du collecteur si l'obstruction vous est imputable. Dans un local en copropriété, un refoulement chez le voisin ajoute un litige civil au reste.</p>
+<p>Mais le motif le plus banal reste l'odeur en salle. Une odeur d'égout en salle vide un restaurant plus sûrement qu'une mauvaise critique, et elle ne se rattrape pas avec un désodorisant.</p>
+
+<h2>Notre rôle là-dedans</h2>
+<p>Nous ne vidangeons pas les bacs à graisses — c'est un métier d'assainissement, avec son agrément et ses bordereaux. En revanche, nous intervenons en amont : quand nous concevons une <a href="/services/conception-cuisine-professionnelle">cuisine professionnelle</a>, nous calculons le débit réel de la plonge et de la laverie, et nous dimensionnons le séparateur en conséquence plutôt que de reprendre le chiffre du plan précédent.</p>
+<p>Et lors d'un <a href="/services/contrat-entretien-cuisine-professionnelle">audit de parc</a>, c'est un des points que nous relevons — parce que c'est souvent la seule occasion où quelqu'un ouvre le couvercle.</p>`,
+    faq: [
+      {
+        q: 'Un bac à graisses est-il obligatoire pour tous les restaurants ?',
+        r: `<p>En pratique, oui pour tout établissement qui produit des eaux usées chargées en graisses, ce qui couvre la quasi-totalité de la restauration. L'obligation découle du règlement sanitaire départemental et de votre convention de rejet : c'est auprès de votre service d'assainissement qu'il faut vérifier les modalités exactes applicables chez vous.</p>`,
+      },
+      {
+        q: 'À quelle fréquence faut-il faire vidanger un bac à graisses ?',
+        r: `<p>La norme NF EN 1825-2 retient six à huit semaines en usage standard, et le panier de dégrossissage se vide une à deux fois par semaine par le personnel. Une cuisine qui fait beaucoup de friture ou tourne à forte cadence descendra à quatre semaines. Le meilleur indicateur reste l'épaisseur de la couche de graisse au couvercle.</p>`,
+      },
+      {
+        q: 'Peut-on installer un bac à graisses dans la cuisine ?',
+        r: `<p>C'est possible pour les modèles compacts sous plonge, mais ce n'est pas idéal : l'ouverture pour l'entretien se fait alors dans le local de production. Quand la configuration le permet, l'installation en extérieur ou dans un local technique dédié est préférable, tant pour l'hygiène que pour le confort de l'exploitation.</p>`,
+      },
+      {
+        q: 'Le lave-vaisselle doit-il être raccordé au bac à graisses ?',
+        r: `<p>Oui, et c'est justement ce qui impose de le prendre en compte au dimensionnement. Son rejet est chaud et fortement chargé en détergent, deux facteurs qui dégradent la séparation des graisses. Un bac calculé sans tenir compte de la machine sera sous-dimensionné dès le premier jour.</p>`,
+      },
+    ],
+  },
+  // =========================================================================
+  {
     slug: 'subvention-lave-verres-osmoseur',
     photo: { f: 'lave-verres-winterhalter-uc', w: 1050, h: 1400, alt: "Lave-verres Winterhalter UC Series installé par SODILAME chez un client de Provence" },
     titre: "Lave-verres avec osmoseur : l'Assurance Maladie finance 70 % de votre équipement",

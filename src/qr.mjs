@@ -54,13 +54,14 @@ main.actions{flex:1;padding:14px 16px 8px;display:flex;flex-direction:column;gap
   color:#1B2430;text-decoration:none;font-weight:700;font-size:17px;padding:16px;border-radius:14px;
   box-shadow:0 3px 14px rgba(0,0,0,.28)}
 .appel a svg{width:20px;height:20px}
-.appel p{margin:9px 0 0;text-align:center;font-size:11.5px;color:#8FA2BA}
+.appel p{margin:9px 0 0;text-align:center;font-size:12.5px;color:#9DB0C7}
 
 /* ---------- Pages formulaire ---------- */
 body.form{background:var(--cream)}
 .bar{background:var(--navy);color:#fff;display:flex;align-items:center;gap:12px;
   padding:calc(14px + env(safe-area-inset-top)) 16px 14px}
-.bar a{color:#fff;text-decoration:none;display:flex;align-items:center;flex:none}
+.bar a{color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;
+  flex:none;width:44px;height:44px;margin-left:-11px}
 .bar svg{width:22px;height:22px}
 .bar b{font-size:16.5px;font-weight:700}
 main.f{flex:1;padding:18px 16px 100px}
@@ -131,7 +132,7 @@ textarea{min-height:110px;resize:vertical}
   .act .tx span{font-size:12.5px}
   .appel{padding-top:8px}
   .appel a{padding:14px;font-size:16px}
-  .appel p{font-size:11px;margin-top:7px}
+  .appel p{font-size:12px;margin-top:7px}
 }
 `;
 
@@ -450,7 +451,7 @@ export function pagePanne() {
 
     <div class="hp" aria-hidden="true"><label for="societe_web">Ne pas remplir</label><input id="societe_web" name="societe_web" tabindex="-1" autocomplete="off"></div>
 
-    <p style="font-size:11.5px;color:var(--muted);line-height:1.5;margin:0">
+    <p style="font-size:12.5px;color:var(--muted);line-height:1.55;margin:0">
       Ces informations servent uniquement à traiter votre demande.
       <a href="/politique-de-confidentialite">Politique de confidentialité</a>.
     </p>
@@ -518,7 +519,7 @@ export function pageAudit() {
 
     <div class="hp" aria-hidden="true"><label for="societe_web">Ne pas remplir</label><input id="societe_web" name="societe_web" tabindex="-1" autocomplete="off"></div>
 
-    <p style="font-size:11.5px;color:var(--muted);line-height:1.5;margin:0">
+    <p style="font-size:12.5px;color:var(--muted);line-height:1.55;margin:0">
       Ces informations servent uniquement à traiter votre demande.
       <a href="/politique-de-confidentialite">Politique de confidentialité</a>.
     </p>

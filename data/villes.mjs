@@ -6,17 +6,23 @@ export const villes = [
   {
     slug: 'saint-martin-de-crau',
     nom: 'Saint-Martin-de-Crau',
+    h1: 'Cuisine professionnelle et dépannage à Saint-Martin-de-Crau',
     cp: '13310',
     departement: 'Bouches-du-Rhône',
     dep: '13',
     distance: 'siège de l’entreprise',
     titreSeo:
-      'Cuisine professionnelle à Saint-Martin-de-Crau | SODILAME',
+      'Frigoriste et dépannage de cuisine professionnelle à Saint-Martin-de-Crau | SODILAME',
     description:
-      "SODILAME, installateur de cuisines professionnelles ZA de la Chapelette à Saint-Martin-de-Crau. Vente, installation, dépannage, magasin de pièces.",
+      "Frigoriste, dépannage de cuisine professionnelle et magasin de pièces détachées ZA de la Chapelette à Saint-Martin-de-Crau. Chambre froide, four, lave-vaisselle. 04 90 93 98 88.",
     accroche:
       "Notre atelier, notre magasin de pièces et nos équipes sont ici, ZA de la Chapelette. Saint-Martin-de-Crau n'est pas une ville de plus sur notre carte : c'est notre base depuis quarante ans.",
     corps: [
+      {
+        h2: 'Dépannage et frigoriste : nous sommes à quelques minutes',
+        html: `<p>Pour un établissement martino-craulien, une panne de chambre froide ou de four se traite dans la journée : l'atelier, le stock de pièces et les techniciens sont sur la commune. Il n'y a pas de délai de route à ajouter, pas de commande de pièce à attendre quand elle est en rayon.</p>
+<p>Nos frigoristes sont habilités à la manipulation des <a href="/services/froid-professionnel">fluides frigorigènes</a> et délivrent l'attestation de contrôle d'étanchéité. Nous intervenons sur les chambres froides, les groupes, les vitrines réfrigérées, les cellules de refroidissement, les fours et les lave-vaisselle professionnels — <a href="/services/depannage-sav-cuisine-professionnelle">toutes marques</a>, y compris celles que nous n'avons pas vendues.</p>`,
+      },
       {
         h2: 'Une entreprise martino-craulienne depuis 1986',
         html: `<p>SODILAME est implantée à Saint-Martin-de-Crau depuis sa création. Nos locaux de la ZA de la Chapelette abritent l'atelier, le magasin de pièces détachées et le stock de matériel neuf. C'est de là que partent chaque matin les camions techniques qui interviennent sur toute la Provence.</p>
@@ -38,16 +44,24 @@ export const villes = [
   {
     slug: 'arles',
     nom: 'Arles',
+    h1: 'Frigoriste et dépannage de cuisine professionnelle à Arles',
     cp: '13200',
     departement: 'Bouches-du-Rhône',
     dep: '13',
     distance: 'à 15 minutes de notre atelier',
-    titreSeo: 'Cuisine professionnelle à Arles (13200) | SODILAME',
+    titreSeo:
+      'Frigoriste à Arles (13200) : dépannage cuisine professionnelle | SODILAME',
     description:
-      "Installation, dépannage et entretien de cuisines professionnelles à Arles : restaurants, hôtels, mas de Camargue, collectivités. Devis gratuit.",
+      "Frigoriste à Arles : dépannage de chambre froide, vitrine réfrigérée, four et lave-vaisselle professionnels. À 15 minutes de notre atelier, pièces en stock. 04 90 93 98 88.",
     accroche:
       "Arles est à un quart d'heure de notre atelier. C'est la ville où nous intervenons le plus, du restaurant de la place du Forum au mas isolé en Camargue.",
     corps: [
+      {
+        h2: 'Frigoriste à Arles : chambre froide, vitrine, groupe en panne',
+        html: `<p>Arles est à un quart d'heure de notre atelier — c'est la ville où nos techniciens passent le plus souvent, et où une panne se traite le plus vite. Chambre froide qui ne tient plus la température, vitrine réfrigérée qui givre, groupe qui tourne en permanence sans descendre : nous qualifions au téléphone, nous vérifions la pièce dans notre stock, et nous annonçons un créneau réaliste plutôt qu'optimiste.</p>
+<p>Deux causes reviennent particulièrement sur le secteur arlésien. <b>L'air de Camargue</b> corrode les ailettes de condenseur des groupes installés en extérieur, surtout du côté des Saintes-Maries et de Salin-de-Giraud : un groupe qui perd son rendement en trois ans plutôt qu'en dix, c'est presque toujours ça. <b>Et la chaleur d'été</b>, sur des locaux techniques mal ventilés, achève les compresseurs déjà fatigués — juillet et août sont nos deux mois les plus chargés en <a href="/services/depannage-sav-cuisine-professionnelle">dépannage de froid</a>.</p>
+<p>Nos frigoristes sont habilités aux <a href="/services/froid-professionnel">fluides frigorigènes</a> et assurent le contrôle d'étanchéité réglementaire avec délivrance de l'attestation.</p>`,
+      },
       {
         h2: 'Des contraintes de local très particulières',
         html: `<p>Le centre historique d'Arles pose des problèmes que l'on ne rencontre pas en zone d'activité : accès en voirie étroite, absence de quai de livraison, escaliers, caves voûtées, murs anciens dans lesquels on ne perce pas comme on veut, et parfois des contraintes patrimoniales sur les façades qui compliquent l'installation d'un caisson d'extraction ou d'un groupe frigorifique en extérieur.</p>
@@ -69,16 +83,24 @@ export const villes = [
   {
     slug: 'salon-de-provence',
     nom: 'Salon-de-Provence',
+    h1: 'Frigoriste, laverie et dépannage de cuisine à Salon-de-Provence',
     cp: '13300',
     departement: 'Bouches-du-Rhône',
     dep: '13',
     distance: 'à 30 minutes de notre atelier',
-    titreSeo: 'Cuisine professionnelle à Salon-de-Provence (13300) | SODILAME',
+    titreSeo:
+      'Frigoriste et dépannage laverie à Salon-de-Provence (13300) | SODILAME',
     description:
-      "Cuisines professionnelles à Salon-de-Provence : installation, dépannage et contrats d'entretien pour restaurants et collectivités. 04 90 93 98 88.",
+      "Frigoriste à Salon-de-Provence : dépannage de chambre froide, lave-vaisselle et laverie professionnelle. Restaurants, cantines et collectivités. 04 90 93 98 88.",
     accroche:
       "Salon-de-Provence combine un centre-ville de restauration traditionnelle et un tissu dense de collectivités, de cantines et d'établissements de santé. Deux logiques d'équipement bien différentes.",
     corps: [
+      {
+        h2: 'Frigoriste et dépannage de laverie à Salon-de-Provence',
+        html: `<p>Sur Salon, deux familles de pannes dominent nos interventions, et elles n'ont pas la même urgence.</p>
+<p><b>Le froid.</b> Chambre froide, groupe, cellule de refroidissement rapide : sur les cuisines de collectivité du secteur, une cellule qui ne descend plus dans les temps réglementaires arrête toute la production du jour. C'est le premier équipement que nous contrôlons en visite d'entretien, avant même les chambres froides.</p>
+<p><b>La laverie.</b> L'eau salonaise est dure, et c'est ce qui tue les lave-vaisselle professionnels du secteur : entartrage du surchauffeur, résistances qui claquent, bras de lavage bouchés, verrerie voilée. Neuf fois sur dix, la panne qu'on nous appelle pour réparer est le symptôme d'un <a href="/services/laverie-restauration">traitement d'eau absent ou sous-dimensionné</a>. Nous analysons votre eau gratuitement avant de vous proposer quoi que ce soit — il arrive que le bon conseil soit un adoucisseur plutôt qu'une machine neuve.</p>`,
+      },
       {
         h2: 'Restauration commerciale et restauration collective',
         html: `<p>Sur Salon, notre activité se répartit entre deux mondes. D'un côté les restaurants du centre et des zones commerciales, avec des besoins de cuisson performante et de froid en volume réduit. De l'autre les cuisines de collectivité — établissements scolaires, structures d'accueil, restaurants d'entreprise — où la logique est celle de la production en série, de la liaison froide et de la traçabilité.</p>
@@ -100,16 +122,24 @@ export const villes = [
   {
     slug: 'avignon',
     nom: 'Avignon',
+    h1: 'Dépannage de cuisine professionnelle et frigoriste à Avignon',
     cp: '84000',
     departement: 'Vaucluse',
     dep: '84',
     distance: 'à 40 minutes de notre atelier',
-    titreSeo: 'Cuisine professionnelle à Avignon (84000) | SODILAME',
+    titreSeo:
+      'Frigoriste à Avignon (84000) : dépannage cuisine professionnelle | SODILAME',
     description:
-      "Installation et dépannage de cuisines professionnelles à Avignon et dans le Vaucluse : restaurants, hôtels, traiteurs. Froid, cuisson, laverie.",
+      "Frigoriste à Avignon et dans le Vaucluse : dépannage de chambre froide, four et lave-vaisselle professionnels. Restaurants, hôtels, traiteurs. 04 90 93 98 88.",
     accroche:
       "À Avignon, le mois de juillet change tout : la ville double d'activité, la restauration tourne à plein régime et aucune panne n'est acceptable. Nous préparons le parc de nos clients avignonnais en conséquence.",
     corps: [
+      {
+        h2: "Frigoriste à Avignon : intervenir avant que le service ne s'arrête",
+        html: `<p>À Avignon, la panne de froid a un calendrier. Onze mois sur douze, elle se règle sans drame. En juillet, elle coûte une journée de chiffre d'affaires qu'aucune assurance ne rembourse.</p>
+<p>Les cuisines intra-muros ajoutent une difficulté que l'on ne rencontre pas ailleurs : les groupes frigorifiques y sont souvent relégués en cave, en cour intérieure ou en toiture, dans des recoins mal ventilés que le bâti ancien impose. Un condenseur qui respire mal perd son rendement l'été précisément, et fatigue le compresseur jusqu'à la casse. Un nettoyage annuel change la durée de vie d'une installation.</p>
+<p>Nous intervenons sur chambres froides, vitrines, groupes, fours mixtes et lave-vaisselle, <a href="/services/depannage-sav-cuisine-professionnelle">toutes marques</a>. Nos frigoristes sont habilités aux <a href="/services/froid-professionnel">fluides frigorigènes</a> et délivrent l'attestation de contrôle d'étanchéité.</p>`,
+      },
       {
         h2: 'Préparer le Festival : la fenêtre de juin',
         html: `<p>Pour un restaurant intra-muros, une panne de froid ou de lave-vaisselle en plein Festival n'est pas un incident technique, c'est une perte de chiffre d'affaires impossible à rattraper sur l'année. La bonne pratique consiste à faire passer le parc en revue en mai ou en juin : nettoyage des condenseurs, contrôle des joints de porte, remplacement anticipé des pièces d'usure fatiguées, vérification des sécurités de flamme.</p>
@@ -131,16 +161,24 @@ export const villes = [
   {
     slug: 'nimes',
     nom: 'Nîmes',
+    h1: 'Frigoriste et dépannage de cuisine professionnelle à Nîmes',
     cp: '30000',
     departement: 'Gard',
     dep: '30',
     distance: 'à 45 minutes de notre atelier',
-    titreSeo: 'Cuisine professionnelle à Nîmes (30000) | SODILAME',
+    titreSeo:
+      'Frigoriste à Nîmes (30000) : dépannage cuisine professionnelle | SODILAME',
     description:
-      "Cuisines professionnelles à Nîmes et dans le Gard : conception, installation, dépannage et entretien pour restaurants, brasseries, hôtels et collectivités. Devis gratuit.",
+      "Frigoriste à Nîmes et dans le Gard : dépannage de chambre froide, groupe frigorifique, four et lave-vaisselle professionnels. Restaurants et collectivités. 04 90 93 98 88.",
     accroche:
       "Nîmes vit au rythme de ses férias, avec des pics d'activité d'une intensité rare pour la restauration. Un parc de cuisine y doit tenir des cadences exceptionnelles sur quelques jours.",
     corps: [
+      {
+        h2: 'Frigoriste à Nîmes : le froid qui lâche au pire moment',
+        html: `<p>Le Gard connaît des étés sévères, et le froid professionnel y paie l'addition. La panne type que nous traitons à Nîmes n'est presque jamais une panne franche : c'est une chambre froide qui tient 6 °C au lieu de 3, un groupe qui tourne sans jamais s'arrêter, une vitrine qui givre d'un côté. Autant de signaux que le condenseur est encrassé ou que la charge en fluide a baissé.</p>
+<p>Le laisser courir coûte deux fois : en consommation électrique d'abord, en compresseur ensuite — la pièce la plus chère de l'installation, et celle qui ne se répare pas.</p>
+<p>Nous intervenons sur Nîmes, Beaucaire, Bellegarde, Saint-Gilles et Vauvert. Nos frigoristes sont habilités aux <a href="/services/froid-professionnel">fluides frigorigènes</a>, assurent le contrôle d'étanchéité réglementaire et tiennent votre registre à jour.</p>`,
+      },
       {
         h2: 'Dimensionner pour le pic, pas pour la moyenne',
         html: `<p>Un établissement nîmois qui sert 60 couverts un mardi de novembre peut en servir 300 pendant la Féria de Pentecôte. Un lave-vaisselle correctement dimensionné pour l'ordinaire devient alors le goulot d'étranglement de tout le service, et un bloc cuisson au plus juste ne suit plus.</p>
@@ -162,16 +200,24 @@ export const villes = [
   {
     slug: 'aix-en-provence',
     nom: 'Aix-en-Provence',
+    h1: 'Frigoriste et dépannage de cuisine professionnelle à Aix-en-Provence',
     cp: '13100',
     departement: 'Bouches-du-Rhône',
     dep: '13',
     distance: 'à 50 minutes de notre atelier',
-    titreSeo: 'Cuisine professionnelle à Aix-en-Provence (13100) | SODILAME',
+    titreSeo:
+      'Frigoriste à Aix-en-Provence (13100) : dépannage cuisine pro | SODILAME',
     description:
-      "Installation et entretien de cuisines professionnelles à Aix-en-Provence : restaurants gastronomiques, hôtellerie, résidences et collectivités. Froid, cuisson, laverie.",
+      "Frigoriste à Aix-en-Provence : dépannage de chambre froide, cellule de refroidissement, four et lave-vaisselle professionnels. Restaurants et hôtellerie. 04 90 93 98 88.",
     accroche:
       "Aix concentre une restauration exigeante et une hôtellerie haut de gamme, où la régularité de cuisson et la qualité de la verrerie en sortie de plonge ne sont pas négociables.",
     corps: [
+      {
+        h2: 'Frigoriste à Aix-en-Provence : la dérive avant la panne',
+        html: `<p>Sur les établissements aixois, le problème est rarement l'arrêt brutal. C'est la dérive : une chambre froide qui remonte de deux degrés entre deux dégivrages, une cellule qui met dix minutes de trop à descendre, un four dont la sonde ment. Rien ne s'arrête, et pourtant la production se dégrade et la traçabilité devient indéfendable devant un contrôle.</p>
+<p>C'est le type de défaut qu'on ne détecte pas sans mesure. Nos visites de <a href="/services/contrat-entretien-cuisine-professionnelle">contrat d'entretien</a> relèvent les températures réelles, comparent aux consignes et signalent l'écart avant qu'il ne devienne un problème — sur une cuisine gastronomique, c'est ce qui sépare l'entretien de la réparation.</p>
+<p>Nous intervenons également en <a href="/services/depannage-sav-cuisine-professionnelle">dépannage</a> sur Aix, Venelles, Gardanne, Bouc-Bel-Air et Éguilles, toutes marques.</p>`,
+      },
       {
         h2: 'Exigence de régularité en cuisine gastronomique',
         html: `<p>Sur les établissements aixois positionnés en gastronomie, les attentes portent moins sur la puissance brute que sur la constance : un four mixte qui tient exactement sa consigne, une cellule de refroidissement qui descend dans les temps, une chambre froide qui ne connaît pas de dérive de température entre deux dégivrages.</p>
@@ -193,16 +239,24 @@ export const villes = [
   {
     slug: 'marseille',
     nom: 'Marseille',
+    h1: 'Frigoriste et dépannage de cuisine professionnelle à Marseille',
     cp: '13000',
     departement: 'Bouches-du-Rhône',
     dep: '13',
     distance: 'à 1 heure de notre atelier',
-    titreSeo: 'Cuisine professionnelle à Marseille | SODILAME',
+    titreSeo:
+      'Frigoriste à Marseille : dépannage cuisine professionnelle | SODILAME',
     description:
-      "Cuisines professionnelles à Marseille : conception, installation, dépannage et contrats d'entretien pour restaurants, hôtels, cuisines centrales et établissements de santé.",
+      "Frigoriste à Marseille : dépannage planifié et contrats d'entretien pour chambres froides, cellules et laveries. Cuisines centrales, hôtellerie, santé. 04 90 93 98 88.",
     accroche:
       "Marseille est le plus grand marché de la région et le plus hétérogène : du restaurant de quartier au grand hôtel, de la cuisine centrale à l'établissement de santé.",
     corps: [
+      {
+        h2: 'Frigoriste à Marseille : ce que nous faisons, et ce que nous ne promettons pas',
+        html: `<p>Autant l'écrire franchement : Marseille est à une heure de notre atelier. Nous ne promettons pas d'être chez vous dans l'heure pour une panne isolée, et un prestataire installé sur place le fera mieux que nous ce jour-là.</p>
+<p>En revanche, sur ce que nous faisons, nous le faisons complètement. Nos frigoristes habilités aux <a href="/services/froid-professionnel">fluides frigorigènes</a> interviennent sur les chambres froides de forte capacité, les cellules de refroidissement rapide, les tunnels de lavage et les installations de liaison froide des cuisines centrales et des établissements de santé — avec le contrôle d'étanchéité réglementaire, l'attestation et le registre tenu à jour.</p>
+<p>Pour les clients marseillais sous <a href="/services/contrat-entretien-cuisine-professionnelle">contrat d'entretien</a>, les passages sont planifiés et les interventions groupées : le service rendu devient comparable à celui d'un prestataire local, avec un interlocuteur unique du plan 2D au SAV. C'est le mode de relation que nous recommandons ici, et le seul sur lequel nous nous engageons.</p>`,
+      },
       {
         h2: 'Des projets structurés plutôt que du dépannage au coup par coup',
         html: `<p>Sur Marseille, nous privilégions les interventions planifiées : projets d'équipement complets, remplacements programmés et contrats d'entretien. La distance depuis Saint-Martin-de-Crau ne nous permet pas de promettre une intervention dans l'heure sur un dépannage isolé, et nous préférons le dire clairement plutôt que de vous faire attendre.</p>
@@ -223,16 +277,24 @@ export const villes = [
   {
     slug: 'istres-miramas',
     nom: 'Istres et Miramas',
+    h1: 'Frigoriste et dépannage de cuisine professionnelle à Istres et Miramas',
     cp: '13800',
     departement: 'Bouches-du-Rhône',
     dep: '13',
     distance: 'à 25 minutes de notre atelier',
-    titreSeo: 'Cuisine professionnelle à Istres et Miramas | SODILAME — 13',
+    titreSeo:
+      'Frigoriste à Istres, Miramas et Fos : dépannage cuisine pro | SODILAME',
     description:
-      "Installation, dépannage et entretien de cuisines professionnelles à Istres, Miramas et Fos-sur-Mer : restaurants, cantines, cuisines centrales et restaurants d'entreprise.",
+      "Frigoriste à Istres, Miramas et Fos-sur-Mer : dépannage de chambre froide, cellule de refroidissement et laverie. Cantines et restaurants d'entreprise. 04 90 93 98 88.",
     accroche:
       "Istres, Miramas et Fos forment un secteur où la restauration collective et les restaurants d'entreprise pèsent autant que la restauration commerciale.",
     corps: [
+      {
+        h2: 'Frigoriste à Istres, Miramas et Fos : 25 minutes, pièces en stock',
+        html: `<p>Le secteur est à vingt-cinq minutes de notre atelier : c'est une de nos zones les plus rapides, et le stock de pièces d'usure y fait la différence. Une résistance, un thermostat ou un joint de porte disponible immédiatement, c'est une cuisine qui repart le jour même au lieu du surlendemain.</p>
+<p>La restauration collective y pèse lourd, et cela change la hiérarchie des urgences. Sur une cuisine centrale, <b>la cellule de refroidissement rapide est l'équipement le plus critique</b> : si elle ne descend plus de 63 à 10 °C dans les délais réglementaires, la production du jour est perdue et la responsabilité de l'établissement est engagée. Nous la contrôlons en premier, avant les chambres froides.</p>
+<p>Nous intervenons aussi en <a href="/services/depannage-sav-cuisine-professionnelle">dépannage</a> sur Fos-sur-Mer, Port-Saint-Louis, Saint-Chamas et Martigues, toutes marques, avec des frigoristes habilités aux <a href="/services/froid-professionnel">fluides frigorigènes</a>.</p>`,
+      },
       {
         h2: 'Restauration collective et restaurants d’entreprise',
         html: `<p>Le tissu économique du secteur — zones industrielles, logistique, établissements publics — génère une forte demande de restauration collective. Ces cuisines produisent en volume, souvent en liaison froide, avec des contraintes de traçabilité et des créneaux de production serrés.</p>

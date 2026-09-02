@@ -800,6 +800,21 @@ function villePage(v) {
       q: `Quels types d'établissements équipez-vous à ${v.nom} ?`,
       r: `<p>Restaurants, brasseries, hôtels, campings, boulangeries, traiteurs, cantines scolaires, cuisines centrales, EHPAD et établissements de santé. Nous adaptons le matériel et le rythme d'entretien à l'intensité réelle de votre exploitation.</p>`,
     },
+    // Ces trois questions reprennent le vocabulaire réellement tapé dans Google
+    // — « frigoriste », « chambre froide », « toutes marques » — plutôt que
+    // celui du métier. Elles alimentent aussi le bloc FAQ structuré.
+    {
+      q: `Dépannez-vous les chambres froides et les groupes frigorifiques à ${v.nom} ?`,
+      r: `<p>Oui. Nos frigoristes sont habilités à la manipulation des fluides frigorigènes et interviennent sur les chambres froides, groupes, vitrines réfrigérées, cellules de refroidissement rapide et armoires. Nous assurons également le contrôle d'étanchéité réglementaire, avec délivrance de l'attestation et tenue du registre.</p>`,
+    },
+    {
+      q: `Intervenez-vous sur du matériel que vous n'avez pas vendu ?`,
+      r: `<p>Oui, toutes marques. Nos techniciens sont formés sur les principales marques du marché et nous disposons d'un stock de pièces d'usure courantes à ${A.ville}. Pour une pièce spécifique, nous la commandons après avoir posé le diagnostic — jamais avant.</p>`,
+    },
+    {
+      q: `Comment se passe un dépannage depuis ${v.nom} ?`,
+      r: `<p>Vous appelez le ${site.telephone}, nous qualifions la panne au téléphone — modèle, symptôme, code erreur si l'appareil en affiche un. Une photo de la plaque signalétique ou de l'écran aide beaucoup. Nous vérifions la pièce dans notre stock et nous vous annonçons un créneau réaliste plutôt qu'optimiste.</p>`,
+    },
   ];
 
   const lb = schemaLocalBusiness();
@@ -810,7 +825,7 @@ function villePage(v) {
 <div class="phero">
   <div class="wrap">
     <p class="eyebrow on-dark">${esc(v.departement)} (${esc(v.dep)}) · ${esc(v.distance)}</p>
-    <h1>Cuisine professionnelle à ${esc(v.nom)} : installation, dépannage et entretien</h1>
+    <h1>${esc(v.h1)}</h1>
     <p>${esc(v.accroche)}</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="/contact?ville=${encodeURIComponent(v.nom)}">Demander un devis</a>

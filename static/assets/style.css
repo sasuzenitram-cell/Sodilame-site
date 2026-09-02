@@ -351,6 +351,7 @@ footer .fbrand .bs{font-size:.57rem;letter-spacing:.155em;text-transform:upperca
   form.devis{padding:24px 20px}
   .phero .wrap{padding:44px 24px 48px}
 }
+
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
@@ -615,3 +616,66 @@ body.boutique footer .btn-primary:hover{background:#EBB662;border-color:#EBB662}
 .cx-invite{background:var(--cream);border:1px solid var(--line);border-radius:9px;
   padding:.7rem 1rem;font-size:.85rem;color:var(--muted);margin:0 0 1.3rem;line-height:1.5}
 .cx-invite a{font-weight:600}
+
+/* ===========================================================================
+   HARMONISATION MOBILE
+   Corrections issues d'un passage automatisé des 59 pages en 360, 390 et
+   430 px. Regroupées ici pour rester lisibles plutôt que dispersées.
+   =========================================================================== */
+
+/* --- 1. Débordement horizontal ---------------------------------------------
+   Une colonne `1fr` vaut `minmax(auto, 1fr)` : sa largeur minimale est celle
+   de son contenu. Un tableau large poussait donc la grille à 380 px dans une
+   fenêtre de 360, et TOUTE la page se décalait. `minmax(0, 1fr)` autorise la
+   colonne à être plus étroite que son contenu, et le tableau défile seul.   */
+@media (max-width:1000px){
+  .grid-art{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  /* Le tableau défile dans sa propre boîte au lieu d'élargir la page.
+     Le dégradé sur le bord droit signale qu'il reste du contenu : un tableau
+     qui défile sans le dire passe pour un tableau tronqué. */
+  .prose table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    font-size:.88rem;
+    background:linear-gradient(to right,#fff 30%,rgba(255,255,255,0)) left/28px 100% no-repeat local,
+               linear-gradient(to left,#fff 30%,rgba(255,255,255,0)) right/28px 100% no-repeat local,
+               radial-gradient(farthest-side at 0 50%,rgba(24,50,83,.16),transparent) left/12px 100% no-repeat scroll,
+               radial-gradient(farthest-side at 100% 50%,rgba(24,50,83,.16),transparent) right/12px 100% no-repeat scroll}
+  .prose th,.prose td{padding:.6rem .7rem}
+}
+
+/* --- 2. Zones tactiles ------------------------------------------------------
+   Repère retenu : 40 px de haut. En dessous, la cible se rate au pouce —
+   d'autant plus dans une cuisine, une main prise, l'écran gras.             */
+@media (max-width:1000px){
+  /* Liens du pied de page : 31 px avant, alignés en colonne serrée. */
+  footer a{padding:.55rem 0}
+  /* Panier de l'en-tête : 38 px avant. */
+  .panier-lien{width:44px;height:44px}
+  /* Boutons de filtre du catalogue : 37 px avant. */
+  .fbtn{padding:.55rem 1rem}
+}
+
+/* --- 3. Lisibilité ----------------------------------------------------------
+   Plancher à 11 px pour le texte utile. La signature sous le logo passe de
+   9,1 à 10,2 px : en dessous, sur un écran de 360, elle n'est plus lue mais
+   devinée.                                                                   */
+@media (max-width:640px){
+  .brand .bs,footer .fbrand .bs{font-size:.64rem;letter-spacing:.12em}
+  /* --- 4. Doublon du bouton d'appel -----------------------------------------
+     En dessous de 640 px, la barre fixe du bas affiche déjà « 04 90 93 98 88 ».
+     Le bouton téléphone du hero se retrouvait juste au-dessus, à l'identique :
+     deux fois le même numéro à deux centimètres d'écart. On garde celui qui
+     est toujours accessible, on retire l'autre.                              */
+  .hero .btn-row a.btn[href^="tel:"],
+  .phero .btn-row a.btn[href^="tel:"]{display:none}
+  .hero .btn-row,.phero .btn-row{flex-direction:column;align-items:stretch}
+  .hero .btn-row .btn,.phero .btn-row .btn{justify-content:center}
+
+  .prod-top .marque{font-size:.72rem}
+  .prod-top .ref,.vign .ref{font-size:.76rem}
+  .fbtn .fn{font-size:.78rem}
+  /* « Ajouter » tombait à 39,5 px : sous le seuil, et c'est le bouton qui
+     déclenche la commande. Il mérite la pleine largeur au pouce. */
+  .cond-row .ajout{width:100%;justify-content:center;padding:.78rem 1.05rem}
+}
