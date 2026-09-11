@@ -8,21 +8,37 @@
 import { initSchema, baseDisponible, q } from '../lib/db.mjs';
 import {
   identifier, creerJeton, consommerJeton, creerSession, detruireSession,
-  purgerJetons, normEmail, tracer,
+  purgerJetons, normEmail, tracer, origineValide,
 } from '../lib/auth.mjs';
 import { envoyer, gabarit, baseUrl, echapper, TEL } from '../lib/mail.mjs';
 import { pageApp, html, json, esc, corpsRequete } from '../lib/vue.mjs';
 
-// Anti-abus : 5 demandes par IP toutes les 15 minutes.
-const vus = new Map();
-function tropDeDemandes(ip) {
-  const t = Date.now();
-  const l = (vus.get(ip) || []).filter((x) => t - x < 15 * 60 * 1000);
-  l.push(t);
-  vus.set(ip, l);
-  if (vus.size > 5000) vus.clear();
-  return l.length > 5;
+// ---------------------------------------------------------------------------
+// Anti-abus, deux compteurs indépendants.
+//
+// Par IP : empêche un seul poste de balayer des adresses.
+// Par adresse : empêche de noyer la boîte d'un client — ou la vôtre — sous les
+//   liens de connexion en changeant d'IP entre chaque envoi. Un attaquant qui
+//   fait tourner des adresses IP passait sinon sans jamais être freiné.
+//
+// Compteurs en mémoire : ils se vident à chaque démarrage de fonction. C'est
+// assumé — ils ralentissent l'abus, ils ne prétendent pas l'interdire. La
+// protection réelle reste que sans le lien, on n'entre pas.
+// ---------------------------------------------------------------------------
+function limiteur(fenetreMs, maximum) {
+  const vus = new Map();
+  return (cle) => {
+    const t = Date.now();
+    const l = (vus.get(cle) || []).filter((x) => t - x < fenetreMs);
+    l.push(t);
+    vus.set(cle, l);
+    if (vus.size > 5000) vus.clear();
+    return l.length > maximum;
+  };
 }
+
+const tropDeDemandes = limiteur(15 * 60 * 1000, 5);        // 5 par IP / 15 min
+const tropPourCetteAdresse = limiteur(60 * 60 * 1000, 4);  // 4 par e-mail / heure
 
 function pageMessage(titre, corps, lien = null) {
   return pageApp({
@@ -39,7 +55,22 @@ export default async function handler(req, res) {
   const u = new URL(req.url, 'http://x');
   const action = u.searchParams.get('action') || '';
 
+  // La déconnexion modifie un état : elle passe en POST. En GET, une simple
+  // balise <img src="…deconnexion"> posée sur n'importe quelle page suffisait
+  // à déconnecter l'administrateur — sans parler des outils qui préchargent
+  // les liens. On vérifie aussi l'origine, comme sur toute action.
   if (action === 'deconnexion') {
+    if (req.method !== 'POST') {
+      res.setHeader('Allow', 'POST');
+      return html(res, 405, pageMessage(
+        'Déconnexion',
+        'Utilisez le bouton « Déconnexion » de l’en-tête.',
+        { url: '/espace', label: 'Retour à mon espace' }
+      ));
+    }
+    if (!origineValide(req)) {
+      return html(res, 403, pageMessage('Requête refusée', 'Origine non reconnue.'));
+    }
     detruireSession(res);
     res.statusCode = 302;
     res.setHeader('Location', '/espace/connexion?m=' + encodeURIComponent('Vous êtes déconnecté.'));
@@ -125,7 +156,7 @@ export default async function handler(req, res) {
     if (!email || !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(email)) {
       return json(res, 400, { erreur: 'Adresse e-mail invalide.' });
     }
-    if (tropDeDemandes(ip)) {
+    if (tropDeDemandes(ip) || tropPourCetteAdresse(email)) {
       return json(res, 429, { erreur: `Trop de demandes. Merci d'appeler le ${TEL}.` });
     }
 

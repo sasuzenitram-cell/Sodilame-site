@@ -1559,6 +1559,30 @@ ${ariane(fil)}
 
         <h2>Caractéristiques</h2>
         <ul>${p.caracteristiques.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+        ${p.dosage ? `<p><b>Dosage constructeur :</b> ${esc(p.dosage)}</p>` : ''}
+
+        ${
+          // Les incompatibilités de matériaux viennent de la fiche technique du
+          // fabricant. Elles doivent être lues AVANT la commande, pas après :
+          // un détergent fortement alcalin sur de l'argenterie, c'est
+          // irréversible. D'où un encadré et non une puce de liste.
+          p.attention
+            ? `<div class="mise-en-garde">
+          <p><b>À vérifier avant de commander.</b> ${esc(p.attention)}</p>
+        </div>`
+            : ''
+        }
+
+        ${
+          p.fiches
+            ? `<h2>Documentation du fabricant</h2>
+        <p>Les documents officiels Winterhalter pour cette référence. La fiche de données de sécurité doit être conservée et accessible : elle fait partie de votre plan de maîtrise sanitaire, au titre du plan de nettoyage.</p>
+        <ul class="fiches-pdf">
+          <li><a href="/assets/fiches/${p.fiches.technique}" target="_blank" rel="noopener">Fiche technique ${esc(p.ref)}</a> <span>PDF — dosage, caractéristiques, conditionnements</span></li>
+          <li><a href="/assets/fiches/${p.fiches.securite}" target="_blank" rel="noopener">Fiche de données de sécurité ${esc(p.ref)}</a> <span>PDF — à conserver dans votre PMS</span></li>
+        </ul>`
+            : ''
+        }
 
         <h2>Livraison et facturation</h2>
         <p>Ce produit est livré <b>sans frais de port dès une unité</b> sur l'ensemble de notre zone d'intervention, par l'un de nos techniciens lors de sa prochaine tournée dans votre secteur. Aucun paiement n'est demandé sur le site : nous vous confirmons votre commande et son montant par mail, puis nous vous facturons dans les conditions habituelles de votre compte.</p>

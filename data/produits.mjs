@@ -14,6 +14,24 @@
 // Les descriptions sont rédigées pour SODILAME : ne pas copier celles des
 // distributeurs concurrents (contenu dupliqué = pénalité Google + risque légal).
 //
+// ⚠️  DONNÉES VÉRIFIÉES / NON VÉRIFIÉES — à lire avant de faire confiance
+//
+//     Huit références ont été reprises sur les fiches techniques officielles
+//     Winterhalter transmises par le fabricant. Ce sont celles qui portent un
+//     champ `fiches` : F300, F420e, F8500, F720 BLUe, F30, F6800, B100N, A15MC.
+//
+//     La reprise a corrigé des erreurs de fond : le F300 et le F8500 étaient
+//     décrits comme des POUDRES en seaux alors que ce sont des LIQUIDES en
+//     bidons, et le F420e était présenté comme compatible aluminium alors que
+//     la fiche du fabricant l'exclut, anodisé compris.
+//
+//     LES ONZE AUTRES RÉFÉRENCES N'ONT PAS ÉTÉ VÉRIFIÉES. Elles ont été
+//     rédigées à partir des gammes publiques, et l'expérience ci-dessus montre
+//     que cette source se trompe. À recouper avec les fiches du fabricant
+//     avant de s'appuyer dessus pour conseiller un client :
+//       F40, B200S, B220e, B170XD
+//       et les 7 références Rational d'entretien four.
+//
 // 📷 LES PHOTOS : champ `photo` de chaque produit.
 //    - `null`  → une vignette de remplacement est générée automatiquement
 //               (pictogramme bidon ou seau + référence). La page reste propre.
@@ -31,7 +49,7 @@ export const categoriesProduits = [
     icone: 'laverie',
     titreSeo: 'Détergents lave-vaisselle et lave-verres professionnels',
     description:
-      "Détergents liquides et en poudre Winterhalter pour lave-vaisselle et lave-verres professionnels. Livraison offerte dès un bidon dans notre zone d'intervention.",
+      "Détergents liquides Winterhalter pour lave-vaisselle et lave-verres professionnels. Livraison offerte dès un bidon dans notre zone d'intervention.",
     intro:
       "Le détergent fait la moitié du résultat de lavage — l'autre moitié, c'est la dureté de votre eau et le réglage du doseur. Nous ne vendons que des produits dont nous savons régler la machine, et nos techniciens ajustent le dosage lors de leur passage.",
     conseil:
@@ -49,6 +67,19 @@ export const categoriesProduits = [
       "Le liquide de rinçage ne nettoie pas : il casse la tension superficielle de l'eau pour que celle-ci s'écoule au lieu de sécher en gouttes. C'est lui qui décide si vos verres sortent brillants ou tachés, et si votre plonge peut enchaîner les cycles sans essuyage.",
     conseil:
       "Des traces blanches qui reviennent malgré un rinçage correct signalent presque toujours une eau trop dure, pas un mauvais produit. Dans ce cas, c'est le traitement d'eau qu'il faut revoir — adoucisseur ou osmoseur — et non la dose de rinçage.",
+  },
+  {
+    slug: 'entretien-machine-laverie',
+    nom: 'Entretien des lave-vaisselle et lave-verres',
+    nomCourt: 'Entretien machine',
+    icone: 'seau',
+    titreSeo: 'Pastilles et produits d’entretien pour lave-vaisselle professionnel',
+    description:
+      "Pastilles d'autonettoyage, détartrants et produits d'entretien pour lave-vaisselle et lave-verres professionnels Winterhalter. Livraison offerte.",
+    intro:
+      "Une machine de laverie ne s'entretient pas avec du détergent de lavage. Le programme d'autonettoyage a besoin d'un produit dédié, qui décolle le calcaire et le film graisseux là où le cycle normal ne passe pas — et c'est lui qui décide de la durée de vie de la cuve, du surchauffeur et des bras de lavage.",
+    conseil:
+      "Sur nos eaux, un lave-vaisselle non détartré perd sa température de rinçage en moins d'un an : le surchauffeur s'entoure de calcaire et ne monte plus à 82 °C. Ce n'est pas seulement une question de longévité, c'est une question d'hygiène — et ça ne se voit pas depuis la plonge.",
   },
   {
     slug: 'entretien-four-rational',
@@ -75,17 +106,19 @@ export const produits = [
     machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'F300',
     marque: 'Winterhalter',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'winterhalter-f300',
+    fiches: { technique: 'F300-fiche-technique.pdf', securite: 'F300-fiche-securite.pdf' },
     categorie: 'detergents-lave-vaisselle',
     nom: 'Détergent universel F300',
-    resume: 'Détergent en poudre polyvalent, pour lavage mixte vaisselle et verrerie.',
+    resume: 'Détergent liquide chloré, particulièrement efficace sur les traces de café et de thé.',
     description:
-      "Détergent en poudre polyvalent conçu pour les machines à capot et les lave-vaisselle frontaux traitant des charges mixtes : assiettes, couverts et verrerie dans la même journée. C'est le produit d'entrée de gamme le plus courant dans les cuisines de restaurant qui n'ont qu'une seule machine.",
-    usages: ['Lave-vaisselle à capot', 'Machines frontales', 'Charges mixtes vaisselle et verrerie'],
-    caracteristiques: ['Poudre', 'Polyvalent', 'Eau de dureté moyenne'],
+      "Détergent liquide alcalin à base de chlore actif, conçu pour les lave-vaisselle frontaux et à capot. Sa particularité est le traitement des services à café et à thé : le chlore actif décolore les dépôts de tanin que les tasses accumulent et qu'un détergent ordinaire laisse en place. Il convient à l'inox, au plastique, à la porcelaine et aux couverts, et il protège l'aluminium — un essai préalable reste conseillé sur l'aluminium anodisé.",
+    usages: ['Lave-vaisselle frontaux et à capot', 'Services à café et à thé', 'Vaisselle peu à moyennement salie'],
+    caracteristiques: ['Liquide', 'Chlore actif', 'pH 14 concentré', 'Protège l’aluminium'],
     conditionnements: [
-      { label: 'Seau de 12 kg', prix: null },
-      { label: 'Seau de 25 kg', prix: null },
+      { label: 'Bidon de 5 L', prix: null },
+      { label: 'Bidon de 12 kg', prix: null },
+      { label: 'Bidon de 25 kg', prix: null },
     ],
   },
   {
@@ -93,33 +126,45 @@ export const produits = [
     machines: ['lave-vaisselle'],
     ref: 'F8500',
     marque: 'Winterhalter',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'winterhalter-f8500',
+    fiches: { technique: 'F8500-fiche-technique.pdf', securite: 'F8500-fiche-securite.pdf' },
     categorie: 'detergents-lave-vaisselle',
-    nom: 'Détergent universel ultra-concentré F8500',
-    resume: 'Poudre ultra-concentrée : moins de produit par cycle, moins de stock à gérer.',
+    nom: 'Détergent universel très concentré F8500',
+    resume: 'Le plus puissant de la gamme : salissures cuites, protéines et graisses.',
     description:
-      "Version ultra-concentrée du détergent universel. À volume de vaisselle égal, la dose par cycle est plus faible : le seau dure plus longtemps et le coût de lavage baisse. C'est le choix des établissements à fort débit qui veulent réduire à la fois la facture et la place occupée en réserve.",
-    usages: ['Restauration à fort volume', 'Collectivités et cuisines centrales', 'Machines à capot et à avancement'],
-    caracteristiques: ['Poudre', 'Ultra-concentré', 'Coût par cycle réduit'],
-    conditionnements: [{ label: 'Seau de 25 kg', prix: null }],
+      "Détergent liquide fortement alcalin à base de chlore actif, sans phosphate. C'est le produit des cuisines à fort débit : lave-ustensiles, machines à avancement de casiers et convoyeurs à doigts. Sa concentration élevée fait baisser le coût par cycle, et son pouvoir blanchissant vient à bout des restes alimentaires séchés comme des taches de café et de thé.",
+    usages: ['Lave-ustensiles', 'Machines à avancement et convoyeurs', 'Salissures cuites, protéines, graisses'],
+    caracteristiques: ['Liquide', 'Fortement alcalin', 'Chlore actif', 'Sans phosphate'],
+    // Cette mise en garde figure sur la fiche technique du fabricant. Elle
+    // n'est pas décorative : le F8500 attaque ces métaux.
+    attention:
+      "Ne convient pas à l'argent, à l'aluminium — y compris anodisé — ni aux alliages de métaux légers. Fortement alcalin : à réserver aux lignes vaisselle et ustensiles, pas à la verrerie fine.",
+    conditionnements: [
+      { label: 'Bidon de 5 L', prix: null },
+      { label: 'Bidon de 12 kg', prix: null },
+      { label: 'Bidon de 25 kg', prix: null },
+    ],
   },
   {
     slug: 'winterhalter-f420e-detergent-eau-dure',
     machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'F420e',
     marque: 'Winterhalter',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'winterhalter-f420e',
+    fiches: { technique: 'F420e-fiche-technique.pdf', securite: 'F420e-fiche-securite.pdf' },
     categorie: 'detergents-lave-vaisselle',
     nom: 'Détergent écologique eau dure F420e',
-    resume: 'Formulé pour les eaux calcaires, sans phosphate.',
+    resume: 'Formulé pour les eaux calcaires, certifié Ecolabel européen. Doux pour les verres.',
     description:
-      "Détergent conçu pour les eaux dures, c'est-à-dire l'essentiel de notre secteur : la Crau, les Alpilles et le Comtat comptent parmi les zones les plus calcaires de la région. Sa formule sans phosphate limite l'entartrage de la cuve et du surchauffeur, là où un détergent standard laisse le calcaire s'installer cycle après cycle.",
-    usages: ['Zones à eau calcaire', 'Établissements sans adoucisseur', 'Lavage quotidien intensif'],
-    caracteristiques: ['Poudre', 'Sans phosphate', 'Spécial eau dure'],
+      "Détergent liquide alcalin conçu pour les eaux dures, c'est-à-dire l'essentiel de notre secteur : la Crau, les Alpilles et le Comtat comptent parmi les zones les plus calcaires de la région. Sa formule est optimisée pour prévenir l'accumulation de tartre dans la machine, et il est doux avec les verres tout en préservant la stabilité de la mousse de bière. Il porte le label écologique européen (EU Ecolabel DE/038/018) et vient à bout des tanins et des traces de rouge à lèvres sans odeur résiduelle.",
+    usages: ['Zones à eau calcaire', 'Lave-verres et lave-vaisselle', 'Verres sans décoration, inox, porcelaine'],
+    caracteristiques: ['Liquide', 'EU Ecolabel', 'Spécial eau dure', 'Doux pour les verres'],
+    attention:
+      "Ne convient pas à l'aluminium, même anodisé, ni aux alliages de métaux légers. Faire un essai sur l'argent avant utilisation.",
     conditionnements: [
-      { label: 'Seau de 6,1 kg', prix: null },
-      { label: 'Seau de 12 kg', prix: null },
-      { label: 'Seau de 25 kg', prix: null },
+      { label: 'Bidon de 5 L', prix: null },
+      { label: 'Bidon de 12 kg', prix: null },
+      { label: 'Bidon de 25 kg', prix: null },
     ],
     misEnAvant: true,
   },
@@ -128,30 +173,41 @@ export const produits = [
     machines: ['lave-vaisselle'],
     ref: 'F6800',
     marque: 'Winterhalter',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'winterhalter-f6800',
+    fiches: { technique: 'F6800-fiche-technique.pdf', securite: 'F6800-fiche-securite.pdf' },
     categorie: 'detergents-lave-vaisselle',
-    nom: 'Détergent très intensif F6800',
-    resume: 'Pour les salissures cuites, brûlées ou grasses qui résistent au cycle normal.',
+    nom: 'Détergent intensif F6800',
+    resume: 'Le seul qui dissout l’amidon : pâtes, riz, pommes de terre collés au fond des bacs.',
     description:
-      "Détergent renforcé destiné aux salissures que le produit universel ne fait pas partir : plats à gratin, bacs gastronormes, ustensiles de cuisson, grilles. Il s'utilise sur les machines dédiées au gros matériel plutôt que sur la ligne de verrerie, dont il abîmerait la brillance à la longue.",
-    usages: ['Lave-ustensiles', 'Bacs gastro et plats de cuisson', 'Salissures cuites ou grasses'],
-    caracteristiques: ['Poudre', 'Très intensif', 'Déconseillé pour la verrerie'],
-    conditionnements: [{ label: 'Seau de 25 kg', prix: null }],
+      "Détergent liquide hautement alcalin, dont la particularité est un pouvoir dissolvant élevé sur l'amidon. C'est ce qui le distingue du reste de la gamme : les résidus de pâtes, de riz, de purée ou de pommes de terre qui prennent au fond des bacs gastronormes résistent aux détergents ordinaires, parce que l'amidon gélifie au lieu de se dissoudre. Le F6800 les décolle. Il est sans chlore ni phosphate, très concentré et sans odeur, et il dissout également très bien les graisses. C'est le produit du lave-ustensiles et des cuisines qui produisent en volume.",
+    usages: ['Lave-ustensiles', 'Bacs gastro, plats de cuisson, grilles', 'Résidus d’amidon : pâtes, riz, pommes de terre'],
+    caracteristiques: ['Liquide', 'Hautement alcalin', 'Sans chlore ni phosphate', 'Dissout l’amidon'],
+    attention:
+      "Ne convient pas à l'argent, à l'aluminium — même anodisé — ni aux alliages métalliques. Ne pas l'utiliser sur la ligne de verrerie : la fiche du fabricant exclut le verre.",
+    conditionnements: [{ label: 'Bidon de 25 kg', prix: null }],
   },
   {
     slug: 'winterhalter-f30-detergent-liquide-verres',
     machines: ['lave-verres'],
     ref: 'F30',
     marque: 'Winterhalter',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'winterhalter-f30',
+    fiches: { technique: 'F30-fiche-technique.pdf', securite: 'F30-fiche-securite.pdf' },
     categorie: 'detergents-lave-vaisselle',
-    nom: 'Détergent liquide verres F30',
-    resume: 'Détergent liquide non chloré, spécifique lave-verres de bar.',
+    nom: 'Détergent verres F30',
+    resume: 'Le détergent du bar : protège le verre et ses décors, même sur la verrerie fine.',
     description:
-      "Détergent liquide formulé pour la verrerie : il nettoie sans agresser le verre ni laisser le voile blanc irréversible que provoquent, à la longue, les produits trop alcalins. C'est le produit du bar, du snack et de la brasserie, sur lave-verres sous-comptoir.",
-    usages: ['Lave-verres de bar', 'Verrerie fine et verres à pied', 'Cadence rapide en service'],
-    caracteristiques: ['Liquide', 'Non chloré', 'Spécial verrerie'],
-    conditionnements: [{ label: 'Bidon de 5 L', prix: null }],
+      "Détergent liquide non chloré formulé pour la verrerie, et pour elle seule. Sa particularité est d'être doux avec le verre décoré : les tests conduits par les grands verriers ont confirmé qu'il n'attaque ni les décors ni la matière, là où un détergent trop alcalin finit par laisser le voile blanc irréversible qu'on appelle la corrosion du verre. Il vient à bout des restes de jus, de bière, de vin, de cocktails et de rouge à lèvres, et il préserve la tenue de la mousse de bière. C'est le produit du bar, du bar à vin, de la brasserie et du snack, sur lave-verres sous-comptoir.",
+    usages: ['Lave-verres de bar et de brasserie', 'Verrerie fine et verres décorés', 'Traces de vin, bière, rouge à lèvres'],
+    caracteristiques: ['Liquide', 'Non chloré', 'Protège les décors', 'Contient des phosphates'],
+    // Ce n'est pas une préférence mais une condition posée par le fabricant :
+    // sans traitement d'eau, le résultat ne sera pas celui annoncé.
+    attention:
+      "Le fabricant conditionne le résultat à un traitement d'eau : sur une eau non adoucie ou non déminéralisée, aucun détergent ne donnera des verres impeccables. Si votre eau reste dure malgré l'adoucisseur, associez-lui le liquide de rinçage B200S plutôt que le B100N.",
+    conditionnements: [
+      { label: 'Bidon de 5 L', prix: null },
+      { label: 'Bidon de 12 kg', prix: null },
+    ],
     misEnAvant: true,
   },
   {
@@ -170,20 +226,41 @@ export const produits = [
     conditionnements: [{ label: 'Bidon de 12 kg', prix: null }],
   },
 
+  {
+    slug: 'winterhalter-f720blue-detergent-neutre',
+    machines: ['lave-vaisselle', 'lave-verres'],
+    ref: 'F720 BLUe',
+    marque: 'Winterhalter',
+    photo: 'winterhalter-f720blue',
+    fiches: { technique: 'F720BLUe-fiche-technique.pdf', securite: 'F720BLUe-fiche-securite.pdf' },
+    categorie: 'detergents-lave-vaisselle',
+    nom: 'Détergent neutre F720 BLUe',
+    resume: 'Le seul de la gamme sans étiquetage de danger. Pour l’argenterie et l’aluminium.',
+    description:
+      "Détergent liquide au pH pratiquement neutre — 7 une fois dissous dans la cuve. C'est ce qui en fait un produit à part : il n'est ni corrosif ni irritant, ne porte aucun étiquetage de danger, et convient donc aux couverts en argent et aux pièces en aluminium que les détergents alcalins abîment. L'air de la zone de plonge est nettement plus respirable qu'avec un produit conventionnel, et les eaux usées sortent neutres. C'est le choix des établissements qui lavent de l'argenterie, et de ceux qui veulent réduire l'exposition du personnel.",
+    usages: ['Argenterie et aluminium', 'Lave-vaisselle à passage manuel et frontal', 'Réduction de l’exposition du personnel'],
+    caracteristiques: ['Liquide', 'pH neutre', 'Aucun étiquetage de danger', 'Action blanchissante'],
+    attention:
+      "Ne pas associer au produit A 10 TK. Sa concentration ne se mesure pas au kit acide-base habituel : les doseurs à électrode sont incompatibles, il faut un doseur automatique à minuterie.",
+    conditionnements: [{ label: 'Bidon de 10 L', prix: null }],
+    misEnAvant: true,
+  },
+
   // ---- Liquides de rinçage -------------------------------------------------
   {
     slug: 'winterhalter-b100n-liquide-rincage-universel',
     machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'B100N',
     marque: 'Winterhalter',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'winterhalter-b100n',
+    fiches: { technique: 'B100N-fiche-technique.pdf', securite: 'B100N-fiche-securite.pdf' },
     categorie: 'liquides-de-rincage',
     nom: 'Liquide de rinçage universel B100N',
     resume: 'Le rinçage standard : séchage rapide, pas de trace, toutes machines.',
     description:
-      "Liquide de rinçage universel, compatible avec l'ensemble des lave-vaisselle et lave-verres professionnels. Il accélère l'écoulement de l'eau en fin de cycle : la vaisselle sort sèche et sans gouttes séchées, ce qui supprime l'essuyage manuel et le risque de recontamination qui va avec.",
-    usages: ['Toutes machines professionnelles', 'Vaisselle et verrerie', 'Usage quotidien'],
-    caracteristiques: ['Liquide', 'Universel', 'Séchage rapide'],
+      "Liquide de rinçage neutre, compatible avec l'ensemble des lave-vaisselle et lave-verres professionnels et avec tous les détergents courants. Il casse la tension superficielle de l'eau en fin de cycle : celle-ci s'écoule au lieu de sécher en gouttes, la vaisselle sort sèche et brillante, et l'essuyage manuel disparaît — avec le risque de recontamination et de coupure qui va avec. Il est doux pour les verres et leurs décorations, et n'altère pas la tenue de la mousse de bière. Particulièrement adapté aux installations équipées d'un adoucisseur.",
+    usages: ['Toutes machines professionnelles', 'Verrerie décorée', 'Installations avec adoucisseur'],
+    caracteristiques: ['Liquide', 'Neutre (pH 5,5)', 'Séchage rapide', 'Dosage 0,1 à 0,4 ml/L'],
     conditionnements: [
       { label: 'Bidon de 5 L', prix: null },
       { label: 'Bidon de 10 L', prix: null },
@@ -235,6 +312,31 @@ export const produits = [
     usages: ['Gobelets réutilisables', 'Vaisselle plastique et mélamine', 'Cantines et événementiel'],
     caracteristiques: ['Liquide', 'Spécial plastiques', 'Séchage optimisé'],
     conditionnements: [{ label: 'Bidon de 10 L', prix: null }],
+  },
+
+  // ---- Entretien des machines de laverie -----------------------------------
+  {
+    slug: 'winterhalter-a15mc-pastilles-autonettoyage',
+    machines: ['lave-vaisselle', 'lave-verres'],
+    ref: 'A15MC',
+    marque: 'Winterhalter',
+    photo: 'winterhalter-a15mc',
+    fiches: { technique: 'A15MC-fiche-technique.pdf', securite: 'A15MC-fiche-securite.pdf' },
+    categorie: 'entretien-machine-laverie',
+    nom: 'Pastilles d’autonettoyage A15MC',
+    resume: 'Une pastille dans la cuve, le programme d’autonettoyage fait le reste.',
+    description:
+      "Pastille destinée au programme d'autonettoyage des lave-vaisselle et lave-verres Winterhalter. Elle élimine le calcaire, le film graisseux et les odeurs que le cycle de lavage ordinaire ne traite pas. Elle ne contient ni chlore ni phosphate, et son intérêt pratique est la manipulation : le personnel n'a aucun contact avec le produit, contrairement à un détartrant liquide qu'il faut verser et doser. C'est le geste d'entretien le plus rentable d'une laverie — sur nos eaux calcaires, il conditionne la durée de vie du surchauffeur.",
+    usages: ['Programme d’autonettoyage', 'Détartrage de la cuve', 'Élimination des odeurs'],
+    caracteristiques: ['Pastilles de 8 g', 'Sans chlore ni phosphate', 'Aucun contact avec le produit', 'pH 9,5'],
+    // Dosage constructeur, repris de la fiche technique : il dépend du modèle.
+    dosage: 'UC : 1 pastille · PT : 2 pastilles · UF : 2 à 3 pastilles · CTR/MTR/MTF : 1 pastille par cuve',
+    attention:
+      "Ne convient pas à l'argent, à l'aluminium — même anodisé — ni aux alliages métalliques. Retirer le film protecteur avant usage, et le filtre et le tamis en cas de nettoyage manuel.",
+    conditionnements: [
+      { label: 'Carton de 20 sachets de 0,05 kg', prix: null },
+      { label: 'Carton de 10 sachets de 0,2 kg', prix: null },
+    ],
   },
 
   // ---- Entretien fours Rational -------------------------------------------

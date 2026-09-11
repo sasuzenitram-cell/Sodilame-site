@@ -59,6 +59,14 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
         }
       ]
     },
@@ -151,6 +159,11 @@
     {
       "source": "/produits/liquides-de-rincage",
       "destination": "/produits?famille=liquides-de-rincage#catalogue",
+      "permanent": true
+    },
+    {
+      "source": "/produits/entretien-machine-laverie",
+      "destination": "/produits?famille=entretien-machine-laverie#catalogue",
       "permanent": true
     },
     {

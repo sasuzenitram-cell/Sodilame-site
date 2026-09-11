@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   const vue = query.vue || '';
 
   // ---- Diagnostic de configuration (public, sans secret) ------------------
-  if (vue === 'diagnostic') return html(res, 200, await pageDiagnostic());
+  if (vue === 'diagnostic') return html(res, 200, await pageDiagnostic(req));
 
   // ---- Page de connexion (publique) ---------------------------------------
   if (vue === 'connexion') {
@@ -215,11 +215,50 @@ function masquer(email) {
   return avant.slice(0, 1) + '***@' + apres;
 }
 
-async function pageDiagnostic() {
+/**
+ * Diagnostic de configuration.
+ *
+ * Cette page a été écrite pour sortir d'un blocage : quand la configuration
+ * empêche toute connexion, exiger une connexion pour la diagnostiquer serait
+ * un cul-de-sac. Elle s'ouvre donc exactement quand elle est nécessaire :
+ *
+ *   — session administrateur valide      → page complète ;
+ *   — connexion impossible par construction (clé de session absente, aucun
+ *     administrateur déclaré, base injoignable) → version réduite, sans aucune
+ *     donnée personnelle ni chiffre d'activité ;
+ *   — tout le reste                      → renvoi vers la connexion.
+ *
+ * Avant, elle était publique en permanence et affichait les cinq dernières
+ * adresses ayant tenté de se connecter. C'étaient des données personnelles sur
+ * une page ouverte, et un retour utile offert à qui sondait le formulaire.
+ */
+async function pageDiagnostic(req) {
   const admins = (process.env.ADMINS || '')
     .split(',').map((x) => x.trim().toLowerCase()).filter(Boolean);
   const secret = process.env.SESSION_SECRET || '';
   const base = urlBase();
+
+  // Peut-on encore se connecter ? Si non, la page doit rester accessible.
+  const connexionPossible = secret.length >= 24 && admins.length > 0 && !!base.url;
+
+  let admin = false;
+  try {
+    const s = lireSession(req);
+    admin = !!(s && s.role === 'admin' && estAdmin(s.email));
+  } catch {
+    admin = false;
+  }
+
+  if (!admin && connexionPossible) {
+    return pageApp({
+      titre: 'Diagnostic',
+      corps: `<div class="carte" style="max-width:560px;margin:40px auto">
+        <h1>Diagnostic</h1>
+        <p class="sous">La configuration permet la connexion. Cette page n'est consultable que connecté en administrateur.</p>
+        <a class="b p" href="/espace/connexion">Se connecter</a>
+      </div>`,
+    });
+  }
 
   let baseOk = false;
   let baseErreur = '';
@@ -229,10 +268,13 @@ async function pageDiagnostic() {
     try {
       await initSchema();
       baseOk = true;
-      nbClients = (await q1(`SELECT COUNT(*)::int n FROM clients`))?.n ?? 0;
-      refus = await q(
-        `SELECT qui, quand FROM journal WHERE action = 'connexion_refusee' ORDER BY quand DESC LIMIT 5`
-      );
+      // Données personnelles : réservées à l'administrateur connecté.
+      if (admin) {
+        nbClients = (await q1(`SELECT COUNT(*)::int n FROM clients`))?.n ?? 0;
+        refus = await q(
+          `SELECT qui, quand FROM journal WHERE action = 'connexion_refusee' ORDER BY quand DESC LIMIT 5`
+        );
+      }
     } catch (e) {
       baseErreur = e?.message || 'connexion impossible';
     }
@@ -245,7 +287,9 @@ async function pageDiagnostic() {
       detail: !base.url
         ? 'Aucune variable Postgres trouvée. Dans Vercel : Storage → Neon → Connect to Project, puis redéployer.'
         : baseOk
-        ? `Connectée via la variable ${base.nom}. ${nbClients} client${nbClients > 1 ? 's' : ''} enregistré${nbClients > 1 ? 's' : ''}.`
+        ? admin
+          ? `Connectée via la variable ${base.nom}. ${nbClients} client${nbClients > 1 ? 's' : ''} enregistré${nbClients > 1 ? 's' : ''}.`
+          : 'Connectée.'
         : `Variable ${base.nom} trouvée, mais la connexion échoue : ${baseErreur}`,
     },
     {
@@ -261,14 +305,14 @@ async function pageDiagnostic() {
       nom: 'Administrateurs déclarés',
       ok: admins.length > 0,
       detail: admins.length
-        ? `${admins.length} adresse${admins.length > 1 ? 's' : ''} : ${admins.map(masquer).join(', ')}. Seules ces adresses reçoivent un lien vers /admin.`
+        ? `${admins.length} adresse${admins.length > 1 ? 's' : ''} déclarée${admins.length > 1 ? 's' : ''}${admin ? ' : ' + admins.map(masquer).join(', ') : ''}. Seules ces adresses reçoivent un lien vers /admin.`
         : 'ADMINS est vide. Aucune adresse n’est reconnue comme administrateur, donc aucun lien n’est envoyé — et par sécurité le formulaire ne le dit pas. C’est très probablement la cause de votre problème.',
     },
     {
       nom: 'Envoi des e-mails',
       ok: !!process.env.RESEND_API_KEY,
       detail: process.env.RESEND_API_KEY
-        ? `Clé Resend présente. Expéditeur : ${esc(process.env.MAIL_EXPEDITEUR || 'SODILAME <contact@sodilame.com> (valeur par défaut)')}.`
+        ? `Clé Resend présente.${admin ? ' Expéditeur : ' + esc(process.env.MAIL_EXPEDITEUR || 'SODILAME <contact@sodilame.com> (valeur par défaut)') + '.' : ''}`
         : 'RESEND_API_KEY absente : aucun e-mail ne peut partir.',
     },
   ];

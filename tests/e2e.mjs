@@ -208,7 +208,7 @@ console.log('\n═══ 6. Prix et disponibilité ═══');
   });
   verifier('l\'enregistrement des prix redirige', r.statut === 302, String(r.statut));
   const t = await q(`SELECT ref, cond_label, prix_ht, disponible FROM tarifs ORDER BY ref, cond_label`);
-  const f420 = t.find((x) => x.ref === 'F420e' && x.cond_label === 'Seau de 12 kg');
+  const f420 = t.find((x) => x.ref === 'F420e' && x.cond_label === 'Bidon de 12 kg');
   verifier('la virgule décimale est acceptée', f420 && Number(f420.prix_ht) === 78.5, JSON.stringify(f420));
   const f300 = t.find((x) => x.ref === 'F300');
   verifier('un produit décoché passe indisponible', f300 && f300.disponible === false);
@@ -235,7 +235,7 @@ console.log('\n═══ 7. Connexion client et commande ═══');
       adresse: '12 avenue de la République', codePostal: '13200', commune: 'Arles',
       message: 'Livraison le matin de préférence',
       lignes: [
-        { ref: 'F420e', cond: 'Seau de 12 kg', qte: 2 },
+        { ref: 'F420e', cond: 'Bidon de 12 kg', qte: 2 },
         { ref: '56.01.535', cond: 'Seau de 150 tablettes', qte: 1 },
       ],
     },
@@ -261,7 +261,7 @@ console.log('\n═══ 7 bis. Commande d\'un visiteur non connecté ═══'
     etablissement: 'Bar du Port', nom: 'Luc Martin', telephone: '0490112233',
     email: 'luc@bardu port.fr'.replace(' ', ''), adresse: '4 quai du Canal',
     codePostal: '13200', commune: 'Arles', consentement: true,
-    lignes: [{ ref: 'F420e', cond: 'Seau de 12 kg', qte: 1 }],
+    lignes: [{ ref: 'F420e', cond: 'Bidon de 12 kg', qte: 1 }],
   };
   const r = await appel('visiteur', '/api/commande', { methode: 'POST', corps: base });
   const j = JSON.parse(r.texte);
@@ -301,7 +301,7 @@ console.log('\n═══ 8. Ce qu\'un client ne doit pas pouvoir faire ═══
     methode: 'POST',
     corps: {
       adresse: 'x', codePostal: '13200', commune: 'Arles',
-      lignes: [{ ref: 'F420e', cond: 'Seau de 12 kg', qte: 1, prix: 0.01, nom: 'Gratuit' }],
+      lignes: [{ ref: 'F420e', cond: 'Bidon de 12 kg', qte: 1, prix: 0.01, nom: 'Gratuit' }],
     },
   });
   const jf = JSON.parse(faux.texte);
@@ -314,21 +314,25 @@ console.log('\n═══ 8. Ce qu\'un client ne doit pas pouvoir faire ═══
   });
   verifier('une référence inconnue est refusée', inv.statut === 409, String(inv.statut));
 
+  // Le formulaire admin plus haut a décoché `p_F300__0`, c'est-à-dire le
+  // PREMIER conditionnement du F300. On commande donc celui-là, pas un autre.
+  const { produits } = await import('../data/produits.mjs');
+  const condIndispo = produits.find((x) => x.ref === 'F300').conditionnements[0].label;
   const indispo = await appel('client', '/api/commande', {
     methode: 'POST',
-    corps: { adresse: 'x', codePostal: '13200', commune: 'Arles', lignes: [{ ref: 'F300', cond: 'Seau de 12 kg', qte: 1 }] },
+    corps: { adresse: 'x', codePostal: '13200', commune: 'Arles', lignes: [{ ref: 'F300', cond: condIndispo, qte: 1 }] },
   });
   verifier('un produit marqué indisponible est refusé', indispo.statut === 409, String(indispo.statut));
 
   const hors = await appel('client', '/api/commande', {
     methode: 'POST',
-    corps: { adresse: 'x', codePostal: '69000', commune: 'Lyon', lignes: [{ ref: 'F420e', cond: 'Seau de 12 kg', qte: 1 }] },
+    corps: { adresse: 'x', codePostal: '69000', commune: 'Lyon', lignes: [{ ref: 'F420e', cond: 'Bidon de 12 kg', qte: 1 }] },
   });
   verifier('une commune hors zone est refusée', hors.statut === 400 && /Lyon/.test(hors.texte), String(hors.statut));
 
   const cp = await appel('client', '/api/commande', {
     methode: 'POST',
-    corps: { adresse: 'x', codePostal: '132', commune: 'Arles', lignes: [{ ref: 'F420e', cond: 'Seau de 12 kg', qte: 1 }] },
+    corps: { adresse: 'x', codePostal: '132', commune: 'Arles', lignes: [{ ref: 'F420e', cond: 'Bidon de 12 kg', qte: 1 }] },
   });
   verifier('un code postal invalide est refusé', cp.statut === 400, String(cp.statut));
 }
@@ -389,7 +393,7 @@ console.log('\n═══ 11. Désactivation d\'un compte ═══');
 
   const cmd = await appel('client', '/api/commande', {
     methode: 'POST',
-    corps: { adresse: 'x', codePostal: '13200', commune: 'Arles', lignes: [{ ref: 'F420e', cond: 'Seau de 12 kg', qte: 1 }] },
+    corps: { adresse: 'x', codePostal: '13200', commune: 'Arles', lignes: [{ ref: 'F420e', cond: 'Bidon de 12 kg', qte: 1 }] },
   });
   verifier('un compte désactivé ne peut plus commander avec sa session', cmd.statut === 403, String(cmd.statut));
 
@@ -400,8 +404,13 @@ console.log('\n═══ 11. Désactivation d\'un compte ═══');
 
 console.log('\n═══ 12. Déconnexion ═══');
 {
-  const d = await appel('admin', '/api/auth?action=deconnexion');
-  verifier('la déconnexion redirige', d.statut === 302);
+  // La déconnexion modifie un état : elle n'accepte que le POST. En GET, une
+  // balise <img> posée sur un site tiers déconnecterait l'administrateur.
+  const g = await appel('admin', '/api/auth?action=deconnexion');
+  verifier('la déconnexion refuse le GET', g.statut === 405);
+
+  const d = await appel('admin', '/api/auth?action=deconnexion', { methode: 'POST', form: {} });
+  verifier('la déconnexion redirige en POST', d.statut === 302);
   const a = await appel('admin', '/admin');
   verifier('l\'administration est de nouveau fermée', a.statut === 302 && a.loc?.includes('connexion'));
 }

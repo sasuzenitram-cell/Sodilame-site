@@ -679,3 +679,19 @@ body.boutique footer .btn-primary:hover{background:#EBB662;border-color:#EBB662}
      déclenche la commande. Il mérite la pleine largeur au pouce. */
   .cond-row .ajout{width:100%;justify-content:center;padding:.78rem 1.05rem}
 }
+
+/* ---------------------------------------------------------------------------
+   Fiche produit : mise en garde matériaux et documentation fabricant
+   --------------------------------------------------------------------------- */
+.prose .mise-en-garde{background:#FBEDE5;border:1px solid #EFCDBB;border-left:4px solid var(--terra);
+  border-radius:0 10px 10px 0;padding:1rem 1.3rem;margin:1.6rem 0}
+.prose .mise-en-garde p{margin:0;font-size:.96rem;line-height:1.65;color:#7A3A1C}
+.prose .mise-en-garde b{color:var(--terra)}
+body.boutique .prose .mise-en-garde p{color:#7A3A1C}
+
+.prose ul.fiches-pdf{list-style:none;padding:0;display:grid;gap:.7rem;margin:1.2rem 0 0}
+.prose ul.fiches-pdf li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;
+  background:var(--cream-d);border:1px solid var(--line);border-radius:10px;padding:.8rem 1.1rem;margin:0}
+.prose ul.fiches-pdf a{font-weight:600;text-decoration:none;border-bottom:1.5px solid currentColor}
+.prose ul.fiches-pdf a::before{content:"↓ ";font-weight:400}
+.prose ul.fiches-pdf span{font-size:.85rem;color:var(--muted)}

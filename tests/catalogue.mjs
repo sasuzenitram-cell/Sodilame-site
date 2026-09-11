@@ -57,6 +57,42 @@ console.log('\n═══ Données du catalogue ═══');
 
   const famillesVides = categoriesProduits.filter((c) => !produitsDeCategorie(c.slug).length);
   verifier('aucune famille vide', !famillesVides.length, famillesVides.map((c) => c.slug).join(', '));
+
+  // Un produit repris sur la fiche du fabricant doit porter les deux fiches
+  // PDF et une photo : c'est ce qui distingue une donnée vérifiée d'une donnée
+  // reconstituée, et le client a le droit de savoir laquelle il lit.
+  const verifies = produits.filter((x) => x.fiches);
+  verifier(`${verifies.length} références reprises sur les fiches du fabricant`, verifies.length >= 8);
+  verifier('chaque référence vérifiée a ses deux PDF et sa photo',
+    verifies.every((x) => x.fiches.technique && x.fiches.securite && x.photo),
+    verifies.filter((x) => !(x.fiches.technique && x.fiches.securite && x.photo)).map((x) => x.ref).join(', '));
+
+  const fs = await import('node:fs');
+  const manquants = [];
+  for (const x of verifies) {
+    for (const f of [x.fiches.technique, x.fiches.securite]) {
+      if (!fs.existsSync(`static/assets/fiches/${f}`)) manquants.push(f);
+    }
+    if (!fs.existsSync(`static/assets/produits/${x.photo}.jpg`)) manquants.push(x.photo + '.jpg');
+  }
+  verifier('tous les fichiers référencés existent sur le disque', !manquants.length, manquants.join(', '));
+
+  // Une incompatibilité de matériaux ne doit jamais être une puce de liste
+  // noyée dans les caractéristiques : elle a son propre champ, mis en avant.
+  const alerte = produits.filter((x) => x.attention);
+  verifier(`${alerte.length} mises en garde matériaux déclarées`, alerte.length >= 3);
+}
+
+console.log('\n═══ Fiches PDF sur les pages produit ═══');
+{
+  const fs = await import('node:fs');
+  for (const x of produits.filter((y) => y.fiches)) {
+    const f = `public/produits/${x.categorie}/${x.slug}/index.html`;
+    let html = '';
+    try { html = fs.readFileSync(f, 'utf8'); } catch { /* page absente */ }
+    verifier(`${x.ref} : les deux PDF sont liés`,
+      html.includes(x.fiches.technique) && html.includes(x.fiches.securite));
+  }
 }
 
 console.log('\n═══ Page /produits générée ═══');
