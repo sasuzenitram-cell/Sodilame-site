@@ -11,7 +11,7 @@ import { zones, zoneDeLaVille, totalCommunes } from './data/zones.mjs';
 import { articles } from './data/articles.mjs';
 import {
   categoriesProduits, produits, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
-  machinesCatalogue, marquesCatalogue,
+  machinesCatalogue, marquesCatalogue, ficheSodilame,
 } from './data/produits.mjs';
 import { pageQr, pagePanne, pageAudit } from './src/qr.mjs';
 import { SCRIPT_FILTRES, groupeFiltres } from './src/catalogue.mjs';
@@ -1574,12 +1574,35 @@ ${ariane(fil)}
         }
 
         ${
+          // Trois documents au plus, et l'ordre compte.
+          //
+          // 1. La fiche technique à la charte SODILAME : c'est celle qu'on
+          //    envoie à un client, lisible et à notre nom.
+          // 2. La fiche du fabricant : elle reste en ligne comme source. Nos
+          //    données en sont tirées, et c'est elle qui fait foi en cas d'écart.
+          // 3. La fiche de données de sécurité : le PDF ORIGINAL du fabricant,
+          //    jamais remis en page. C'est lui qui engage sa responsabilité sur
+          //    le contenu, et une erreur de recopie dans une mention H ou P se
+          //    paierait sur la santé de quelqu'un.
           p.fiches
-            ? `<h2>Documentation du fabricant</h2>
-        <p>Les documents officiels Winterhalter pour cette référence. La fiche de données de sécurité doit être conservée et accessible : elle fait partie de votre plan de maîtrise sanitaire, au titre du plan de nettoyage.</p>
+            ? `<h2>Documentation</h2>
+        <p>${
+          ficheSodilame(p)
+            ? `La fiche technique SODILAME reprend les données du fabricant sous une forme lisible, sur une page. Le document d'origine ${esc(p.marque)} reste disponible : c'est lui qui fait foi. `
+            : ''
+        }La fiche de données de sécurité doit être conservée et accessible : elle fait partie de votre plan de maîtrise sanitaire, au titre du plan de nettoyage.</p>
         <ul class="fiches-pdf">
-          <li><a href="/assets/fiches/${p.fiches.technique}" target="_blank" rel="noopener">Fiche technique ${esc(p.ref)}</a> <span>PDF — dosage, caractéristiques, conditionnements</span></li>
-          <li><a href="/assets/fiches/${p.fiches.securite}" target="_blank" rel="noopener">Fiche de données de sécurité ${esc(p.ref)}</a> <span>PDF — à conserver dans votre PMS</span></li>
+          ${
+            ficheSodilame(p)
+              ? `<li class="mise-en-avant"><a href="/assets/fiches/${ficheSodilame(p)}" target="_blank" rel="noopener">Fiche technique ${esc(p.ref)} — ${esc(site.nom)}</a> <span>PDF 1 page — dosage, caractéristiques, conditionnements</span></li>`
+              : ''
+          }
+          ${
+            p.fiches.technique
+              ? `<li><a href="/assets/fiches/${p.fiches.technique}" target="_blank" rel="noopener">Fiche technique ${esc(p.ref)} — ${esc(p.marque)}</a> <span>PDF — document d'origine du fabricant</span></li>`
+              : ''
+          }
+          <li><a href="/assets/fiches/${p.fiches.securite}" target="_blank" rel="noopener">Fiche de données de sécurité ${esc(p.ref)}</a> <span>PDF — document du fabricant, à conserver dans votre PMS</span></li>
         </ul>`
             : ''
         }

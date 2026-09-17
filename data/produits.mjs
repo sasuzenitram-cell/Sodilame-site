@@ -25,6 +25,10 @@
 //     bidons, et le F420e était présenté comme compatible aluminium alors que
 //     la fiche du fabricant l'exclut, anodisé compris.
 //
+//     La cartouche MKN 10012974 a été reprise sur la fiche de données de
+//     sécurité du fabricant (la seule qu'il ait fournie) : sa composition et
+//     sa mise en garde en viennent, le reste du texte est rédigé par SODILAME.
+//
 //     LES ONZE AUTRES RÉFÉRENCES N'ONT PAS ÉTÉ VÉRIFIÉES. Elles ont été
 //     rédigées à partir des gammes publiques, et l'expérience ci-dessus montre
 //     que cette source se trompe. À recouper avec les fiches du fabricant
@@ -82,17 +86,20 @@ export const categoriesProduits = [
       "Sur nos eaux, un lave-vaisselle non détartré perd sa température de rinçage en moins d'un an : le surchauffeur s'entoure de calcaire et ne monte plus à 82 °C. Ce n'est pas seulement une question de longévité, c'est une question d'hygiène — et ça ne se voit pas depuis la plonge.",
   },
   {
+    // Le slug garde le mot « rational » : il sert de valeur de filtre dans les
+    // URL déjà partagées et dans les redirections de vercel.json. Le libellé,
+    // lui, couvre désormais les deux marques de fours du catalogue.
     slug: 'entretien-four-rational',
-    nom: 'Entretien des fours Rational',
+    nom: 'Entretien des fours mixtes',
     nomCourt: 'Entretien four',
     icone: 'cuisson',
-    titreSeo: 'Tablettes et cartouches d’entretien pour fours Rational et Frima',
+    titreSeo: 'Tablettes et cartouches d’entretien pour fours mixtes Rational et MKN',
     description:
-      "Tablettes de nettoyage, d'entretien et de rinçage et cartouches Active Green pour fours Rational iCombi et SelfCookingCenter. Produits d'origine, livraison offerte.",
+      "Tablettes de nettoyage et d'entretien Rational et cartouches de lavage MKN pour fours mixtes professionnels. Produits d'origine, livraison offerte.",
     intro:
-      "Un four mixte se nettoie tous les jours ou il ne se nettoie plus. Les produits d'origine Rational sont les seuls validés par le cycle automatique de la machine : un produit générique déclenche des alarmes, encrasse le système de dosage et fait sauter la garantie.",
+      "Un four mixte se nettoie tous les jours ou il ne se nettoie plus. Les produits d'origine du constructeur sont les seuls validés par le cycle automatique de la machine : un produit générique déclenche des alarmes, encrasse le système de dosage et fait sauter la garantie.",
     conseil:
-      "La référence dépend de la génération du four et de la présence de CareControl ou de l'AutoDose. Si vous ne savez pas laquelle commander, envoyez-nous une photo de la plaque signalétique : nous identifions le modèle et nous vous confirmons la bonne référence avant de livrer.",
+      "La référence dépend de la marque du four et de sa génération — CareControl ou AutoDose chez Rational, WaveClean chez MKN. Si vous ne savez pas laquelle commander, envoyez-nous une photo de la plaque signalétique : nous identifions le modèle et nous vous confirmons la bonne référence avant de livrer.",
   },
 ];
 
@@ -105,6 +112,37 @@ export const produits = [
     slug: 'winterhalter-f300-detergent-universel',
     machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'F300',
+    technique: {
+        "soustitre": "Détergent alcalin à base de chlore actif",
+        "couleur": "Jaunâtre",
+        "odeur": "Spécifique au produit",
+        "ph": "Environ 14 (concentré)",
+        "densite": "1,24 g/cm³",
+        "conservation": "12 mois",
+        "stockage": "Au frais, à l'abri de la lumière, debout, hors gel, 25 °C maximum",
+        "conductivite": "Environ 3 mS/cm (4 ml/L d'eau déminéralisée à 22 °C)",
+        "ingredients": "Alcalins, agents blanchissants à base de chlore, phosphates, silicates",
+        "dosage": [
+              [
+                    "Eau douce",
+                    "< 8 °dH",
+                    "< 150 mg/L CaCO₃",
+                    "2 ml/L"
+              ],
+              [
+                    "Eau moyenne",
+                    "8 à 14 °dH",
+                    "150 à 250 mg/L CaCO₃",
+                    "2 à 4 ml/L"
+              ]
+        ],
+        "danger": [
+              "H290 — Peut être corrosif pour les métaux",
+              "H314 — Provoque de graves brûlures de la peau et des lésions oculaires",
+              "H400 — Très toxique pour les organismes aquatiques",
+              "EUH031 — Le contact avec les acides dégage un gaz toxique"
+        ]
+  },
     marque: 'Winterhalter',
     photo: 'winterhalter-f300',
     fiches: { technique: 'F300-fiche-technique.pdf', securite: 'F300-fiche-securite.pdf' },
@@ -125,6 +163,50 @@ export const produits = [
     slug: 'winterhalter-f8500-detergent-ultra-concentre',
     machines: ['lave-vaisselle'],
     ref: 'F8500',
+    technique: {
+        "soustitre": "Détergent universel liquide fortement alcalin, chlore actif, sans phosphate",
+        "couleur": "Jaunâtre",
+        "odeur": "Légèrement chlorée",
+        "ph": "14 (concentré)",
+        "densite": "1,26 g/cm³",
+        "conservation": "9 mois",
+        "titrage": "0,56",
+        "stockage": "Au frais, à l'abri de la lumière, debout, hors gel, 25 °C maximum",
+        "conductivite": "Environ 3,35 mS/cm (3 ml/L d'eau déminéralisée à 22 °C)",
+        "ingredients": "Alcalis, agents blanchissants à base de chlore",
+        "dosage": [
+              [
+                    "Eau osmosée",
+                    "0 °dH",
+                    "0 mg/L CaCO₃",
+                    "1,5 à 1,8 ml/L"
+              ],
+              [
+                    "Eau douce",
+                    "0 à 8 °dH",
+                    "0 à 142 mg/L CaCO₃",
+                    "2,0 à 3,0 ml/L"
+              ],
+              [
+                    "Eau moyennement dure",
+                    "8 à 14 °dH",
+                    "142 à 249 mg/L CaCO₃",
+                    "3,0 à 4,0 ml/L"
+              ],
+              [
+                    "Eau dure",
+                    "> 14 °dH",
+                    "> 249 mg/L CaCO₃",
+                    "Traitement d'eau requis"
+              ]
+        ],
+        "danger": [
+              "H290 — Peut être corrosif pour les métaux",
+              "H314 — Provoque de graves brûlures",
+              "H412 — Nocif pour les organismes aquatiques, entraîne des effets néfastes à long terme",
+              "EUH206 — Ne pas utiliser en combinaison avec d'autres produits : peut libérer des gaz dangereux"
+        ]
+  },
     marque: 'Winterhalter',
     photo: 'winterhalter-f8500',
     fiches: { technique: 'F8500-fiche-technique.pdf', securite: 'F8500-fiche-securite.pdf' },
@@ -149,6 +231,36 @@ export const produits = [
     slug: 'winterhalter-f420e-detergent-eau-dure',
     machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'F420e',
+    technique: {
+        "soustitre": "Détergent liquide alcalin pour eau dure · EU Ecolabel DE/038/018",
+        "couleur": "Incolore",
+        "odeur": "Spécifique au produit",
+        "ph": "Environ 14 (concentré)",
+        "densite": "1,22 g/cm³",
+        "conservation": "24 mois",
+        "titrage": "0,93",
+        "stockage": "Au frais, à l'abri de la lumière, debout, hors gel, 30 °C maximum",
+        "conductivite": "Environ 2,13 mS/cm (3 ml/L d'eau déminéralisée à 22 °C)",
+        "ingredients": "Alcalis, phosphonates",
+        "dosage": [
+              [
+                    "Eau douce à moyenne",
+                    "< 14 °dH",
+                    "< 150 mg/L CaCO₃",
+                    "1,6 à 2,4 ml/L"
+              ],
+              [
+                    "Eau dure",
+                    "> 14 °dH",
+                    "> 250 mg/L CaCO₃",
+                    "3 à 5 ml/L"
+              ]
+        ],
+        "danger": [
+              "H290 — Peut être corrosif pour les métaux",
+              "H314 — Provoque de graves brûlures de la peau et des lésions oculaires"
+        ]
+  },
     marque: 'Winterhalter',
     photo: 'winterhalter-f420e',
     fiches: { technique: 'F420e-fiche-technique.pdf', securite: 'F420e-fiche-securite.pdf' },
@@ -172,6 +284,41 @@ export const produits = [
     slug: 'winterhalter-f6800-detergent-tres-intensif',
     machines: ['lave-vaisselle'],
     ref: 'F6800',
+    technique: {
+        "soustitre": "Détergent intensif liquide hautement alcalin, dissout l'amidon",
+        "couleur": "Incolore",
+        "odeur": "Spécifique au produit",
+        "ph": "14",
+        "densite": "1,52 g/cm³",
+        "conservation": "24 mois",
+        "titrage": "0,18",
+        "stockage": "Frais, sombre, à l'abri du gel, 30 °C maximum",
+        "ingredients": "Alcalis, phosphonates. Sans chlore ni phosphate, exempt de NTA et d'EDTA",
+        "dosage": [
+              [
+                    "Eau adoucie",
+                    "0 à 3 °dH",
+                    "0 à 53 mg/L CaCO₃",
+                    "2,0 à 2,9 ml/L"
+              ],
+              [
+                    "Eau douce",
+                    "4 à 8 °dH",
+                    "54 à 142 mg/L CaCO₃",
+                    "3,0 à 5,0 ml/L"
+              ],
+              [
+                    "Eau mi-dure à dure",
+                    "> 9 °dH",
+                    "> 143 mg/L CaCO₃",
+                    "Traitement d'eau requis"
+              ]
+        ],
+        "danger": [
+              "H290 — Peut être corrosif pour les métaux",
+              "H314 — Provoque de graves brûlures de la peau et des lésions oculaires"
+        ]
+  },
     marque: 'Winterhalter',
     photo: 'winterhalter-f6800',
     fiches: { technique: 'F6800-fiche-technique.pdf', securite: 'F6800-fiche-securite.pdf' },
@@ -190,6 +337,29 @@ export const produits = [
     slug: 'winterhalter-f30-detergent-liquide-verres',
     machines: ['lave-verres'],
     ref: 'F30',
+    technique: {
+        "soustitre": "Détergent liquide pour verres, protège le verre et ses décors",
+        "couleur": "Incolore",
+        "odeur": "Spécifique au produit",
+        "ph": "14 (concentré)",
+        "densite": "1,29 g/cm³",
+        "conservation": "2 ans",
+        "titrage": "1,11",
+        "stockage": "Au frais, à l'abri de la lumière, debout, hors gel, 30 °C maximum",
+        "ingredients": "Silicates alcalins, tensides amphotères, phosphates",
+        "dosage": [
+              [
+                    "Eau douce",
+                    "< 8 °dH",
+                    "< 150 mg/L CaCO₃",
+                    "1,5 à 2 ml/L"
+              ]
+        ],
+        "danger": [
+              "R34 — Provoque des brûlures",
+              "Port de gants, de vêtements de protection et d'une protection du visage et des yeux requis"
+        ]
+  },
     marque: 'Winterhalter',
     photo: 'winterhalter-f30',
     fiches: { technique: 'F30-fiche-technique.pdf', securite: 'F30-fiche-securite.pdf' },
@@ -230,6 +400,34 @@ export const produits = [
     slug: 'winterhalter-f720blue-detergent-neutre',
     machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'F720 BLUe',
+    technique: {
+        "soustitre": "Détergent liquide neutre, effet neutre sur les eaux usées",
+        "couleur": "Jaune clair",
+        "odeur": "Spécifique au produit",
+        "ph": "Environ 10 (concentré) · environ 7 (dissous en cuve)",
+        "densite": "1,08 g/cm³",
+        "conservation": "12 mois",
+        "stockage": "Au frais, à l'abri de la lumière, debout, hors gel, de 0 à 25 °C maximum",
+        "conductivite": "Environ 3 mS/cm (4 ml/L d'eau désionisée à 22 °C)",
+        "ingredients": "Phosphonates, polycarboxylates, conservateurs",
+        "dosage": [
+              [
+                    "Eau douce",
+                    "< 8 °dH",
+                    "< 150 mg/L CaCO₃",
+                    "3 à 4 ml/L"
+              ],
+              [
+                    "Eau moyenne",
+                    "8 à 10 °dH",
+                    "150 à 180 mg/L CaCO₃",
+                    "4 à 5 ml/L"
+              ]
+        ],
+        "danger": [
+              "Aucun étiquetage de danger requis. Le produit n'est pas classé comme dangereux au sens de la directive 99/45/CE."
+        ]
+  },
     marque: 'Winterhalter',
     photo: 'winterhalter-f720blue',
     fiches: { technique: 'F720BLUe-fiche-technique.pdf', securite: 'F720BLUe-fiche-securite.pdf' },
@@ -251,6 +449,28 @@ export const produits = [
     slug: 'winterhalter-b100n-liquide-rincage-universel',
     machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'B100N',
+    technique: {
+        "soustitre": "Liquide de rinçage universel neutre",
+        "couleur": "Incolore",
+        "odeur": "Spécifique au produit",
+        "ph": "Environ 5,5 (concentré)",
+        "densite": "Environ 1,02 g/cm³",
+        "conservation": "2 ans",
+        "viscosite": "< 10 mPa·s à 20 °C",
+        "stockage": "Au frais, à l'ombre, debout, à l'abri du gel, 30 °C maximum",
+        "ingredients": "Phosphonates, polycarboxylates, agents tensioactifs non ioniques, conservateurs, sels d'acides organiques",
+        "dosage": [
+              [
+                    "Toutes duretés",
+                    "—",
+                    "—",
+                    "0,1 à 0,4 ml/L selon la vaisselle et la qualité de l'eau"
+              ]
+        ],
+        "danger": [
+              "H319 — Provoque une sévère irritation des yeux"
+        ]
+  },
     marque: 'Winterhalter',
     photo: 'winterhalter-b100n',
     fiches: { technique: 'B100N-fiche-technique.pdf', securite: 'B100N-fiche-securite.pdf' },
@@ -319,6 +539,46 @@ export const produits = [
     slug: 'winterhalter-a15mc-pastilles-autonettoyage',
     machines: ['lave-vaisselle', 'lave-verres'],
     ref: 'A15MC',
+    technique: {
+        "soustitre": "Pastilles pour le programme d'autonettoyage",
+        "couleur": "Blanc",
+        "odeur": "Spécifique au produit",
+        "ph": "9,5 (à 16 g/L)",
+        "conservation": "24 mois",
+        "poidsPastille": "Environ 8 g",
+        "stockage": "Frais, sombre, à l'abri du gel, 25 °C maximum",
+        "ingredients": "Tensioactifs non ioniques, phosphates, parfums",
+        "dosage": [
+              [
+                    "Lave-vaisselle UC",
+                    "—",
+                    "—",
+                    "1 pastille"
+              ],
+              [
+                    "Lave-vaisselle PT",
+                    "—",
+                    "—",
+                    "2 pastilles"
+              ],
+              [
+                    "Lave-vaisselle UF",
+                    "—",
+                    "—",
+                    "2 à 3 pastilles"
+              ],
+              [
+                    "CTR / MTR / MTF",
+                    "—",
+                    "—",
+                    "1 pastille par cuve"
+              ]
+        ],
+        "danger": [
+              "H319 — Provoque une irritation oculaire grave",
+              "EUH208 — Contient un dérivé de tétraméthyl-naphtyl-éthanone : peut produire une réaction allergique"
+        ]
+  },
     marque: 'Winterhalter',
     photo: 'winterhalter-a15mc',
     fiches: { technique: 'A15MC-fiche-technique.pdf', securite: 'A15MC-fiche-securite.pdf' },
@@ -446,6 +706,29 @@ export const produits = [
     caracteristiques: ['Protection anticalcaire', 'Dosage automatique', 'Produit d’origine Rational'],
     conditionnements: [{ label: 'Carton de cartouches', prix: null, aConfirmer: true }],
   },
+
+  // ---- Entretien four MKN ---------------------------------------------------
+  {
+    slug: 'mkn-cartouches-lavage-2in1',
+    machines: ['four'],
+    ref: '10012974',
+    marque: 'MKN',
+    photo: 'mkn-cartouche-2in1',
+    // Pas de champ `technique` : le fabricant n'a fourni que la fiche de
+    // données de sécurité, pas de fiche technique. Sans données constructeur,
+    // pas de fiche SODILAME — un gabarit à moitié vide vaut moins que rien.
+    fiches: { securite: '10012974-fiche-securite.pdf' },
+    categorie: 'entretien-four-rational',
+    nom: 'Cartouches de lavage 2 in 1',
+    resume: 'Cartouche à deux chambres pour le nettoyage automatique des fours MKN.',
+    description:
+      "Cartouche d'origine MKN pour le cycle de nettoyage automatique des fours mixtes de la marque. Elle réunit deux chambres dans un seul corps : la chambre inférieure contient le détergent alcalin qui décolle les graisses cuites de l'enceinte, la chambre supérieure un produit à base d'acide citrique qui rince et neutralise. Une cartouche par cycle, posée dans son logement, sans manipulation de produit concentré par le personnel.",
+    usages: ['Fours mixtes MKN à nettoyage automatique', 'Nettoyage quotidien de l’enceinte', 'Rinçage et neutralisation en fin de cycle'],
+    caracteristiques: ['Produit d’origine MKN', 'Deux chambres : détergent + rinçage', 'Une cartouche par cycle', 'En stock à Saint-Martin-de-Crau'],
+    attention:
+      "Produit corrosif : la chambre détergente est à base d'hydroxyde de sodium (pH supérieur à 12). La cartouche se manipule fermée, gants aux mains, et ne s'ouvre jamais. Ne pas mélanger avec un acide ni avec un autre produit d'entretien.",
+    conditionnements: [{ label: 'Carton de 10 cartouches', prix: 49.5 }],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -467,6 +750,20 @@ export const marquesCatalogue = [...new Set(produits.map((p) => p.marque))].sort
 // ---------------------------------------------------------------------------
 // Aides
 // ---------------------------------------------------------------------------
+/**
+ * Nom du PDF de la fiche technique à la charte SODILAME, ou null quand le
+ * produit n'a pas de données constructeur relevées.
+ *
+ * Les espaces des références (« F720 BLUe ») sont retirés : une URL avec espace
+ * s'encode en %20 et se casse au copier-coller dans un mail.
+ *
+ * Cette fonction est la source unique du nom de fichier : `outils/fiches.mjs`
+ * l'utilise pour écrire le PDF et `build.mjs` pour le lier. Les deux ne peuvent
+ * donc pas diverger.
+ */
+export const ficheSodilame = (p) =>
+  p.technique ? `${p.ref.replace(/\s+/g, '')}-fiche-technique-sodilame.pdf` : null;
+
 export const produitsDeCategorie = (slugCat) => produits.filter((p) => p.categorie === slugCat);
 export const categorieDuProduit = (p) => categoriesProduits.find((c) => c.slug === p.categorie);
 // Les familles ne sont plus des pages : ce sont des filtres du catalogue.

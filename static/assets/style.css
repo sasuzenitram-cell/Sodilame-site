@@ -695,3 +695,11 @@ body.boutique .prose .mise-en-garde p{color:#7A3A1C}
 .prose ul.fiches-pdf a{font-weight:600;text-decoration:none;border-bottom:1.5px solid currentColor}
 .prose ul.fiches-pdf a::before{content:"↓ ";font-weight:400}
 .prose ul.fiches-pdf span{font-size:.85rem;color:var(--muted)}
+
+/* Fiche technique SODILAME : premier des trois documents, et le seul que le
+   client ait besoin de lire — les deux autres sont des pièces justificatives.
+   On s'appuie sur --navy, qui vaut le vert profond sur les pages boutique et
+   le bleu marine ailleurs : la mise en avant suit donc la teinte de la page. */
+.prose ul.fiches-pdf li.mise-en-avant{border-color:var(--navy);border-width:1.5px;
+  background:#fff;box-shadow:var(--shadow)}
+.prose ul.fiches-pdf li.mise-en-avant a{color:var(--navy)}
