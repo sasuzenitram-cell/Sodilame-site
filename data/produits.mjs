@@ -605,7 +605,7 @@ export const produits = [
     machines: ['four'],
     ref: '56.01.535',
     marque: 'Rational',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'rational-56-01-535-tab-active-green',
     categorie: 'entretien-four-rational',
     nom: 'Tablettes nettoyantes Active Green',
     resume: 'Nettoyage rapide et détartrage automatique des fours iCombi.',
@@ -621,7 +621,7 @@ export const produits = [
     machines: ['four'],
     ref: '56.00.562',
     marque: 'Rational',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'rational-56-00-562-care-tab',
     categorie: 'entretien-four-rational',
     nom: 'Tablettes d’entretien CareControl',
     resume: 'Protègent la chaudière du calcaire sur les fours équipés de CareControl.',
@@ -651,7 +651,7 @@ export const produits = [
     machines: ['four'],
     ref: '56.00.211',
     marque: 'Rational',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'rational-56-00-211-tab-rincage',
     categorie: 'entretien-four-rational',
     nom: 'Tablettes de rinçage',
     resume: 'Complètent le cycle de nettoyage sur les fours sans CareControl.',
@@ -666,7 +666,7 @@ export const produits = [
     machines: ['four'],
     ref: '56.02.315E',
     marque: 'Rational',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'rational-56-02-315e-tab-sans-phosphate',
     categorie: 'entretien-four-rational',
     nom: 'Tablettes de nettoyage sans phosphate',
     resume: 'Formule sans phosphate, compatible avec l’ensemble des générations.',
@@ -681,7 +681,7 @@ export const produits = [
     machines: ['four'],
     ref: '56.01.912',
     marque: 'Rational',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'rational-56-01-912-cartouche-active-green',
     categorie: 'entretien-four-rational',
     nom: 'Cartouche de nettoyage Active Green',
     resume: 'Cartouche de détergent pour iCombi Pro équipé de l’AutoDose.',
@@ -696,7 +696,7 @@ export const produits = [
     machines: ['four'],
     ref: '56.01.914',
     marque: 'Rational',
-    photo: null, // voir l'en-tête du fichier
+    photo: 'rational-56-01-914-cartouche-care',
     categorie: 'entretien-four-rational',
     nom: 'Cartouche d’entretien Care',
     resume: 'Cartouche anticalcaire pour iCombi Pro avec AutoDose.',

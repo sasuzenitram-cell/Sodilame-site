@@ -1339,14 +1339,38 @@ function carteProduit(p) {
   const c0 = p.conditionnements[0];
   // Les data-* portent les critères de filtrage : le script du catalogue ne
   // lit que ça, il n'a aucune connaissance du contenu des cartes.
+  // data-ref sert au retrait de vente : panier.js marque la carte des produits
+  // que l'administration n'a plus cochés « en vente ».
   return `<a class="card prod" href="/produits/${p.categorie}/${p.slug}"
-        data-produit data-famille="${esc(p.categorie)}" data-marque="${esc(p.marque)}" data-machines="${esc((p.machines || []).join(' '))}">
+        data-produit data-ref="${esc(p.ref)}" data-famille="${esc(p.categorie)}" data-marque="${esc(p.marque)}" data-machines="${esc((p.machines || []).join(' '))}">
         ${vignetteProduit(p)}
         <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">${esc(p.ref)}</span></span>
         <h3>${esc(p.nom)}</h3>
         <p>${esc(p.resume)}</p>
         <span class="prod-bas">${p.conditionnements.length > 1 ? `<span class="cond">${p.conditionnements.length} conditionnements</span>` : `<span class="cond">${esc(c0.label)}</span>`}<span class="more">Voir →</span></span>
       </a>`;
+}
+
+/**
+ * Bloc servi à la place de « Commander » quand l'administration a décoché
+ * « en vente » sur tous les conditionnements de la référence. Il est dans le
+ * HTML livré mais masqué : c'est panier.js qui le révèle après avoir lu
+ * /api/catalogue, de sorte qu'un retrait de vente prenne effet sans attendre
+ * un redéploiement.
+ *
+ * On garde la page plutôt que de la supprimer : sa description, son dosage et
+ * ses fiches PDF restent utiles au client qui possède déjà le produit. Ce qu'on
+ * retire, c'est l'espoir d'une commande qu'on ne prendra pas.
+ */
+function retraitVente(p) {
+  return `<div class="achat retrait-vente" hidden>
+          ${vignetteProduit(p, ' grande')}
+          <h2>Plus au catalogue</h2>
+          <p class="achat-sub">Cette référence n'est plus proposée à la commande en ligne.</p>
+          <p class="achat-note" style="margin:0 0 1.1rem">Nous pouvons vous dire par quoi la remplacer sur votre machine, et vous la fournir encore si vous avez un stock à écouler. Un appel est le plus rapide.</p>
+          <a class="btn btn-primary btn-sm" href="tel:${site.telephoneE164}" style="width:100%;justify-content:center">${site.telephone}</a>
+          <a class="btn btn-outline btn-sm" href="/produits" style="width:100%;justify-content:center;margin-top:.6rem">Voir la boutique →</a>
+        </div>`;
 }
 
 const noticePrix = produits.some((p) => p.conditionnements.some((c) => typeof c.prix === 'number'))
@@ -1546,7 +1570,7 @@ function produitPage(p) {
 </div>
 ${ariane(fil)}
 
-<section>
+<section data-fiche-ref="${esc(p.ref)}">
   <div class="wrap">
     <div class="grid-art">
       <article class="prose">
@@ -1613,6 +1637,7 @@ ${ariane(fil)}
       </article>
 
       <aside>
+        ${retraitVente(p)}
         <div class="achat">
           ${vignetteProduit(p, ' grande')}
           <h2>Commander</h2>

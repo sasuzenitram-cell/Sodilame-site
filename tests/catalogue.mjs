@@ -122,7 +122,7 @@ console.log('\n═══ Page /produits générée ═══');
 
   // On cible le motif exact des cartes : `data-produit` seul apparaît aussi
   // dans le sélecteur du script embarqué.
-  const cartes = (html.match(/data-produit\s+data-famille=/g) || []).length;
+  const cartes = (html.match(/data-produit\s+data-ref="[^"]+"\s+data-famille=/g) || []).length;
   verifier(`les ${produits.length} produits sont dans le HTML livré`, cartes === produits.length, `${cartes} trouvés`);
 
   verifier('la barre de filtres est présente', html.includes('id="barre-filtres"'));
@@ -144,6 +144,49 @@ console.log('\n═══ Page /produits générée ═══');
 
   verifier('chaque fiche produit est liée depuis le catalogue',
     produits.every((p) => html.includes(`href="/produits/${p.categorie}/${p.slug}"`)));
+}
+
+console.log('\n═══ Retrait de vente depuis l’administration ═══');
+{
+  // Décocher « en vente » retire le produit du site. Le mécanisme repose sur
+  // quatre pièces qui doivent rester en accord, et dont trois peuvent se
+  // désaligner sans que rien ne casse visiblement : le marquage dans le HTML,
+  // le pont entre les deux scripts, et la règle CSS qui rend le masquage
+  // effectif. On les épingle ici.
+  const catalogue = readFileSync('public/produits/index.html', 'utf8');
+  const script = readFileSync('static/assets/panier.js', 'utf8');
+  const filtres = readFileSync('src/catalogue.mjs', 'utf8');
+  const css = readFileSync('static/assets/style.css', 'utf8');
+
+  const sansRef = produits.filter((p) => !catalogue.includes(`data-ref="${p.ref}"`));
+  verifier('chaque carte du catalogue porte sa référence', !sansRef.length,
+    sansRef.map((p) => p.ref).join(', '));
+
+  verifier('panier.js lit la disponibilité pour masquer les produits',
+    script.includes('horsCatalogue') && script.includes('masquerProduits'));
+
+  verifier('le catalogue expose un recalcul au script des prix',
+    filtres.includes('window.sodilameCatalogue') && script.includes('window.sodilameCatalogue'));
+
+  verifier('un produit retiré ne peut pas revenir par un filtre',
+    filtres.includes('if (!auCatalogue(c)) return false'));
+
+  verifier('les produits retirés sortent aussi du total affiché',
+    filtres.includes('if (auCatalogue(c)) total++'));
+
+  // Sans cette règle, `display:grid` l'emporte sur [hidden] et la ligne retirée
+  // de la vente reste affichée : le défaut est invisible en relisant le JS.
+  verifier('une ligne de conditionnement masquée disparaît vraiment',
+    /\.cond-row\[hidden\]\s*\{\s*display:\s*none/.test(css));
+
+  // Chaque fiche doit porter sa référence et son bloc de repli, sinon le retrait
+  // masque la carte du catalogue mais laisse la fiche commandable.
+  const fichesKo = produits.filter((p) => {
+    const f = readFileSync(`public/produits/${p.categorie}/${p.slug}/index.html`, 'utf8');
+    return !f.includes(`data-fiche-ref="${p.ref}"`) || !/class="achat retrait-vente" hidden/.test(f);
+  });
+  verifier('chaque fiche porte sa référence et son bloc de repli', !fichesKo.length,
+    fichesKo.map((p) => p.ref).join(', '));
 }
 
 console.log('\n═══ Redirections des anciennes URL ═══');

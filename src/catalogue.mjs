@@ -1,14 +1,15 @@
 // ---------------------------------------------------------------------------
 // CATALOGUE FILTRABLE — /produits
 //
-// Une seule page porte les 17 références, filtrables sur trois axes :
-// famille (détergent / rinçage / entretien four), marque et type de machine.
+// Une seule page porte toutes les références, filtrables sur trois axes :
+// famille (détergent, rinçage, entretien machine, entretien four), marque et
+// type de machine.
 //
-// Le filtrage est intégral côté navigateur : les 17 cartes sont dans le HTML
+// Le filtrage est intégral côté navigateur : toutes les cartes sont dans le HTML
 // livré, le script ne fait que masquer celles qui ne correspondent pas. Trois
 // conséquences voulues :
 //   — sans JavaScript, la page reste un catalogue complet et navigable ;
-//   — Google voit les 17 produits et leurs liens, pas une grille vide ;
+//   — Google voit tous les produits et leurs liens, pas une grille vide ;
 //   — aucun aller-retour réseau au clic, donc pas d'attente sur mobile.
 //
 // L'état des filtres est écrit dans l'URL (?famille=&marque=&machine=). Un lien
@@ -43,10 +44,21 @@ export const SCRIPT_FILTRES = `
     var q = new URLSearchParams();
     AXES.forEach(function(a){ if (etat[a]) q.set(a, etat[a]); });
     var s = q.toString();
-    history.replaceState(null, '', s ? '?' + s + '#catalogue' : location.pathname + '#catalogue');
+    // Sans filtre, aucune ancre : sinon le simple chargement de /produits
+    // réécrivait l'URL en /produits#catalogue et sautait par-dessus le hero.
+    history.replaceState(null, '', s ? '?' + s + '#catalogue' : location.pathname);
+  }
+
+  function auCatalogue(c){
+    // Produit retiré de la vente depuis l'administration. Le marquage est posé
+    // par panier.js à la réception de /api/catalogue : la carte est bien dans le
+    // HTML livré, mais elle ne doit ni s'afficher, ni être comptée, ni pouvoir
+    // réapparaître au clic sur un filtre.
+    return c.dataset.horsCatalogue !== '1';
   }
 
   function correspond(c){
+    if (!auCatalogue(c)) return false;
     if (etat.famille && c.dataset.famille !== etat.famille) return false;
     if (etat.marque  && c.dataset.marque  !== etat.marque)  return false;
     if (etat.machine && (' ' + c.dataset.machines + ' ').indexOf(' ' + etat.machine + ' ') === -1) return false;
@@ -55,7 +67,12 @@ export const SCRIPT_FILTRES = `
 
   function appliquer(){
     var n = 0;
+    // Le total affiché à côté du compteur exclut lui aussi les produits retirés,
+    // sinon on annoncerait « 7 références sur 19 » alors que la boutique n'en
+    // propose plus que 17.
+    var total = 0;
     cartes.forEach(function(c){
+      if (auCatalogue(c)) total++;
       var ok = correspond(c);
       c.hidden = !ok;
       if (ok) n++;
@@ -71,11 +88,28 @@ export const SCRIPT_FILTRES = `
     conseils.forEach(function(d){ d.hidden = d.dataset.conseil !== etat.famille; });
 
     compte.textContent = n === 0 ? 'Aucune référence'
-      : n === cartes.length ? cartes.length + ' références'
-      : n + (n > 1 ? ' références sur ' : ' référence sur ') + cartes.length;
+      : n === total ? total + ' références'
+      : n + (n > 1 ? ' références sur ' : ' référence sur ') + total;
     vide.hidden = n > 0;
     reinit.hidden = !(etat.famille || etat.marque || etat.machine);
     ecrireUrl();
+  }
+
+  // Filtrer fait fondre la hauteur de la page — de 19 cartes à 7, elle perd
+  // près de 2 000 px. Le navigateur ramène alors le défilement dans les
+  // limites du document, et l'utilisateur se retrouve n'importe où : souvent
+  // sous le dernier produit, devant du vide. Il croit que le filtre ne marche
+  // pas alors qu'il regarde le bas de la page.
+  // On replace donc la barre de filtres en haut de l'écran après chaque clic.
+  function recentrer(){
+    var barre = document.getElementById('barre-filtres');
+    if (!barre) return;
+    var y = barre.getBoundingClientRect().top + window.pageYOffset - 96;
+    // Uniquement si l'on a déjà quitté le haut de la page : sinon on déplace
+    // l'écran alors que tout était déjà visible.
+    if (window.pageYOffset > y) {
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+    }
   }
 
   boutons.forEach(function(b){
@@ -83,13 +117,19 @@ export const SCRIPT_FILTRES = `
       var a = b.dataset.filtre, v = b.dataset.valeur;
       etat[a] = etat[a] === v ? '' : v;   // second clic : on retire le filtre
       appliquer();
+      recentrer();
     });
   });
 
   reinit.addEventListener('click', function(){
     etat = { famille:'', marque:'', machine:'' };
     appliquer();
+    recentrer();
   });
+
+  // panier.js apprend de /api/catalogue quels produits ne sont plus en vente,
+  // après ce script. Il a donc besoin de nous redemander un passage.
+  window.sodilameCatalogue = { recalculer: appliquer };
 
   lireUrl();
   appliquer();

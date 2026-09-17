@@ -91,9 +91,67 @@
     return n.toFixed(2).replace('.', ',') + ' \u20ac HT';
   }
 
+  // Une référence est HORS CATALOGUE quand la base connaît ses conditionnements
+  // et qu'aucun n'est coché « en vente ». Deux précautions dans cette règle :
+  //   — il faut que la base ait des lignes pour cette référence. Un produit
+  //     jamais saisi dans l'administration reste visible : l'absence de saisie
+  //     n'est pas une décision de retrait ;
+  //   — si l'appel échoue ou revient vide, on ne masque rien. Un incident de
+  //     base doit laisser la boutique telle quelle, pas la vider.
+  function horsCatalogue(tarifs) {
+    var total = {}, fermes = {};
+    tarifs.forEach(function (t) {
+      total[t.ref] = (total[t.ref] || 0) + 1;
+      if (t.dispo === false) fermes[t.ref] = (fermes[t.ref] || 0) + 1;
+    });
+    return Object.keys(fermes).filter(function (ref) { return fermes[ref] === total[ref]; });
+  }
+
+  function masquerProduits(refs) {
+    if (!refs.length) return;
+    var dedans = {};
+    refs.forEach(function (r) { dedans[r] = true; });
+
+    // Les cartes produit, partout où elles apparaissent : catalogue, blocs
+    // « autres références de la même famille », mises en avant de l'accueil.
+    Array.prototype.forEach.call(document.querySelectorAll('[data-produit][data-ref]'), function (c) {
+      if (dedans[c.dataset.ref]) c.dataset.horsCatalogue = '1';
+    });
+    // Le catalogue tient lui-même le compteur et l'état des filtres : on lui
+    // demande de recalculer plutôt que de masquer les cartes dans son dos, sinon
+    // son prochain passage les rendrait de nouveau visibles.
+    if (window.sodilameCatalogue) window.sodilameCatalogue.recalculer();
+    else {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-hors-catalogue="1"]'), function (c) {
+        c.hidden = true;
+      });
+    }
+
+    // Sur la fiche du produit lui-même : le bloc de commande laisse la place à
+    // un renvoi vers la boutique, et la page demande à ne plus être indexée.
+    // Google exécute le JavaScript et respecte un noindex injecté ainsi ; le
+    // retrait est simplement moins immédiat qu'au prochain déploiement.
+    var fiche = document.querySelector('[data-fiche-ref]');
+    if (fiche && dedans[fiche.dataset.ficheRef]) {
+      var achat = fiche.querySelector('.achat:not(.retrait-vente)');
+      var retrait = fiche.querySelector('.retrait-vente');
+      if (achat) achat.hidden = true;
+      if (retrait) retrait.hidden = false;
+      // On réécrit la balise existante au lieu d'en ajouter une seconde :
+      // Google retient bien la directive la plus restrictive, mais deux balises
+      // robots contradictoires sur la même page se signalent dans Search
+      // Console et font perdre du temps à qui les lit.
+      var m = document.querySelector('meta[name="robots"]') || document.head.appendChild(document.createElement('meta'));
+      m.name = 'robots';
+      m.content = 'noindex,follow';
+    }
+  }
+
   function appliquerTarifs() {
     var boutons = document.querySelectorAll('.ajout');
-    if (!boutons.length) return;
+    var cartes = document.querySelectorAll('[data-produit][data-ref]');
+    var fiche = document.querySelector('[data-fiche-ref]');
+    if (!boutons.length && !cartes.length && !fiche) return;
     fetch('/api/catalogue', { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json(); })
       .then(function (d) {
@@ -101,17 +159,29 @@
         var carte = {};
         d.tarifs.forEach(function (t) { carte[t.ref + '__' + t.cond] = t; });
 
+        masquerProduits(horsCatalogue(d.tarifs));
+
+        // Le bandeau « Tarifs en cours de mise en ligne » est calculé au build,
+        // à partir du fichier catalogue où les prix valent tous null. Or les
+        // prix réels vivent en base et sont saisis dans l'administration : le
+        // bandeau ne pouvait donc jamais disparaître de lui-même. Dès qu'un
+        // vrai prix nous arrive, on le retire.
+        if (d.tarifs.some(function (t) { return typeof t.prix === 'number'; })) {
+          document.querySelectorAll('.notice-prix').forEach(function (n) { n.remove(); });
+        }
+
         boutons.forEach(function (b) {
           var t = carte[b.dataset.ref + '__' + b.dataset.cond];
           if (!t) return;
           var ligne = b.closest('.cond-row');
           var cible = ligne ? ligne.querySelector('.prix, .prix-nc') : null;
 
+          // \u00ab En vente \u00bb d\u00e9coch\u00e9 dans l'administration : la ligne quitte le bloc
+          // de commande. Quand c'est le seul conditionnement, masquerProduits()
+          // a d\u00e9j\u00e0 retir\u00e9 le produit entier \u2014 on ne laisse donc jamais un bloc
+          // \u00ab Commander \u00bb vide derri\u00e8re nous.
           if (t.dispo === false) {
-            b.disabled = true;
-            b.textContent = 'Momentan\u00e9ment indisponible';
-            b.classList.add('indispo');
-            if (cible) { cible.className = 'prix-nc'; cible.textContent = 'Nous consulter'; }
+            if (ligne) ligne.hidden = true;
             return;
           }
           if (typeof t.prix === 'number') {

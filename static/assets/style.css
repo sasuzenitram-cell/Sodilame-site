@@ -458,6 +458,10 @@ footer .fbrand .bs{font-size:.57rem;letter-spacing:.155em;text-transform:upperca
 .cond-row .ajout{grid-column:1/-1;justify-self:end}
 .cond-row .ajout svg{width:16px;height:16px}
 .cond-row .ajout.ok{background:#1F7A56;border-color:#1F7A56}
+/* Même piège que pour les cartes du catalogue : `display:grid` gagne contre
+   l'attribut [hidden]. Sans cette ligne, un conditionnement retiré de la vente
+   resterait affiché alors que le script l'a bien masqué. */
+.cond-row[hidden]{display:none}
 
 /* Encart d'achat sur la fiche produit */
 .achat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1.5rem 1.6rem;position:sticky;top:1.5rem}
