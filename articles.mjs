@@ -5,14 +5,379 @@
 export const articles = [
   // =========================================================================
   {
+    slug: 'verres-voiles-osmoseur-lave-verre',
+    photo: null,
+    titre: "Verres voilés : c'est l'eau, pas le produit",
+    titreSeo: "Verres voilés : adoucisseur ou osmoseur de lave-verre | SODILAME",
+    description:
+      "Pourquoi les verres sortent ternes, comment distinguer un dépôt de calcaire d'un verre attaqué, et ce que l'adoucisseur ne fait pas et l'osmoseur fait.",
+    date: '2026-09-15',
+    dateAffichee: '15 septembre 2026',
+    categorie: 'Équipement',
+    resume:
+      "Changer de liquide de rinçage ne règle presque jamais un problème de verres voilés. À 37 °f, l'eau de la Crau apporte 370 mg de calcaire par litre : c'est ça qu'il faut traiter, et pas toujours avec un adoucisseur.",
+    corps: `
+<p>C'est un des appels les plus fréquents en laverie, et presque toujours dans le même ordre : l'exploitant a changé de liquide de rinçage, puis de détergent, puis il a doublé les doses. Les verres sont toujours ternes, il a dépensé de l'argent, et il commence à soupçonner sa machine.</p>
+<p>Dans la quasi-totalité des cas que nous voyons entre la Crau, les Alpilles et le Comtat, la machine va bien et le produit n'y est pour rien. C'est l'eau qui entre dedans.</p>
+
+<h2>Avant tout : dépôt ou verre attaqué ?</h2>
+<p>Deux défauts très différents se ressemblent à l'œil nu, et le premier réflexe utile est de les séparer. Le test prend dix minutes et vous pouvez le faire ce soir.</p>
+<p>Prenez deux verres ternes. Laissez-en un tremper une heure dans un détartrant acide dilué — à défaut, du vinaigre blanc chaud fait l'affaire pour le diagnostic. Rincez, séchez.</p>
+<ul>
+<li><b>Le verre redevient clair</b> : c'est un <b>dépôt</b>. Les minéraux se sont accumulés à la surface. C'est réversible, et c'est un problème de traitement d'eau.</li>
+<li><b>Le verre reste voilé</b> : le verre lui-même est <b>attaqué</b>. Sa surface a été corrodée, la lumière ne s'y réfléchit plus correctement. C'est irréversible : aucun produit, aucun réglage, aucune machine ne rattrapera ces verres. Ils sont à remplacer.</li>
+</ul>
+<p>Le second cas est plus rare mais il change tout, parce qu'il signale une cause opposée à celle qu'on imagine. La corrosion du verre est favorisée par une <b>eau trop douce</b> associée à un détergent trop alcalin et à une température élevée — typiquement, une machine raccordée derrière un adoucisseur réglé à zéro, avec un dosage de produit jamais revu. Autrement dit : on peut abîmer définitivement une verrerie en voulant trop bien faire.</p>
+<p>D'où l'intérêt de faire le test avant d'acheter quoi que ce soit. S'il s'agit de corrosion, changer de liquide de rinçage ne sert à rien. S'il s'agit d'un dépôt, la suite de cet article vous concerne.</p>
+
+<h2>Pourquoi le voile se forme</h2>
+<p>Un verre qui sort d'une machine n'est pas sec : il porte un film d'eau. Ce film s'évapore. L'eau part, tout ce qu'elle transportait reste.</p>
+<p>C'est aussi simple que ça, et c'est pour cette raison qu'aucun produit ne résout le problème à lui seul. Un liquide de rinçage abaisse la tension superficielle : au lieu de perler en gouttes, l'eau s'écoule en nappe et laisse moins de matière derrière elle. C'est une amélioration réelle, et c'est aussi sa limite. Il change la façon dont l'eau s'égoutte, il ne change pas ce qu'il y a dedans. Au-delà d'un certain taux de sels dissous, le voile revient quelle que soit la dose.</p>
+
+<h2>Ce qu'il y a dans l'eau, chez nous</h2>
+<p>La dureté se mesure en degrés français (°f). Un degré français correspond à 10 mg de carbonate de calcium par litre d'eau. L'échelle usuelle classe une eau de 15 à 30 °f comme plutôt dure, de 30 à 40 °f comme dure, et au-delà de 40 °f comme très dure.</p>
+<p>Les valeurs relevées par le contrôle sanitaire de l'ARS sur nos réseaux, au premier semestre 2026 :</p>
+<ul>
+<li><b>Saint-Martin-de-Crau</b> — 38,7 °f sur le réseau principal, 38,25 °f sur le réseau Mas Payan</li>
+<li><b>Arles</b> — 36,87 °f sur le réseau ville, 39,6 °f sur le réseau Mas-Thibert</li>
+<li><b>Avignon</b> — 30,66 °f, valeur publiée par le distributeur</li>
+</ul>
+<p>On est donc partout en eau dure, et à Mas-Thibert on frôle la catégorie « très dure ». Ce n'est pas une opinion de commercial, ce sont les analyses réglementaires. Et cela signifie qu'une machine installée sans traitement d'eau ici ne donnera <i>jamais</i> une verrerie brillante, quel que soit son prix.</p>
+
+<h2>Le calcul que personne ne fait</h2>
+<p>À 37 °f, chaque litre d'eau apporte 370 mg de carbonate de calcium.</p>
+<p>Prenez une machine qui consomme 3 litres au rinçage — la valeur figure sur la notice de la vôtre — et qui tourne 40 fois par jour, six jours sur sept. Cela fait environ 37 000 litres par an, soit près de <b>14 kg de calcaire</b> qui traversent l'appareil.</p>
+<p>L'essentiel repart à l'égout. Ce qui compte, c'est la fraction qui ne repart pas : celle qui s'accroche à la résistance du surchauffeur, aux buses de rinçage, et celle qui sèche sur vos verres. C'est pour cela que le même problème se manifeste toujours de deux façons à la fois — des verres ternes en salle, et une machine qui chauffe de moins en moins bien. Une résistance entartrée continue d'afficher sa consigne sans jamais l'atteindre, et vous perdez la température de rinçage sans qu'aucun voyant ne s'allume. Les valeurs à surveiller sont rassemblées dans notre <a href="/conseils/temperatures-haccp-restauration">mémo des températures</a>.</p>
+
+<h2>Adoucisseur ou osmoseur : ils ne font pas le même travail</h2>
+<p>C'est la confusion la plus répandue, et elle coûte cher parce qu'elle conduit à installer le bon appareil pour le mauvais objectif.</p>
+
+<h3>L'adoucisseur protège la machine</h3>
+<p>Un adoucisseur fait un échange : il retient le calcium et le magnésium, et les remplace par du sodium. Le calcaire ne se dépose plus — c'est exactement ce qu'il faut pour préserver le surchauffeur, les buses et la durée de vie de l'appareil.</p>
+<p>Mais le sodium, lui, reste dans l'eau. La quantité de sels dissous n'a pratiquement pas baissé : elle a changé de nature. Une goutte qui sèche dépose toujours quelque chose. Ce n'est plus du calcaire, c'est une trace quand même. Beaucoup d'exploitants découvrent ce point après l'installation, et concluent que leur adoucisseur est en panne. Il ne l'est pas : il n'a jamais été conçu pour ça.</p>
+
+<h3>L'osmoseur donne le verre brillant</h3>
+<p>Un osmoseur ne remplace rien : il <b>retire</b>. L'eau est poussée à travers une membrane qui laisse passer les molécules d'eau et retient l'essentiel des sels dissous. L'eau de rinçage qui arrive sur le verre ne transporte quasiment plus rien, donc l'évaporation ne laisse quasiment rien. Le verre sèche seul, brillant, sans être essuyé.</p>
+<p>Entre les deux existe la <b>déminéralisation partielle</b> par cartouche à résines, qui vise le même résultat sans membrane ni rejet d'eau. Elle convient à des volumes modestes ; sur une eau à 37 °f, les cartouches se saturent vite et le calcul de consommables doit être fait honnêtement avant de choisir.</p>
+<p>À retenir : l'adoucisseur est un appareil de maintenance, l'osmoseur est un appareil de résultat. Sur une eau comme la nôtre, les deux se justifient souvent ensemble — l'adoucisseur en amont protège la membrane de l'osmoseur et allonge sa durée de vie.</p>
+
+<h2>Comment savoir ce qu'il vous faut</h2>
+<p>Trois données suffisent, et elles se relèvent en une visite :</p>
+<ol>
+<li><b>La dureté réelle à votre robinet</b>, mesurée sur place. La valeur communale est un ordre de grandeur ; un réseau interne, un puits ou un adoucisseur existant peuvent la faire varier fortement.</li>
+<li><b>Ce qui est déjà installé</b>, et son état. Un adoucisseur sans sel depuis six mois est un tube inerte. Une résine jamais désinfectée est pire qu'une absence de traitement : c'est un point d'eau stagnante sur un réseau qui doit rester potable, et l'eau utilisée en cuisine relève du chapitre VII de l'annexe II du règlement (CE) n° 852/2004.</li>
+<li><b>Le volume de rinçage et la cadence</b> de votre machine, qui décident du dimensionnement et du coût de fonctionnement du traitement.</li>
+</ol>
+<p>Nous relevons ces trois points gratuitement, y compris sur des machines que nous n'avons pas vendues. Le détail de notre approche est sur la page <a href="/services/laverie-restauration">laverie de restauration</a>, et nous intervenons sur l'ensemble de la zone — <a href="/zone-intervention/arles">Arles</a> comprise, où les deux réseaux de la commune n'ont pas la même dureté.</p>
+
+<h2>Ce que coûte vraiment l'essuyage manuel</h2>
+<p>C'est la solution que tout le monde adopte par défaut, et elle a trois coûts que personne ne chiffre.</p>
+<p><b>Du temps.</b> Essuyer la verrerie d'un service, tous les jours, occupe quelqu'un pendant que la salle attend. C'est du temps de personnel qui n'est ni du service ni de la production.</p>
+<p><b>De la casse.</b> Un verre essuyé est un verre manipulé une fois de plus, souvent chaud, souvent vite. La casse en fin de service n'arrive pas au hasard.</p>
+<p><b>Un problème d'hygiène.</b> C'est le coût le moins visible et le plus embêtant. Un verre qui sort d'un cycle correct est propre et désinfecté. Le torchon, lui, a servi toute la soirée, il est tiède et humide — c'est-à-dire dans les conditions idéales pour entretenir une flore. Essuyer un verre désinfecté avec ce torchon annule le travail de la machine. Le chapitre V de l'annexe II du règlement (CE) n° 852/2004 impose que les équipements en contact avec les denrées soient nettoyés et désinfectés de manière à limiter le risque de contamination : le dernier objet touché par le verre fait partie de la chaîne, et un inspecteur le sait. Supprimer l'essuyage n'est pas seulement un confort, c'est un maillon de moins à maîtriser.</p>
+
+<h2>Et le financement</h2>
+<p>Un lave-verres équipé d'un osmoseur peut entrer dans le champ des aides à la prévention des risques professionnels, parce qu'il supprime une tâche répétitive de plonge. Nous avons traité ce sujet à part, dossier et conditions compris, dans notre article sur le <a href="/conseils/subvention-lave-verres-osmoseur">lave-verres avec osmoseur subventionné</a>. Le présent article est technique : il vous dit ce qu'il faut. L'autre vous dit comment le payer.</p>
+
+<h2>Ce que nous faisons</h2>
+<p>Nous installons et entretenons les laveries de restauration de la Crau au Comtat, toutes marques. Sur ce sujet précis, notre travail consiste à mesurer avant de proposer : la dureté, l'état de l'existant, la cadence réelle. Ensuite seulement on parle de matériel.</p>
+<p>Nous livrons également les détergents et liquides de rinçage adaptés à l'eau traitée — un produit dosé pour une eau à 38 °f n'est pas le même que pour une eau osmosée, et beaucoup de surdosages viennent de là. Le catalogue est sur notre page <a href="/produits">produits d'entretien</a>, livraison assurée par nos techniciens. Le détartrage périodique du surchauffeur, lui, fait partie des points vus lors des visites de <a href="/services/contrat-entretien-cuisine-professionnelle">contrat d'entretien</a> : sur une eau dure, c'est une opération de calendrier, pas une réparation.</p>
+`,
+    faq: [
+      {
+        q: "Un adoucisseur suffit-il pour ne plus avoir de verres voilés ?",
+        r: "<p>Non, et c'est la confusion la plus fréquente. Un adoucisseur échange le calcium et le magnésium contre du sodium : il empêche le calcaire de se déposer et protège la machine, mais la quantité de sels dissous dans l'eau reste comparable. Une goutte qui sèche laisse donc toujours une marque, simplement ce n'est plus du calcaire. Pour un verre qui sèche seul sans trace, il faut retirer les sels — osmose inverse ou déminéralisation par résines — et non les remplacer.</p>",
+      },
+      {
+        q: "Mes verres sont-ils récupérables ?",
+        r: "<p>Cela dépend du défaut. Faites tremper un verre une heure dans un détartrant acide dilué : s'il redevient clair, il s'agit d'un dépôt minéral et le problème se règle en amont, sur l'eau. S'il reste voilé, la surface du verre est corrodée, le dommage est définitif et les verres sont à remplacer. Dans ce second cas, vérifiez le réglage de votre adoucisseur et le dosage du détergent : une eau trop douce associée à un produit trop alcalin et à une température élevée est la cause classique.</p>",
+      },
+      {
+        q: "Quelle est la dureté de l'eau dans notre secteur ?",
+        r: "<p>Élevée partout. Les analyses du contrôle sanitaire de l'ARS relevaient au premier semestre 2026 environ 38,7 °f à Saint-Martin-de-Crau, 36,87 °f sur le réseau ville d'Arles et 39,6 °f sur le réseau Mas-Thibert ; le distributeur du Grand Avignon publie 30,66 °f pour Avignon. Une eau est dite dure entre 30 et 40 °f. Ces valeurs communales sont un ordre de grandeur : la dureté à votre robinet peut différer, c'est pourquoi nous la mesurons sur place.</p>",
+      },
+      {
+        q: "Un osmoseur consomme-t-il beaucoup d'eau et d'entretien ?",
+        r: "<p>Une membrane d'osmose inverse rejette une part de l'eau qui la traverse : c'est le principe même du procédé, et ce volume doit être intégré au calcul avant l'installation. Côté entretien, la membrane et les préfiltres ont une durée de vie liée à la qualité de l'eau d'entrée — d'où l'intérêt d'un adoucisseur en amont sur une eau à près de 40 °f, qui allonge nettement l'intervalle de remplacement. C'est un équipement à entretenir au calendrier, pas à installer et oublier.</p>",
+      },
+    ],
+  },
+
+  // =========================================================================
+  {
+    slug: 'controle-hygiene-restaurant',
+    photo: null,
+    titre: "Contrôle d'hygiène en restaurant : les points qui reviennent",
+    titreSeo: "Contrôle d'hygiène restaurant : ce qui est vérifié | SODILAME",
+    description:
+      "Qui contrôle depuis 2024, ce qui déclenche une visite, les niveaux Alim'confiance et les points relevés le plus souvent dans les cuisines que nous entretenons.",
+    date: '2026-09-07',
+    dateAffichee: '7 septembre 2026',
+    categorie: 'Hygiène & HACCP',
+    resume:
+      "Ce n'est pas le classeur qui est jugé, c'est la cohérence entre ce qu'il affirme et ce que fait la cuisine. Les constats qui reviennent le plus souvent sont techniques, et presque tous se corrigent avant la visite.",
+    corps: `
+<p>Un contrôle sanitaire ne se prépare pas la veille. Il se prépare dans les six mois qui précèdent, et il se joue en grande partie sur du matériel, pas sur du papier.</p>
+<p>Nous entretenons des cuisines professionnelles entre la Crau, les Alpilles et le Comtat. Nos techniciens ne sont pas inspecteurs, mais ils passent souvent après eux : quand un exploitant reçoit son rapport, c'est nous qu'il appelle pour corriger ce qui a été relevé. À force, la liste se répète. Elle est plus courte qu'on ne le croit, et elle est presque toujours technique.</p>
+
+<h2>Qui contrôle, et ce qui a changé en 2024</h2>
+<p>Jusqu'en 2023, la compétence était partagée entre la DGCCRF et les services vétérinaires. Depuis le <b>1<sup>er</sup> janvier 2024</b>, le ministère de l'Agriculture est seul compétent en matière de sécurité sanitaire des aliments : c'est la police sanitaire unique de l'alimentation, pilotée par la DGAL. Sur le terrain, les contrôles sont conduits par la <b>DDPP</b> (direction départementale de la protection des populations) ou la <b>DDETSPP</b> selon le département — DDPP dans les Bouches-du-Rhône, le Vaucluse et le Gard.</p>
+<p>Un point que peu d'exploitants connaissent : depuis cette réforme, une partie des inspections en remise directe au consommateur — restaurants, métiers de bouche, grandes surfaces, marchés — est <b>déléguée à des organismes publics et privés</b> mandatés par l'État. L'inspecteur qui se présente n'est donc pas nécessairement un agent de l'État. Il dispose des mêmes prérogatives, porte une carte professionnelle, et refuser le contrôle expose aux mêmes suites que face à un agent.</p>
+<p>En pratique : demandez la carte, notez le nom, le service ou l'organisme, et l'heure d'arrivée. Ce n'est pas de la défiance, c'est la base d'un dossier propre si vous devez répondre par écrit ensuite.</p>
+
+<h2>Ce qui déclenche une visite</h2>
+<ul>
+<li><b>La programmation annuelle.</b> Chaque département établit un plan d'inspection ; la fréquence dépend du niveau de risque de l'établissement, pas du hasard.</li>
+<li><b>Un signalement.</b> Un client, un ancien salarié, un voisin. C'est le motif qui monte le plus vite.</li>
+<li><b>Une suspicion d'intoxication alimentaire collective.</b> La visite est alors immédiate et le périmètre beaucoup plus large.</li>
+<li><b>Un contrôle précédent mal noté.</b> Une évaluation « à améliorer » appelle une contre-visite.</li>
+<li><b>Une ouverture ou une reprise.</b> La déclaration d'activité auprès de la DDPP met l'établissement sur la carte.</li>
+</ul>
+<p>Le contrôle est inopiné et se déroule aux heures d'activité, souvent en plein service. Ce n'est pas une brimade : une cuisine à l'arrêt ne montre rien. Ce que l'inspecteur veut voir, c'est la cuisine en marche.</p>
+
+<h2>Comment se déroule l'inspection</h2>
+<p>L'inspecteur travaille avec une grille nationale. Le vade-mecum de la DGAL pour le domaine de la sécurité sanitaire des aliments l'organise en six chapitres : identification de l'établissement, <b>locaux et équipements</b> (conception, circuits, nuisibles, maintenance, nettoyage-désinfection), <b>maîtrise de la chaîne de production</b> (analyse des dangers, contrôles à réception, maîtrise des températures, eau potable), <b>traçabilité et gestion des non-conformités</b>, <b>gestion des déchets et sous-produits animaux</b>, et <b>gestion du personnel</b> (hygiène, formation).</p>
+<p>Deux chapitres sur six concernent directement l'état du matériel et sa maintenance. C'est là que nous intervenons, et c'est là que nous voyons le plus de points perdus.</p>
+<p>L'ordre habituel : le tour des locaux d'abord, appareil par appareil, avec un thermomètre étalonné ; les documents ensuite. À la fin, un relevé de constatations est établi et vous pouvez y porter vos observations. Lisez-le avant de signer, et faites préciser tout constat que vous jugez inexact — c'est le seul moment où c'est simple à faire.</p>
+
+<h2>Alim'confiance : la note est publique, et elle reste un an</h2>
+<p>Depuis la loi d'avenir pour l'agriculture, l'alimentation et la forêt du 13 octobre 2014, les résultats des contrôles sont publiés. Les modalités ont été fixées par le <b>décret n° 2016-1750 du 15 décembre 2016</b> et l'<b>arrêté du 28 février 2017</b> ; la mise en ligne a commencé le 3 avril 2017 sur <i>alim-confiance.gouv.fr</i>, repris par plusieurs applications grand public.</p>
+<p>Quatre niveaux :</p>
+<ul>
+<li><b>Très satisfaisant</b> — aucune non-conformité, ou uniquement des non-conformités mineures.</li>
+<li><b>Satisfaisant</b> — des non-conformités mineures, assorties d'un rappel à la réglementation.</li>
+<li><b>À améliorer</b> — des mesures correctives sont exigées dans un délai fixé par l'administration.</li>
+<li><b>À corriger de manière urgente</b> — des non-conformités susceptibles de mettre en danger la santé du consommateur.</li>
+</ul>
+<p>Le point qui surprend les exploitants : le résultat <b>reste en ligne un an à compter de la date du contrôle</b>. Corriger ne l'efface pas. Seule une nouvelle inspection produit une nouvelle note. Un « à améliorer » obtenu en mars pèse donc sur toute la saison, quelle que soit la rapidité avec laquelle vous avez repris les choses en main.</p>
+
+<h2>Les sept points que nous retrouvons le plus souvent</h2>
+
+<h3>1. Le relevé de température qui ne prouve rien</h3>
+<p>Un cahier où la chambre froide affiche 3 °C tous les jours de l'année, dimanches de fermeture compris, ne démontre rien — sinon que personne n'est allé regarder. Un relevé crédible respire : il bouge en service, il monte après une livraison, il repart. Ce sont les carnets trop réguliers qui attirent l'attention, pas ceux qui montrent des écarts assumés et corrigés.</p>
+
+<h3>2. La sonde qui ment</h3>
+<p>C'est le constat le plus fréquent de nos interventions après contrôle. L'afficheur de la chambre froide indique 3 °C, le thermomètre étalonné de l'inspecteur en lit 7. La sonde a dérivé, ou elle est mal placée — collée à l'évaporateur, elle lit l'air soufflé, pas la denrée. Vos relevés sont alors sincères et faux en même temps, ce qui est la pire des situations : ils prouvent que vous n'avez pas vu le problème.</p>
+<p>Le contrôle prend deux minutes : un thermomètre de référence, posé au milieu de la chambre, à hauteur de produit, comparé à l'afficheur. Si l'écart dépasse un degré, la sonde est à recalibrer.</p>
+
+<h3>3. Les joints de porte</h3>
+<p>Un joint durci, fendu, ou dont l'aimantation est morte laisse entrer de l'air chaud et humide en continu. Résultat : le groupe ne s'arrête plus, le givre s'installe, la température moyenne monte de deux degrés sans qu'aucune alarme ne se déclenche. Le test de la feuille de papier — vous la coincez dans la porte, elle doit résister à la traction, sur tout le pourtour — se fait en une minute par porte. C'est probablement le meilleur rapport entre le temps passé et le risque évité de toute cette liste.</p>
+
+<h3>4. L'évaporateur givré et le bac à condensats</h3>
+<p>Un évaporateur pris en glace ne fait plus circuler l'air : il se crée des zones à cinq degrés dans une chambre censée en afficher trois. Le bac à condensats et son siphon, eux, sont presque toujours oubliés du plan de nettoyage — et ce sont des points d'eau stagnante à l'intérieur même de l'enceinte réfrigérée. Un inspecteur qui ouvre un capot d'évaporateur sait exactement ce qu'il cherche.</p>
+
+<h3>5. Le dessous et l'arrière des équipements</h3>
+<p>Les surfaces visibles sont propres partout. Les non-conformités se relèvent sous le piano, derrière la friteuse, sur les pieds réglables, dans les rails des tiroirs réfrigérés et sous les plans de travail sur roulettes qui ne bougent jamais. Un plan de nettoyage qui ne nomme pas ces surfaces ne les fait pas nettoyer.</p>
+
+<h3>6. La température de rinçage du lave-vaisselle</h3>
+<p>Une machine dont la résistance de surchauffeur est entartrée continue d'afficher sa consigne sans jamais l'atteindre. Le résultat, ce sont des verres et des assiettes qui sortent chauds mais mal désinfectés, et un maillon de la chaîne d'hygiène qui saute en silence. En Provence, où l'eau est dure, c'est une panne lente et prévisible plutôt qu'un accident. Un relevé périodique de la température réelle de rinçage, et un traitement d'eau dimensionné, règlent la question — nous détaillons ce point sur notre page <a href="/services/laverie-restauration">laverie de restauration</a>, et l'origine du problème dans notre article sur les <a href="/conseils/verres-voiles-osmoseur-lave-verre">verres voilés</a>.</p>
+
+<h3>7. Le lave-mains et le poste de plonge</h3>
+<p>Un lave-mains dont la commande n'est pas actionnable sans les mains, sans savon, sans essuie-mains à usage unique, ou transformé en rangement à éponges, est un constat immédiat. Même chose pour un poste de plonge sans séparation nette entre le sale et le propre. Ce sont les points les moins coûteux à corriger et parmi les plus souvent relevés.</p>
+
+<h2>Ce qui se corrige avant, et ce qui ne se rattrape pas</h2>
+<p>Se corrige la veille : le rangement, l'étiquetage, les fiches de données de sécurité au mur, l'affichage des températures de conservation, la présence des essuie-mains.</p>
+<p>Ne se corrige pas la veille : un joint mort, une sonde dérivée, un évaporateur encrassé, un surchauffeur entartré, un conduit d'extraction gras. Ce sont des points de maintenance, ils se traitent au calendrier. C'est précisément l'objet d'un <a href="/services/contrat-entretien-cuisine-professionnelle">contrat d'entretien</a> : passer sur ces points une ou deux fois par an, et laisser derrière chaque visite un rapport daté. Ce rapport a une deuxième vie — c'est une preuve d'entretien, et la traçabilité des interventions est exactement ce qu'attend le chapitre « maintenance » de la grille d'inspection.</p>
+<p>Pour la partie documentaire, tout est déjà décrit dans notre article sur le <a href="/conseils/plan-de-maitrise-sanitaire-restaurant">plan de maîtrise sanitaire</a> : bonnes pratiques d'hygiène, plan HACCP, traçabilité et gestion des non-conformités. Les valeurs à respecter et à afficher sont regroupées dans notre <a href="/conseils/temperatures-haccp-restauration">mémo des températures</a>. Deux repères, pour situer : l'analyse des dangers relève de l'article 5 du règlement (CE) n° 852/2004 ; la traçabilité, de l'article 18 du règlement (CE) n° 178/2002, qui impose de savoir d'où vient chaque produit et où il est parti. Le maintien au chaud à 63 °C jusqu'au service est fixé par l'arrêté du 21 décembre 2009.</p>
+<p>Côté personnel, l'établissement doit compter au moins une personne justifiant d'une formation spécifique en hygiène alimentaire (article L. 233-4 du code rural et de la pêche maritime, décret n° 2011-731 du 24 juin 2011). Attention sur ce point : le cahier des charges de cette formation est désormais fixé par l'<b>arrêté du 12 février 2024</b>, qui a remplacé celui du 5 octobre 2011 au 1<sup>er</sup> mai 2024. Vérifiez que l'organisme qui vous a formé était bien enregistré au bon régime.</p>
+
+<h2>Les suites possibles</h2>
+<p>Elles vont du plus léger au plus lourd, et la plupart des visites s'arrêtent au premier échelon.</p>
+<ul>
+<li><b>Le rappel à la réglementation.</b> Un courrier, pas de sanction. C'est l'issue la plus fréquente.</li>
+<li><b>La mise en demeure.</b> L'administration fixe les mesures à prendre et un délai pour les prendre (article L. 206-2 du code rural et de la pêche maritime). Une contre-visite vérifie l'exécution.</li>
+<li><b>La suspension d'activité ou la fermeture administrative.</b> Prononcée par le préfet lorsque la santé du consommateur est en jeu, ou lorsqu'une mise en demeure est restée sans effet (articles L. 233-1 et suivants du même code).</li>
+<li><b>Les suites pénales</b>, en cas d'infraction caractérisée, indépendantes des mesures administratives.</li>
+</ul>
+<p>Dans notre expérience, la fermeture n'arrive presque jamais d'un coup. Elle arrive au terme d'une chaîne : un premier constat pas traité, une mise en demeure dont le délai passe, une contre-visite qui trouve la même chose. Le moment où tout se joue, c'est le premier rapport.</p>
+
+<h2>Ce que nous pouvons faire</h2>
+<p>Nous n'écrivons pas votre plan de maîtrise sanitaire et nous ne sommes pas un bureau de certification. Nous intervenons sur la moitié technique du sujet : vérifier ce que valent vos températures réelles, contrôler les joints et les sondes, dégivrer et nettoyer les évaporateurs, détartrer les circuits de rinçage, contrôler l'extraction, et vous laisser un rapport daté par visite.</p>
+<p>Nous proposons un audit technique de votre parc, sans engagement, toutes marques — y compris les équipements que nous n'avons pas vendus. Il ne remplace pas un contrôle : il vous dit ce qu'un contrôle trouverait.</p>
+`,
+    faq: [
+      {
+        q: "Un contrôle sanitaire est-il annoncé à l'avance ?",
+        r: "<p>Non. Les contrôles sont inopinés et se déroulent aux heures d'activité de l'établissement, souvent en plein service. L'inspecteur — agent de la DDPP ou de la DDETSPP, ou contrôleur d'un organisme délégataire mandaté par l'État depuis 2024 — présente sa carte professionnelle à son arrivée. Refuser l'accès expose aux mêmes suites que l'infraction elle-même.</p>",
+      },
+      {
+        q: "Combien de temps la note Alim'confiance reste-t-elle en ligne ?",
+        r: "<p>Un an à compter de la date du contrôle, sur alim-confiance.gouv.fr, conformément au décret n° 2016-1750 du 15 décembre 2016 et à son arrêté d'application du 28 février 2017. Corriger les non-conformités ne retire pas la note publiée : seule une nouvelle inspection produit un nouveau résultat.</p>",
+      },
+      {
+        q: "Que se passe-t-il si je conteste un constat du rapport ?",
+        r: "<p>Le relevé de constatations est contradictoire : vous pouvez y porter vos observations avant de le signer, et c'est le moment le plus simple pour le faire. Vous pouvez ensuite répondre par écrit au service, pièces à l'appui — rapports d'intervention, factures de réparation, relevés. Une mise en demeure peut faire l'objet d'un recours gracieux auprès du préfet, puis d'un recours contentieux devant le tribunal administratif.</p>",
+      },
+      {
+        q: "Un contrat d'entretien améliore-t-il le résultat d'un contrôle ?",
+        r: "<p>Il n'existe aucun lien automatique, et personne ne peut vous garantir une note. Ce qu'un entretien régulier apporte concrètement, c'est du matériel qui tient ses températures et une traçabilité des interventions — deux éléments que la grille d'inspection examine, au chapitre des locaux et équipements comme à celui de la maîtrise des températures. La plupart des constats techniques que nous corrigeons après un contrôle auraient été vus lors d'une visite d'entretien.</p>",
+      },
+    ],
+  },
+
+  // =========================================================================
+  {
+    slug: 'plan-de-maitrise-sanitaire-restaurant',
+    photo: null,
+    titre: "Plan de maîtrise sanitaire : ce qu'il doit contenir, et ce que l'inspecteur regarde en premier",
+    titreSeo: "Plan de maîtrise sanitaire (PMS) restaurant : contenu et obligations | SODILAME",
+    description:
+      "Le PMS est obligatoire pour tout restaurant. Ses quatre parties, ce que le contrôle vérifie en priorité, et la part qui dépend directement de vos équipements.",
+    date: '2026-09-01',
+    dateAffichee: '1er septembre 2026',
+    categorie: 'Hygiène & HACCP',
+    resume:
+      "Un classeur épais ne protège personne. Ce qui tient devant un contrôle, ce sont des relevés cohérents et du matériel qui fait ce qu'il prétend faire.",
+    corps: `
+<p>Le plan de maîtrise sanitaire — le PMS — est le document qui prouve que vous maîtrisez la sécurité sanitaire de votre production. Il est <b>obligatoire pour tout établissement qui manipule des denrées alimentaires</b>, du restaurant de vingt couverts à la cuisine centrale.</p>
+<p>Nous ne sommes pas un cabinet d'hygiène et nous n'allons pas vous vendre un PMS. Mais nous entrons dans des cuisines tous les jours, nous voyons ce que les contrôles relèvent, et nous constatons une chose : <b>une bonne moitié des non-conformités portent sur des équipements, pas sur des procédures</b>. C'est cette moitié-là que nous connaissons.</p>
+
+<h2>Sur quoi repose l'obligation</h2>
+<p>Trois textes se superposent :</p>
+<ul>
+<li>Le <b>règlement (CE) n° 852/2004</b>, dont l'article 5 impose à toute entreprise alimentaire une procédure fondée sur les principes HACCP ;</li>
+<li>L'<b>arrêté du 21 décembre 2009</b>, qui fixe les règles sanitaires applicables aux activités de commerce de détail et de restauration ;</li>
+<li>La <b>note de service DGAL/SDSSA/N2012-8119</b>, qui précise ce que l'administration française attend concrètement dans le document.</li>
+</ul>
+<p>L'absence de PMS lors d'un contrôle donne lieu à une mise en demeure avec délai de mise en conformité. En cas de danger avéré, la fermeture administrative est immédiate.</p>
+
+<h2>Les quatre parties du document</h2>
+
+<h3>1. Les bonnes pratiques d'hygiène</h3>
+<p>Ce sont les programmes prérequis : hygiène du personnel, plan de nettoyage et de désinfection, lutte contre les nuisibles, <b>maîtrise des températures</b>, qualité de l'eau, <b>maintenance des équipements</b>, contrôle à réception. Deux de ces sept programmes reposent entièrement sur votre matériel.</p>
+
+<h3>2. Le plan HACCP</h3>
+<p>L'analyse des dangers propre à votre production : les sept principes, les douze étapes, l'identification de vos points critiques et les limites que vous vous fixez. C'est la partie qui doit être <b>écrite pour votre cuisine</b>. Un HACCP téléchargé et rempli au nom de l'établissement se repère en trois minutes — il décrit des flux qui ne correspondent pas au local.</p>
+
+<h3>3. La traçabilité et la gestion des non-conformités</h3>
+<p>D'où viennent vos produits, ce que vous en faites, comment vous les étiquetez en interne, et surtout : <b>ce que vous faites quand quelque chose sort des clous</b>. Un relevé qui montre une chambre froide à 8 °C sans aucune action associée est plus accablant qu'un relevé absent.</p>
+
+<h3>4. La gestion des allergènes</h3>
+<p>Les quatorze allergènes à déclaration obligatoire, leur présence dans vos préparations, et les procédures qui évitent la contamination croisée.</p>
+
+<h2>Ce que le contrôle regarde en premier</h2>
+<p>D'après ce que nos clients nous rapportent après leurs visites, l'ordre est assez constant.</p>
+<p><b>Les relevés de température, et leur cohérence.</b> Pas leur existence — leur cohérence. Un cahier où la chambre froide fait 3 °C tous les jours de l'année, week-ends compris, dimanches de fermeture compris, ne prouve rien : il prouve que quelqu'un remplit un cahier. Un relevé crédible respire, il montre des variations, des dégivrages, et des actions quand ça dérape.</p>
+<div class="callout"><p><b>C'est l'argument décisif pour l'enregistrement automatique.</b> Un enregistreur relié à vos chambres froides produit une courbe réelle, horodatée, que personne ne peut avoir écrite le matin même. Il coûte moins cher qu'une seule journée de fermeture administrative.</p></div>
+<p><b>Le refroidissement rapide.</b> La réglementation impose de passer de +63 °C à +10 °C en moins de deux heures. C'est une performance de matériel, pas de bonne volonté : aucune chambre froide ne fait ce travail, et une <a href="/services/froid-professionnel">cellule de refroidissement</a> sous-dimensionnée pour votre production réelle ne le fera pas non plus. C'est le point sur lequel les cuisines de collectivité sont le plus souvent reprises.</p>
+<p><b>Le plan de nettoyage, et sa preuve.</b> Quels produits, à quelle dilution, sur quelles surfaces, à quelle fréquence, par qui. Avec les fiches de données de sécurité disponibles. C'est aussi pour ça que nous ne vendons que des <a href="/produits">produits dont nous pouvons fournir la documentation</a> : un bidon sans fiche est un trou dans votre PMS.</p>
+<p><b>L'entretien des équipements, et ses justificatifs.</b> Rapports d'intervention, attestations de contrôle d'étanchéité pour les installations frigorifiques, dégraissage des <a href="/services/extraction-ventilation-cuisine">hottes et conduits d'extraction</a>. Un <a href="/services/contrat-entretien-cuisine-professionnelle">contrat d'entretien</a> produit cette documentation automatiquement — c'est même son intérêt le moins souvent cité.</p>
+
+<h2>Les trois erreurs que nous voyons le plus</h2>
+<p><b>Le classeur acheté et jamais ouvert.</b> Il rassure au moment de l'achat et ne résiste pas à la première question précise. Un PMS qui ne décrit pas votre cuisine ne vous protège pas.</p>
+<p><b>Les relevés rattrapés.</b> Une semaine remplie d'un coup, même encre, même stylo, même écriture régulière. C'est visible, et ça détruit la crédibilité de tout le reste du dossier.</p>
+<p><b>Le matériel qui ne peut pas tenir les valeurs déclarées.</b> C'est le plus fréquent, et c'est celui dont on parle le moins. Vous pouvez écrire ce que vous voulez sur le refroidissement rapide : si votre cellule est dimensionnée pour 20 kg et que vous en passez 40, elle ne descendra pas dans les temps. Le PMS décrit alors une maîtrise qui n'existe pas — et c'est exactement ce que le contrôle cherche.</p>
+
+<h2>Ce que nous pouvons faire</h2>
+<p>Pas votre PMS. En revanche, l'<a href="/services/contrat-entretien-cuisine-professionnelle">audit technique de votre parc</a> est gratuit : un technicien passe, relève les températures réelles de vos équipements, mesure les temps de descente de votre cellule et vous remet un rapport écrit. Vous savez alors si le matériel peut effectivement tenir ce que votre document promet.</p>
+<p>C'est le préalable de bon sens. Écrire une procédure que le matériel ne peut pas honorer, c'est documenter sa propre non-conformité.</p>`,
+    faq: [
+      {
+        q: 'Le plan de maîtrise sanitaire est-il obligatoire pour un petit restaurant ?',
+        r: `<p>Oui. L'obligation ne dépend pas de la taille : elle s'applique à toute entreprise du secteur alimentaire, y compris un établissement de quelques couverts. Le contenu, lui, est proportionné à l'activité — le PMS d'un snack ne fait pas le même volume que celui d'une cuisine centrale.</p>`,
+      },
+      {
+        q: 'Peut-on utiliser un modèle de PMS téléchargé ?',
+        r: `<p>Comme point de départ, oui. Tel quel, non. Un PMS doit décrire votre cuisine : vos flux, vos équipements, vos fournisseurs, vos points critiques. Un modèle générique se repère immédiatement lors d'un contrôle, parce qu'il décrit des circulations qui ne correspondent pas au local visité.</p>`,
+      },
+      {
+        q: 'Combien de temps faut-il conserver les relevés de température ?',
+        r: `<p>La pratique courante est de les conserver au moins un an, et il est prudent d'aller au-delà pour les documents d'entretien et les attestations réglementaires. En cas de toxi-infection alimentaire collective, ce sont ces relevés qui permettent d'établir ce qui s'est passé — et ce qui ne s'est pas passé chez vous.</p>`,
+      },
+      {
+        q: 'Un enregistreur automatique de température est-il obligatoire ?',
+        r: `<p>Non, le relevé manuel reste accepté. Mais l'enregistrement automatique produit une preuve qu'on ne peut pas reconstituer après coup, et il alerte en cas de dérive avant que la marchandise soit perdue. Sur une chambre froide de stockage, il se rentabilise sur un seul incident évité.</p>`,
+      },
+    ],
+  },
+
+  // =========================================================================
+  {
+    slug: 'bac-a-graisses-restaurant',
+    photo: null,
+    titre: "Bac à graisses en restaurant : obligation, dimensionnement et entretien",
+    titreSeo: "Bac à graisses restaurant : obligation, taille et vidange | SODILAME",
+    description:
+      "Le bac à graisses est obligatoire pour la plupart des restaurants. Comment le dimensionner sur votre activité réelle, à quelle fréquence le faire vidanger, et ce que vous risquez sans.",
+    date: '2026-09-02',
+    dateAffichee: '2 septembre 2026',
+    categorie: 'Réglementation',
+    resume:
+      "Sous-dimensionné dans neuf cas sur dix, vidangé trop tard dans les mêmes proportions. C'est pourtant l'équipement le moins cher de votre cuisine.",
+    corps: `
+<p>C'est l'équipement dont personne ne parle jusqu'au jour où il déborde. Le bac à graisses — ou séparateur à graisses — retient les matières grasses de vos eaux de plonge et de cuisine avant qu'elles ne partent au réseau. Sans lui, elles se figent en refroidissant dans les canalisations et finissent par les boucher, chez vous d'abord, dans le collecteur public ensuite.</p>
+
+<h2>Ce qui rend le bac à graisses obligatoire</h2>
+<p>Il n'existe pas un texte unique « bac à graisses obligatoire ». L'obligation naît du croisement de plusieurs règles :</p>
+<ul>
+<li>Le <b>code de la santé publique</b> (art. L 1331-2) interdit de déverser au réseau des matières susceptibles de nuire à son bon fonctionnement ;</li>
+<li>Le <b>règlement sanitaire départemental</b> reprend et précise cette interdiction — c'est lui qui s'applique concrètement à votre établissement ;</li>
+<li>La norme <b>NF EN 1825</b> encadre la conception (partie 1) et l'installation, l'utilisation et l'entretien (partie 2) des séparateurs à graisses. Le marquage CE est requis.</li>
+</ul>
+<div class="callout"><p><b>Le point à vérifier avant tout le reste :</b> votre convention de rejet et le règlement sanitaire de votre département. Les seuils, les obligations de vidange et les justificatifs demandés varient d'un territoire à l'autre. Votre service d'assainissement vous les fournit sur simple demande — et c'est lui qui contrôlera.</p></div>
+
+<h2>Le dimensionnement : là où presque tout le monde se trompe</h2>
+<p>Le réflexe est de choisir le bac sur le nombre de couverts. C'est insuffisant, et c'est la raison pour laquelle tant d'installations saturent en quelques semaines.</p>
+<p>La norme NF EN 1825 dimensionne sur le <b>débit</b>, pas sur les couverts, avec une formule qui corrige ce débit par trois facteurs :</p>
+<ul>
+<li>la <b>densité des graisses</b> rejetées ;</li>
+<li>la présence de <b>détergents</b>, qui émulsionnent les graisses et rendent leur séparation plus difficile — c'est un facteur majorant important ;</li>
+<li>la <b>température de l'eau</b> : plus elle est chaude, moins les graisses se figent et se séparent.</li>
+</ul>
+<p>Ce dernier point mérite qu'on s'y arrête, parce qu'il explique la plupart des échecs. Une cuisine qui a installé un <a href="/services/laverie-restauration">lave-vaisselle professionnel</a> rejette de l'eau à 60 °C chargée en détergent alcalin. Dans ces conditions, la graisse ne remonte pas : elle traverse le bac en émulsion et va se figer plus loin, dans une canalisation froide. Le bac est propre, et le bouchon est quand même là.</p>
+<p><b>Conséquence pratique :</b> le bac se dimensionne sur votre équipement réel, pas sur votre carte. Deux restaurants de cinquante couverts n'ont pas le même besoin si l'un lave à la main et l'autre a une machine à capot.</p>
+
+<h2>L'entretien : ce qui se fait chaque semaine, et ce qui se fait deux fois par an</h2>
+<p>La norme distingue deux gestes que l'on confond souvent.</p>
+<p><b>Le panier de dégrossissage</b> retient les résidus solides. Il se vide <b>une à deux fois par semaine</b>, par votre personnel. C'est un geste de plonge, pas une opération technique.</p>
+<p><b>La vidange complète</b> retire la couche de graisses et les boues déposées au fond. En usage standard, elle intervient <b>toutes les six à huit semaines</b> — une cuisine de friture ou une activité intense l'exigera plus souvent. Elle est réalisée par une entreprise spécialisée, qui vous remet un bordereau de suivi des déchets.</p>
+<p><b>Conservez ces bordereaux au moins trois ans.</b> C'est le seul document qui prouve que vous entretenez l'installation, et il vous sera demandé lors d'un contrôle d'assainissement. Il a aussi sa place dans votre <a href="/conseils/plan-de-maitrise-sanitaire-restaurant">plan de maîtrise sanitaire</a>, au titre de la maintenance des équipements.</p>
+
+<h2>Comment reconnaître un bac saturé avant qu'il ne déborde</h2>
+<ul>
+<li><b>Une odeur qui remonte en plonge</b>, plus forte le matin à l'ouverture. C'est le premier signal, et il est fiable.</li>
+<li><b>Un écoulement qui ralentit</b> sur la plonge ou le siphon de sol.</li>
+<li><b>Une croûte de graisse épaisse</b> à l'ouverture du couvercle : au-delà de quelques centimètres, la capacité utile est déjà largement entamée.</li>
+<li><b>Des mouches de drain</b> en cuisine — elles se reproduisent dans les dépôts gras.</li>
+</ul>
+<p>Attendre le débordement coûte beaucoup plus cher que la vidange : nettoyage du local, arrêt de service, et parfois une remise en état de canalisation à laquelle personne n'avait pensé.</p>
+
+<h2>Ce que vous risquez sans</h2>
+<p>Le gestionnaire du réseau peut vous mettre en demeure de vous équiper, majorer votre redevance d'assainissement, et vous facturer les frais de curage du collecteur si l'obstruction vous est imputable. Dans un local en copropriété, un refoulement chez le voisin ajoute un litige civil au reste.</p>
+<p>Mais le motif le plus banal reste l'odeur en salle. Une odeur d'égout en salle vide un restaurant plus sûrement qu'une mauvaise critique, et elle ne se rattrape pas avec un désodorisant.</p>
+
+<h2>Notre rôle là-dedans</h2>
+<p>Nous ne vidangeons pas les bacs à graisses — c'est un métier d'assainissement, avec son agrément et ses bordereaux. En revanche, nous intervenons en amont : quand nous concevons une <a href="/services/conception-cuisine-professionnelle">cuisine professionnelle</a>, nous calculons le débit réel de la plonge et de la laverie, et nous dimensionnons le séparateur en conséquence plutôt que de reprendre le chiffre du plan précédent.</p>
+<p>Et lors d'un <a href="/services/contrat-entretien-cuisine-professionnelle">audit de parc</a>, c'est un des points que nous relevons — parce que c'est souvent la seule occasion où quelqu'un ouvre le couvercle.</p>`,
+    faq: [
+      {
+        q: 'Un bac à graisses est-il obligatoire pour tous les restaurants ?',
+        r: `<p>En pratique, oui pour tout établissement qui produit des eaux usées chargées en graisses, ce qui couvre la quasi-totalité de la restauration. L'obligation découle du règlement sanitaire départemental et de votre convention de rejet : c'est auprès de votre service d'assainissement qu'il faut vérifier les modalités exactes applicables chez vous.</p>`,
+      },
+      {
+        q: 'À quelle fréquence faut-il faire vidanger un bac à graisses ?',
+        r: `<p>La norme NF EN 1825-2 retient six à huit semaines en usage standard, et le panier de dégrossissage se vide une à deux fois par semaine par le personnel. Une cuisine qui fait beaucoup de friture ou tourne à forte cadence descendra à quatre semaines. Le meilleur indicateur reste l'épaisseur de la couche de graisse au couvercle.</p>`,
+      },
+      {
+        q: 'Peut-on installer un bac à graisses dans la cuisine ?',
+        r: `<p>C'est possible pour les modèles compacts sous plonge, mais ce n'est pas idéal : l'ouverture pour l'entretien se fait alors dans le local de production. Quand la configuration le permet, l'installation en extérieur ou dans un local technique dédié est préférable, tant pour l'hygiène que pour le confort de l'exploitation.</p>`,
+      },
+      {
+        q: 'Le lave-vaisselle doit-il être raccordé au bac à graisses ?',
+        r: `<p>Oui, et c'est justement ce qui impose de le prendre en compte au dimensionnement. Son rejet est chaud et fortement chargé en détergent, deux facteurs qui dégradent la séparation des graisses. Un bac calculé sans tenir compte de la machine sera sous-dimensionné dès le premier jour.</p>`,
+      },
+    ],
+  },
+  // =========================================================================
+  {
     slug: 'subvention-lave-verres-osmoseur',
     photo: { f: 'lave-verres-winterhalter-uc', w: 1050, h: 1400, alt: "Lave-verres Winterhalter UC Series installé par SODILAME chez un client de Provence" },
     titre: "Lave-verres avec osmoseur : l'Assurance Maladie finance 70 % de votre équipement",
     titreSeo: "Subvention lave-verres osmoseur : 70 % financés | SODILAME",
     description:
       "Coupures à l'essuyage des verres : l'Assurance Maladie finance 70 % d'un lave-verres avec osmoseur pour les entreprises de 1 à 49 salariés. Conditions et démarche.",
-    date: '2026-08-19',
-    dateAffichee: '19 août 2026',
+    date: '2026-08-28',
+    dateAffichee: '28 août 2026',
     categorie: 'Aides & subventions',
     resume:
       "Supprimez la trace sur le verre, vous supprimez l'essuyage. Supprimez l'essuyage, vous supprimez l'accident — et l'Assurance Maladie paie 70 % de l'équipement.",
@@ -118,8 +483,8 @@ export const articles = [
     titreSeo: "Aides Carsat pour équiper une cuisine professionnelle | SODILAME",
     description:
       "Subvention risques ergonomiques, contrat de prévention Carsat : quels équipements de cuisine et d'hôtellerie sont finançables, à quel taux et sous quelles conditions.",
-    date: '2026-08-19',
-    dateAffichee: '19 août 2026',
+    date: '2026-08-26',
+    dateAffichee: '26 août 2026',
     categorie: 'Aides & subventions',
     resume:
       "Trois dispositifs, une même logique : l'Assurance Maladie cofinance les équipements qui suppriment un geste dangereux ou une manutention pénible.",
@@ -207,8 +572,8 @@ export const articles = [
       "Contrôle d'étanchéité F-Gas en restauration : vos obligations | SODILAME",
     description:
       "Contrôle d'étanchéité, registre, attestation de capacité : ce que la réglementation F-Gas impose à un restaurant ou une collectivité qui exploite du froid professionnel.",
-    date: '2026-06-12',
-    dateAffichee: '12 juin 2026',
+    date: '2026-08-23',
+    dateAffichee: '23 août 2026',
     categorie: 'Réglementation',
     resume:
       "Qui doit faire contrôler ses équipements frigorifiques, à quelle fréquence, et quels documents faut-il pouvoir présenter en cas de contrôle.",
@@ -280,8 +645,8 @@ export const articles = [
     titreSeo: 'Températures HACCP en restauration : le mémo pratique | SODILAME',
     description:
       "Refroidissement rapide, liaison froide, maintien au chaud : les repères de température à connaître en cuisine professionnelle et le bon matériel.",
-    date: '2026-05-20',
-    dateAffichee: '20 mai 2026',
+    date: '2026-08-21',
+    dateAffichee: '21 août 2026',
     categorie: 'Hygiène & HACCP',
     resume:
       "Les repères de température issus de la réglementation, et surtout : quel équipement permet réellement de les respecter en service.",
@@ -341,8 +706,8 @@ export const articles = [
     titreSeo: 'Éviter une panne de chambre froide en été : 7 gestes | SODILAME',
     description:
       "Les pannes de froid explosent en juillet-août. Voici les sept vérifications simples qui préviennent la majorité d'entre elles dans une cuisine professionnelle.",
-    date: '2026-04-28',
-    dateAffichee: '28 avril 2026',
+    date: '2026-08-20',
+    dateAffichee: '20 août 2026',
     categorie: 'Entretien',
     resume:
       "En Provence, la moitié de nos dépannages froid se concentrent sur juillet et août. La plupart étaient évitables.",
@@ -400,8 +765,8 @@ export const articles = [
     titreSeo: 'Choisir un four mixte professionnel : le guide | SODILAME',
     description:
       "Capacité, mode d'humidification, nettoyage automatique, sonde à cœur, connectivité, SAV : les critères réellement déterminants pour choisir un four mixte en restauration.",
-    date: '2026-03-15',
-    dateAffichee: '15 mars 2026',
+    date: '2026-08-19',
+    dateAffichee: '19 août 2026',
     categorie: 'Équipement',
     resume:
       "Le four mixte est l'investissement le plus structurant d'une cuisine. Voici sur quoi arbitrer, et ce qui ne mérite pas de surcoût.",
