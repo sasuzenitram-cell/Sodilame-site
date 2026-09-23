@@ -29,6 +29,12 @@
 //     sécurité du fabricant (la seule qu'il ait fournie) : sa composition et
 //     sa mise en garde en viennent, le reste du texte est rédigé par SODILAME.
 //
+//     Les trois références Nordisk (PowerGranules 22633, 22634, 26602) ont été
+//     relevées sur la fiche produit du fabricant et recoupées chez deux
+//     revendeurs : matière, granulométrie, durée de vie, machines compatibles.
+//     Les chiffres environnementaux du BIO sont des annonces du fabricant et
+//     sont attribués comme telles dans le texte.
+//
 //     LES ONZE AUTRES RÉFÉRENCES N'ONT PAS ÉTÉ VÉRIFIÉES. Elles ont été
 //     rédigées à partir des gammes publiques, et l'expérience ci-dessus montre
 //     que cette source se trompe. À recouper avec les fiches du fabricant
@@ -100,6 +106,19 @@ export const categoriesProduits = [
       "Un four mixte se nettoie tous les jours ou il ne se nettoie plus. Les produits d'origine du constructeur sont les seuls validés par le cycle automatique de la machine : un produit générique déclenche des alarmes, encrasse le système de dosage et fait sauter la garantie.",
     conseil:
       "La référence dépend de la marque du four et de sa génération — CareControl ou AutoDose chez Rational, WaveClean chez MKN. Si vous ne savez pas laquelle commander, envoyez-nous une photo de la plaque signalétique : nous identifions le modèle et nous vous confirmons la bonne référence avant de livrer.",
+  },
+  {
+    slug: 'granules-lave-batterie',
+    nom: 'Granulés de lavage pour lave-batterie',
+    nomCourt: 'Granulés',
+    icone: 'bidon',
+    titreSeo: 'Granulés PowerGranules pour lave-batterie Granuldisk',
+    description:
+      "Granulés PowerGranules d'origine pour lave-batterie Granuldisk et Nor:disk, au bidon ou au lot de 5. Livraison comprise dans le prix.",
+    intro:
+      "Un lave-batterie ne lave pas à l'eau : il lave aux granulés. Ces billes de plastique alimentaire, projetées par milliers contre les bacs et les marmites, font le travail que faisaient le trempage de la veille et l'huile de coude. C'est le seul consommable de la machine qui agisse mécaniquement. Le fabricant, longtemps connu sous le nom de GRANULDISK, s'appelle désormais Nordisk Clean Solutions ; les machines, elles, gardent la marque Granuldisk.",
+    conseil:
+      "Les granulés s'arrondissent en s'usant, et le lavage perd en efficacité sans qu'aucune alarme ne se déclenche. Le symptôme, ce sont des bacs qui ressortent sales alors que rien n'a changé sur la machine — et on accuse presque toujours le lave-batterie avant de penser aux granulés. Comptez 2 500 à 3 500 cycles par jeu, soit environ un an dans une cuisine qui tourne, et complétez le niveau chaque jour. C'est un des points que nos techniciens regardent en visite d'entretien : mieux vaut le voir avant que la plonge ne s'en plaigne.",
   },
 ];
 
@@ -729,6 +748,112 @@ export const produits = [
       "Produit corrosif : la chambre détergente est à base d'hydroxyde de sodium (pH supérieur à 12). La cartouche se manipule fermée, gants aux mains, et ne s'ouvre jamais. Ne pas mélanger avec un acide ni avec un autre produit d'entretien.",
     conditionnements: [{ label: 'Carton de 10 cartouches', prix: 49.5 }],
   },
+
+  // ---- Granulés pour lave-batterie -----------------------------------------
+  // Données relevées sur la fiche produit du fabricant et recoupées chez deux
+  // revendeurs : matière, granulométrie, durée de vie et machines compatibles.
+  // Les trois références s'achètent par lot de 5 bidons ; SODILAME ne les
+  // stocke pas, d'où le champ `delai` sur chacune.
+  {
+    slug: 'nordisk-powergranules-20l',
+    machines: ['lave-batterie'],
+    ref: '22634',
+    marque: 'Nordisk',
+    photo: 'nordisk-22634-powergranules-20l',
+    categorie: 'granules-lave-batterie',
+    nom: 'PowerGranules 20 L pour Granuldisk',
+    resume: 'Granulés de lavage d’origine, bidon de 20 litres — le meilleur prix au litre.',
+    description:
+      "Les granulés sont la pièce active d'un lave-batterie : projetés en masse contre les plaques, les bacs gastronormes et les marmites, ils décollent mécaniquement les résidus cuits que l'eau seule laisse en place. C'est ce qui supprime le trempage de la veille et le grattage à la main. Des billes de 3 mm en polyoxyméthylène, agréées contact alimentaire : assez dures pour décoller, assez souples pour ne pas marquer l'inox. Le fabricant annonce 2 500 à 3 500 cycles par jeu selon la charge et la nature des salissures, soit environ un remplacement par an dans une cuisine qui tourne. Le bidon de 20 litres est le format le plus économique au litre de la gamme.",
+    usages: [
+      'Granuldisk Granule Smart et Smart Plus',
+      'Granuldisk Granule Flexi, Combi et Gastro',
+      'Granuldisk Granule Maxi Pro',
+      'Bacs gastronormes, plaques, marmites et ustensiles',
+    ],
+    caracteristiques: [
+      'Billes de 3 mm, polyoxyméthylène',
+      'Agréées contact alimentaire',
+      '2 500 à 3 500 cycles par jeu',
+      'Le meilleur prix au litre de la gamme',
+      'Livré par un technicien, pas par un transporteur',
+    ],
+    attention:
+      "Vérifiez que votre machine est bien un lave-batterie à granulés. Ces billes ne s'utilisent que dans une machine conçue pour elles : versées dans un lave-vaisselle ordinaire, elles bloquent la pompe et les bras de lavage. En cas de doute, envoyez-nous une photo de la plaque signalétique.",
+    delai:
+      "Les granulés ne sont pas stockés à Saint-Martin-de-Crau : nous les commandons chez le fabricant à réception de votre commande, et la livraison est comprise dans le prix affiché — comptez une dizaine de jours. Ce n'est pas un colis déposé devant la porte : c'est un technicien qui connaît les lave-batterie qui vous l'apporte. Dites-le-nous à la commande et il contrôle au passage l'état des granulés déjà en cuve, le niveau et la propreté du filtre. Si votre machine est à l'arrêt, appelez-nous : nous regardons ce qu'il est possible de faire dans l'urgence.",
+    conditionnements: [
+      { label: 'Bidon de 20 L', prix: null },
+      { label: 'Lot de 5 bidons de 20 L — 100 L', prix: null },
+    ],
+    misEnAvant: true,
+  },
+  {
+    slug: 'nordisk-powergranules-10l',
+    machines: ['lave-batterie'],
+    ref: '22633',
+    marque: 'Nordisk',
+    photo: 'nordisk-22633-powergranules-10l',
+    categorie: 'granules-lave-batterie',
+    nom: 'PowerGranules 10 L pour Granuldisk',
+    resume: 'Granulés de lavage d’origine, bidon de 10 litres.',
+    description:
+      "Même granulé que la référence 22634, en bidon de 10 litres : le format d'appoint, et celui des machines dont la cuve demande une charge plus réduite. Des billes de 3 mm en polyoxyméthylène agréées contact alimentaire, projetées en masse contre les bacs gastronormes et les marmites pour décoller mécaniquement les résidus cuits — sans trempage ni grattage. Le fabricant annonce 2 500 à 3 500 cycles par jeu. Si vous consommez régulièrement, le bidon de 20 litres revient moins cher au litre.",
+    usages: [
+      'Granuldisk Granule Smart et Smart Plus',
+      'Granuldisk Granule Flexi, Combi et Gastro',
+      'Granuldisk Granule Maxi Pro',
+      'Complément de niveau en cours d’année',
+    ],
+    caracteristiques: [
+      'Billes de 3 mm, polyoxyméthylène',
+      'Agréées contact alimentaire',
+      '2 500 à 3 500 cycles par jeu',
+      'Format d’appoint',
+      'Livré par un technicien, pas par un transporteur',
+    ],
+    attention:
+      "Vérifiez que votre machine est bien un lave-batterie à granulés. Ces billes ne s'utilisent que dans une machine conçue pour elles : versées dans un lave-vaisselle ordinaire, elles bloquent la pompe et les bras de lavage. En cas de doute, envoyez-nous une photo de la plaque signalétique.",
+    delai:
+      "Les granulés ne sont pas stockés à Saint-Martin-de-Crau : nous les commandons chez le fabricant à réception de votre commande, et la livraison est comprise dans le prix affiché — comptez une dizaine de jours. Ce n'est pas un colis déposé devant la porte : c'est un technicien qui connaît les lave-batterie qui vous l'apporte. Dites-le-nous à la commande et il contrôle au passage l'état des granulés déjà en cuve, le niveau et la propreté du filtre. Si votre machine est à l'arrêt, appelez-nous : nous regardons ce qu'il est possible de faire dans l'urgence.",
+    conditionnements: [
+      { label: 'Bidon de 10 L', prix: null },
+      { label: 'Lot de 5 bidons de 10 L — 50 L', prix: null },
+    ],
+  },
+  {
+    slug: 'nordisk-powergranules-bio-10l',
+    machines: ['lave-batterie'],
+    ref: '26602',
+    marque: 'Nordisk',
+    photo: 'nordisk-26602-powergranules-bio-10l',
+    categorie: 'granules-lave-batterie',
+    nom: 'PowerGranules BIO 10 L pour Granuldisk',
+    resume: 'Granulés biodégradables d’origine végétale, à prix égal avec la version standard.',
+    description:
+      "Même fonction, mêmes machines et même durée de vie annoncée que les PowerGranules standard — 2 500 à 3 500 cycles — mais une matière d'origine végétale : sel de calcium, huile de colza et esters biodégradables, agréés contact alimentaire. Le fabricant annonce une fabrication qui consomme 87 % d'eau en moins et émet 25 % de CO₂ en moins que celle des granulés standard, et un emballage contenant 40 % de matière recyclée. Comme le tarif est le même que celui de la version standard, c'est le choix par défaut dès qu'un établissement doit justifier ses consommables : marché public, label environnemental, cahier des charges de groupe hôtelier.",
+    usages: [
+      'Granuldisk Granule Smart et Smart Plus',
+      'Granuldisk Granule Flexi, Combi et Gastro',
+      'Granuldisk Granule Maxi Pro',
+      'Établissements soumis à un cahier des charges environnemental',
+    ],
+    caracteristiques: [
+      'Origine végétale, biodégradable',
+      'Sel de calcium, huile de colza, esters',
+      'Agréées contact alimentaire',
+      'Même tarif que la version standard',
+      'Livré par un technicien, pas par un transporteur',
+    ],
+    attention:
+      "Vérifiez que votre machine est bien un lave-batterie à granulés. Ces billes ne s'utilisent que dans une machine conçue pour elles : versées dans un lave-vaisselle ordinaire, elles bloquent la pompe et les bras de lavage. En cas de doute, envoyez-nous une photo de la plaque signalétique.",
+    delai:
+      "Les granulés ne sont pas stockés à Saint-Martin-de-Crau : nous les commandons chez le fabricant à réception de votre commande, et la livraison est comprise dans le prix affiché — comptez une dizaine de jours. Ce n'est pas un colis déposé devant la porte : c'est un technicien qui connaît les lave-batterie qui vous l'apporte. Dites-le-nous à la commande et il contrôle au passage l'état des granulés déjà en cuve, le niveau et la propreté du filtre. Si votre machine est à l'arrêt, appelez-nous : nous regardons ce qu'il est possible de faire dans l'urgence.",
+    conditionnements: [
+      { label: 'Bidon de 10 L', prix: null },
+      { label: 'Lot de 5 bidons de 10 L — 50 L', prix: null },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -743,6 +868,9 @@ export const machinesCatalogue = [
   { slug: 'lave-vaisselle', nom: 'Lave-vaisselle', icone: 'laverie' },
   { slug: 'lave-verres', nom: 'Lave-verres', icone: 'goutte' },
   { slug: 'four', nom: 'Four mixte', icone: 'cuisson' },
+  // « Lave-batterie » est le terme du métier en France ; « lave-ustensiles »
+  // se dit aussi et figure dans le texte des fiches, pour la recherche.
+  { slug: 'lave-batterie', nom: 'Lave-batterie', icone: 'extraction' },
 ];
 
 export const marquesCatalogue = [...new Set(produits.map((p) => p.marque))].sort();

@@ -172,6 +172,11 @@
       "permanent": true
     },
     {
+      "source": "/produits/granules-lave-batterie",
+      "destination": "/produits?famille=granules-lave-batterie#catalogue",
+      "permanent": true
+    },
+    {
       "source": "/connexion",
       "destination": "/espace/connexion",
       "permanent": false

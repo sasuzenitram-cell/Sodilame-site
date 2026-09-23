@@ -1632,7 +1632,16 @@ ${ariane(fil)}
         }
 
         <h2>Livraison et facturation</h2>
-        <p>Ce produit est livré <b>sans frais de port dès une unité</b> sur l'ensemble de notre zone d'intervention, par l'un de nos techniciens lors de sa prochaine tournée dans votre secteur. Aucun paiement n'est demandé sur le site : nous vous confirmons votre commande et son montant par mail, puis nous vous facturons dans les conditions habituelles de votre compte.</p>
+        ${
+          // Tout n'est pas en stock. Quand un produit part en commande chez le
+          // fabricant, son délai réel doit REMPLACER la promesse de tournée, pas
+          // s'y ajouter : annoncer les deux, c'est promettre le plus rapide des
+          // deux et décevoir à coup sûr.
+          p.delai
+            ? `<p>${esc(p.delai)}</p>`
+            : `<p>Ce produit est livré <b>sans frais de port dès une unité</b> sur l'ensemble de notre zone d'intervention, par l'un de nos techniciens lors de sa prochaine tournée dans votre secteur.</p>`
+        }
+        <p>Aucun paiement n'est demandé sur le site : nous vous confirmons votre commande et son montant par mail, puis nous vous facturons dans les conditions habituelles de votre compte.</p>
         <p>Vous ne savez pas si cette référence correspond à votre machine ? Envoyez-nous une photo de la plaque signalétique, ou appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a> : nous vérifions avant de livrer.</p>
       </article>
 
@@ -1653,8 +1662,16 @@ ${ariane(fil)}
             .join('\n          ')}
           ${p.conditionnements.some((x) => x.aConfirmer) ? `<p class="achat-note">* Conditionnement confirmé par nos équipes lors de la validation de votre commande.</p>` : ''}
           <div class="achat-plus">
-            <span>${svg('camion')}Livraison offerte dès une unité</span>
-            <span>${svg('bidon')}En stock à Saint-Martin-de-Crau</span>
+            ${
+              // Un produit commandé chez le fabricant ne peut pas afficher
+              // « en stock » : ce sont les deux lignes que le client lit avant
+              // de cliquer, elles doivent dire la vérité de CE produit.
+              p.delai
+                ? `<span>${svg('camion')}Livraison comprise dans le prix</span>
+            <span>${svg('horloge')}Commandé chez le fabricant, environ 10 jours</span>`
+                : `<span>${svg('camion')}Livraison offerte dès une unité</span>
+            <span>${svg('bidon')}En stock à Saint-Martin-de-Crau</span>`
+            }
             <span>${svg('user')}Aucun paiement en ligne</span>
           </div>
           <a class="btn btn-outline btn-sm" href="/produits/ma-commande" style="width:100%;justify-content:center;margin-top:1rem">Voir ma commande →</a>

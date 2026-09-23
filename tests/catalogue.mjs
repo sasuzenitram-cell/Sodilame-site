@@ -82,7 +82,12 @@ console.log('\n═══ Données du catalogue ═══');
     for (const f of [x.fiches.technique, x.fiches.securite, ficheSodilame(x)]) {
       if (f && !fs.existsSync(`static/assets/fiches/${f}`)) manquants.push(f);
     }
-    if (!fs.existsSync(`static/assets/produits/${x.photo}.jpg`)) manquants.push(x.photo + '.jpg');
+  }
+  // La photo se vérifie sur TOUS les produits qui en déclarent une, pas
+  // seulement sur les références documentées : un fichier absent ne casse pas
+  // le build, il affiche une image morte dans la boutique.
+  for (const x of produits) {
+    if (x.photo && !fs.existsSync(`static/assets/produits/${x.photo}.jpg`)) manquants.push(x.photo + '.jpg');
   }
   verifier('tous les fichiers référencés existent sur le disque', !manquants.length, manquants.join(', '));
 
@@ -187,6 +192,34 @@ console.log('\n═══ Retrait de vente depuis l’administration ═══');
   });
   verifier('chaque fiche porte sa référence et son bloc de repli', !fichesKo.length,
     fichesKo.map((p) => p.ref).join(', '));
+}
+
+console.log('\n═══ Produits commandés chez le fabricant (champ delai) ═══');
+{
+  // Les granulés ne sont pas stockés : leur fiche annonce une dizaine de jours.
+  // Le risque est une promesse contradictoire — « livré lors de la prochaine
+  // tournée » ET « environ 10 jours » sur la même page, ce qui revient à
+  // promettre le plus rapide des deux. On épingle donc l'exclusion.
+  const fs = await import('node:fs');
+  const surCommande = produits.filter((p) => p.delai);
+  verifier(`${surCommande.length} référence(s) déclarée(s) sur commande`, surCommande.length >= 3);
+
+  const fautes = [];
+  for (const p of surCommande) {
+    const f = `public/produits/${p.categorie}/${p.slug}/index.html`;
+    if (!fs.existsSync(f)) { fautes.push(`${p.ref} : page absente`); continue; }
+    const h = fs.readFileSync(f, 'utf8');
+    if (!h.includes('Livraison comprise dans le prix')) fautes.push(`${p.ref} : livraison comprise absente`);
+    if (h.includes('En stock à Saint-Martin-de-Crau')) fautes.push(`${p.ref} : annonce « en stock » à tort`);
+    if (h.includes('lors de sa prochaine tournée')) fautes.push(`${p.ref} : promet la tournée à tort`);
+  }
+  verifier('aucune promesse de stock sur un produit sur commande', !fautes.length, fautes.join(' · '));
+
+  // Et l'inverse : les produits réellement en stock doivent garder la promesse.
+  const enStock = produits.find((p) => !p.delai);
+  const hStock = fs.readFileSync(`public/produits/${enStock.categorie}/${enStock.slug}/index.html`, 'utf8');
+  verifier(`${enStock.ref} garde la livraison offerte et le stock`,
+    hStock.includes('sans frais de port dès une unité') && hStock.includes('En stock à Saint-Martin-de-Crau'));
 }
 
 console.log('\n═══ Redirections des anciennes URL ═══');
