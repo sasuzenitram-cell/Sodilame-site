@@ -182,7 +182,7 @@ function pied(servicesNav, villesNav, produitsNav = []) {
     </div>
     <div class="f-bottom">
       <span>© ${site.anneeCourante} ${site.nom} — Tous droits réservés</span>
-      <span><a href="/mentions-legales">Mentions légales</a> · <a href="/politique-de-confidentialite">Confidentialité</a> · <a href="/plan-du-site">Plan du site</a></span>
+      <span><a href="/mentions-legales">Mentions légales</a> · <a href="/cgv">CGV</a> · <a href="/politique-de-confidentialite">Confidentialité</a> · <a href="/plan-du-site">Plan du site</a></span>
     </div>
   </div>
 </footer>

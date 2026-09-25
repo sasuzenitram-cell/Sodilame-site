@@ -9,6 +9,7 @@ import { services, servicesNav } from './data/services.mjs';
 import { villes, villesNav } from './data/villes.mjs';
 import { zones, zoneDeLaVille, totalCommunes } from './data/zones.mjs';
 import { articles } from './data/articles.mjs';
+import { cgv } from './data/cgv.mjs';
 import {
   categoriesProduits, produits, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
   machinesCatalogue, marquesCatalogue, ficheSodilame,
@@ -1201,6 +1202,47 @@ ${L.tvaIntra ? `TVA intracommunautaire : ${L.tvaIntra}` : '<!-- TVA intracommuna
   });
 }
 
+function conditionsGenerales() {
+  // Les CGV v2.1 entrent en vigueur au 1er novembre 2026. Tant que cette date
+  // n'est pas atteinte, la page le dit : publier « en vigueur » un texte qui ne
+  // l'est pas encore, c'est se prévaloir d'un document qu'un client pourrait
+  // faire écarter. Le calcul se fait au build, donc la mention bascule toute
+  // seule au premier déploiement de novembre.
+  const enVigueur = new Date().toISOString().slice(0, 10) >= cgv.entreeEnVigueurIso;
+  const etat = enVigueur
+    ? `<b>Version ${cgv.version}, en vigueur depuis le ${cgv.entreeEnVigueur}.</b> Elle annule et remplace toute version antérieure.`
+    : `<b>Version ${cgv.version}, applicable aux commandes passées à compter du ${cgv.entreeEnVigueur}.</b> Elle annulera et remplacera toute version antérieure. Les commandes passées avant cette date restent régies par les conditions en vigueur au jour de leur acceptation.`;
+
+  const sommaire = cgv.articles
+    .map((a, i) => `<li><a href="#${a.id}">Article ${i + 1} — ${esc(a.titre)}</a></li>`)
+    .join('\n        ');
+
+  const corps = cgv.articles
+    .map((a, i) => `<h2 id="${a.id}">Article ${i + 1} — ${esc(a.titre)}</h2>${a.corps}`)
+    .join('\n');
+
+  return pageTexte({
+    titre: `Conditions générales de vente — ${site.nom}`,
+    h1: 'Conditions générales de vente et de prestations de services',
+    description: `Conditions générales de vente et de prestations de services de ${site.nom}, applicables aux clients professionnels : vente, installation, dépannage et entretien de matériels de cuisine professionnelle.`,
+    chemin: '/cgv',
+    contenu: `
+<p class="lead">Vente, installation, mise en service, dépannage et maintenance de matériels de cuisine professionnelle, de froid commercial, de laverie et de buanderie professionnelle.</p>
+<p>${etat}</p>
+<div class="callout">
+  <p><b>Ces conditions s'appliquent entre professionnels.</b> Elles ne s'adressent pas aux consommateurs au sens du code de la consommation. Lorsque le Client est un acheteur public, l'article 28 prévaut sur toute clause contraire.</p>
+</div>
+<p>Un exemplaire est remis sur simple demande à <a href="mailto:${site.email}">${site.email}</a> ou au <a href="tel:${site.telephoneE164}">${site.telephone}</a>, et annexé à chaque devis.</p>
+
+<h2>Sommaire</h2>
+<ol class="sommaire-cgv">
+        ${sommaire}
+</ol>
+
+${corps}`,
+  });
+}
+
 function confidentialite() {
   return pageTexte({
     titre: `Politique de confidentialité — ${site.nom}`,
@@ -1274,6 +1316,7 @@ ${bloc('Villes', villes.map((v) => ({ nom: `Cuisine professionnelle à ${v.nom}`
 ${bloc('Conseils', articles.map((a) => ({ nom: a.titre, url: `/conseils/${a.slug}` })))}
 ${bloc('Informations', [
       { nom: 'Mentions légales', url: '/mentions-legales' },
+      { nom: 'Conditions générales de vente', url: '/cgv' },
       { nom: 'Politique de confidentialité', url: '/politique-de-confidentialite' },
     ])}`,
   });
@@ -1852,6 +1895,10 @@ for (const a of articles) await ecrire(`/conseils/${a.slug}`, articlePage(a), { 
 await ecrire('/a-propos', aPropos(), { priorite: 0.7 });
 await ecrire('/contact', contact(), { priorite: 0.9 });
 await ecrire('/mentions-legales', mentions(), { priorite: 0.2 });
+// Les CGV sont l'adresse citée au bas de chaque devis, bon de commande, bon de
+// livraison et facture (bloc COMMUN-2 du cahier des charges GDSOFT) : cette URL
+// doit exister et ne doit jamais changer.
+await ecrire('/cgv', conditionsGenerales(), { priorite: 0.3 });
 await ecrire('/politique-de-confidentialite', confidentialite(), { priorite: 0.2 });
 await ecrire('/plan-du-site', planDuSite(), { priorite: 0.3 });
 

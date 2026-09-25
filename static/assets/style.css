@@ -715,3 +715,8 @@ body.boutique .prose .mise-en-garde p{color:#7A3A1C}
 .prose ul.fiches-pdf li.mise-en-avant{border-color:var(--navy);border-width:1.5px;
   background:#fff;box-shadow:var(--shadow)}
 .prose ul.fiches-pdf li.mise-en-avant a{color:var(--navy)}
+
+/* Sommaire des CGV : deux colonnes en écran large, une seule sur mobile. */
+.prose ol.sommaire-cgv{columns:2;column-gap:2.4rem;padding-left:1.3rem}
+.prose ol.sommaire-cgv li{break-inside:avoid;margin-bottom:.35rem}
+@media (max-width:700px){.prose ol.sommaire-cgv{columns:1}}
