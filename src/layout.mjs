@@ -131,7 +131,7 @@ function entete(chemin) {
     </a>
     <nav class="main" id="nav" aria-label="Navigation principale">
       ${navPrincipale.map(lien).join('\n      ')}
-      <a class="only-m" href="/produits"><b>Boutique en ligne</b></a>
+      <a class="only-m lien-boutique" href="/produits"><b>Boutique en ligne</b></a>
       <a class="only-m" href="${site.portail.url}" target="_blank" rel="noopener">My SODILAME ↗</a>
       <a class="only-m" href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a>
     </nav>

@@ -7,6 +7,11 @@
   --navy:#183253; --navy-d:#0f2138; --navy-l:#2C5279;
   --teal:#408274; --gold:#DFA64F; --terra:#C5642F;
   --cream:#FAF6EF; --cream-d:#F2EBDF; --ink:#1B2430; --muted:#5A6675; --line:#E4DACA;
+  /* Le vert de la boutique, disponible sur TOUTES les pages. Il vaut la même
+     valeur que le --navy de body.boutique, mais déclaré ici il ne bascule pas
+     avec le thème : l'entrée « Boutique en ligne » garde ainsi sa couleur,
+     qu'on la voie depuis l'accueil ou depuis la boutique elle-même. */
+  --boutique:#1B4A3E;
   --r:14px; --shadow:0 1px 2px rgba(24,50,83,.06),0 8px 28px rgba(24,50,83,.08);
   --max:1180px;
 }
@@ -328,6 +333,9 @@ footer .fbrand .bs{font-size:.57rem;letter-spacing:.155em;text-transform:upperca
   nav.main.open{display:flex}
   nav.main a{padding:.85rem 0;border-bottom:1px solid var(--line)}
   nav.main a.only-m{display:block;color:var(--terra)}
+  /* L'entrée de la boutique porte le vert de la boutique, comme le bouton du
+     même nom en version bureau. Le reste du menu déroulant reste en terracotta. */
+  nav.main a.lien-boutique{color:var(--boutique)}
   nav.main a.only-m:last-child{border-bottom:0}
   .grid-art{grid-template-columns:1fr;gap:34px}
   .burger{display:block;order:3}
