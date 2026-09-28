@@ -21,8 +21,21 @@ const verifier = (nom, cond, detail = '') => {
   else { ko++; console.log(`  ✗ ${nom}${detail ? ' — ' + detail : ''}`); }
 };
 
-async function appel(corps, ip = '203.0.113.7') {
-  const req = { method: 'POST', headers: { 'x-forwarded-for': ip }, socket: {}, body: corps };
+// Les pages QR envoient depuis le site : le navigateur joint Origin. Le point
+// d'entrée l'exige désormais, et chaque appel d'essai doit donc l'imiter — c'est
+// précisément ce qui manque à un robot qui posterait directement sur l'API.
+async function appel(corps, ip = '203.0.113.7', entetes = {}) {
+  const req = {
+    method: 'POST',
+    headers: {
+      'x-forwarded-for': ip,
+      host: 'www.sodilame.com',
+      origin: 'https://www.sodilame.com',
+      ...entetes,
+    },
+    socket: {},
+    body: corps,
+  };
   const res = { statusCode: 0, corps: null, setHeader() {}, end(c) { this.corps = JSON.parse(c); } };
   await sav(req, res);
   return res;
@@ -175,6 +188,45 @@ console.log('\n═══ Robustesse ═══');
 {
   const bot = await appel({ ...panne, societe_web: 'spam' }, '10.1.0.10');
   verifier('piège à robots : accepté en silence', bot.statusCode === 200 && bot.corps.ok);
+
+  // Ce point d'entrée accepte 4 Mo de pièces jointes. Un robot qui poste
+  // directement dessus, sans Origin ni Referer, ne doit rien déclencher.
+  {
+    const avant = mails.length;
+    const direct = await appel(panne, '10.1.0.11', { origin: undefined, referer: undefined });
+    verifier('envoi direct sur l’API (sans Origin) : rien n’est transmis',
+      direct.statusCode === 200 && mails.length === avant, `${mails.length - avant} e-mail(s)`);
+  }
+
+  {
+    const avant = mails.length;
+    const ailleurs = await appel(panne, '10.1.0.12',
+      { origin: 'https://spam-factory.ru', referer: undefined });
+    verifier('envoi depuis un autre site : rien n’est transmis',
+      ailleurs.statusCode === 200 && mails.length === avant);
+  }
+
+  // Le contenu est filtré comme sur /api/contact, mais seuls les signaux durs
+  // écartent : une panne reste une panne, même mal écrite.
+  {
+    const avant = mails.length;
+    const spam = await appel(
+      { ...panne, telephone: '85325872322', description: 'escort application http://tinyurl.com/x' },
+      '10.1.0.13'
+    );
+    verifier('signalement manifestement automatique : refusé, rien n’est transmis',
+      spam.statusCode === 422 && mails.length === avant, JSON.stringify(spam.corps));
+    verifier('le refus renvoie vers le téléphone',
+      /04 90 93 98 88/.test(spam.corps.erreur || ''), spam.corps.erreur);
+  }
+
+  {
+    // Garde-fou : une panne signalée depuis une commune hors zone (client hors
+    // zone, ou nom de quartier saisi à la place de la commune) doit passer.
+    const horsZone = await appel({ ...audit, commune: 'Velaux' }, '10.1.0.14');
+    verifier('audit demandé depuis une commune hors zone : accepté',
+      horsZone.statusCode === 200, JSON.stringify(horsZone.corps));
+  }
 
   const g = { method: 'GET', headers: {}, socket: {} };
   const res = { statusCode: 0, corps: null, setHeader() {}, end(c) { this.corps = JSON.parse(c); } };

@@ -8,19 +8,21 @@
 // L'envoi par e-mail est le canal : il fonctionne même si la base de données
 // n'est pas disponible. Le signalement est aussi tracé dans le journal quand
 // la base répond, sans jamais bloquer l'envoi.
+//
+// ANTI-SPAM : ce point d'entrée accepte des pièces jointes de 4 Mo. Il n'a pas
+// encore été visé, mais il présentait la même faille que /api/contact au
+// 28/09/2026 — un piège à robots et rien d'autre. Deux couches du filtre
+// commun lui sont appliquées : l'origine obligatoire, qui écarte tout envoi
+// direct sur l'API, et l'analyse du contenu. La couche « jeton » est absente
+// ici : les pages QR portent leur script en ligne, et le signalement d'une
+// panne en plein service ne doit pas dépendre d'un aller-retour de plus. Le
+// jour où ce point d'entrée serait visé, c'est la première chose à ajouter.
 // ---------------------------------------------------------------------------
 import { json, corpsRequete } from '../lib/vue.mjs';
 import { envoyer, gabarit, echapper, DESTINATION, TEL } from '../lib/mail.mjs';
+import { origineAcceptee, limiteur, ipDe, analyser } from '../lib/antispam.mjs';
 
-const vus = new Map();
-function tropDeRequetes(ip) {
-  const t = Date.now();
-  const l = (vus.get(ip) || []).filter((x) => t - x < 10 * 60 * 1000);
-  l.push(t);
-  vus.set(ip, l);
-  if (vus.size > 5000) vus.clear();
-  return l.length > 6;
-}
+const tropDeRequetes = limiteur(10 * 60 * 1000, 6);
 
 const nettoyer = (s = '', max = 500) => String(s ?? '').replace(/\r?\n/g, '\n').trim().slice(0, max);
 
@@ -30,8 +32,17 @@ export default async function handler(req, res) {
     return json(res, 405, { erreur: 'Méthode non autorisée.' });
   }
 
-  const ip =
-    (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'inconnue';
+  const ip = ipDe(req);
+
+  // Un navigateur joint toujours Origin à un POST ; un script, non.
+  if (!origineAcceptee(req)) {
+    console.warn('[antispam] SAV — origine refusée', {
+      ip,
+      origine: req.headers.origin || req.headers.referer || '(aucune)',
+    });
+    return json(res, 200, { ok: true });
+  }
+
   if (tropDeRequetes(ip)) {
     return json(res, 429, { erreur: `Trop de demandes envoyées. Merci d'appeler le ${TEL}.` });
   }
@@ -94,6 +105,21 @@ export default async function handler(req, res) {
 
   if (manquants.length) {
     return json(res, 400, { erreur: `Merci d'indiquer : ${manquants.join(', ')}.` });
+  }
+
+  // Analyse du contenu. Seuls les signaux DURS écartent ici : une panne
+  // signalée depuis une commune hors zone, ou un texte laconique, reste une
+  // panne. Et un refus laisse toujours le téléphone en sortie de secours.
+  const a = analyser({
+    nom, email, telephone, etablissement,
+    ville: commune,
+    message: `${description} ${machine}`,
+  });
+  if (a.verdict === 'rejet') {
+    console.warn('[antispam] SAV — signalement refusé', { ip, score: a.score, motifs: a.motifs, email });
+    return json(res, 422, {
+      erreur: `Votre signalement a été bloqué par notre filtre anti-spam. Merci de nous appeler au ${TEL} : nous prenons la panne au téléphone.`,
+    });
   }
 
   if (!process.env.RESEND_API_KEY) {

@@ -4,6 +4,7 @@
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { site, navPrincipale, secteurs, etapes, formules } from '../data/site.mjs';
+import { sujets } from '../data/formulaire.mjs';
 
 // ---------------------------------------------------------------------------
 // Empreinte des fichiers statiques (anti-cache)
@@ -397,14 +398,10 @@ export function blocCtaFinal(titre, texte) {
 }
 
 export function formulaire({ titre = 'Demander un devis ou un rappel', sujetDefaut = '' } = {}) {
-  const opts = [
-    'Projet de cuisine complète',
-    "Achat / remplacement d'un équipement",
-    'Dépannage — froid',
-    'Dépannage — cuisson ou laverie',
-    "Contrat d'entretien / audit gratuit",
-    'Autre demande',
-  ];
+  // Les natures de demande viennent de data/formulaire.mjs : api/contact.js
+  // refuse toute valeur absente de cette liste, les deux doivent donc lire la
+  // même source.
+  const opts = sujets;
   return `<form class="devis" id="form-devis" method="post" action="/api/contact" novalidate>
   <h2>${esc(titre)}</h2>
   <div class="row2">
