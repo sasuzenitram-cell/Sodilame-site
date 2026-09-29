@@ -31,13 +31,42 @@ const ancresManquantes = cgv.articles.filter((a) => !html.includes(`href="#${a.i
 verifier('chaque article est atteignable depuis le sommaire', !ancresManquantes.length,
   ancresManquantes.map((a) => a.id).join(', '));
 
-// Décision du 25/09/2026 : le barème d'intervention reste sur la plaquette
-// papier. L'article 11.1 ne doit plus annoncer qu'il est sur le site, sinon les
-// CGV promettent un document introuvable — et la phrase se retourne contre
-// SODILAME dans une discussion sur le prix.
-verifier('les CGV n’annoncent pas le barème sur le site',
-  !/barème[^.]*disponible sur www\.sodilame\.com/i.test(html) &&
-  !/barème complet[^.]*sur www\.sodilame\.com/i.test(html));
+// Décisions des 25/09 et 29/09/2026 : le barème d'intervention reste sur la
+// plaquette papier. Le PDF v2.3 annonce à TROIS endroits qu'il est « publié sur
+// www.sodilame.com » — articles 11.1, 11.10.1 et 11.10.3. La page publiée ne
+// doit reprendre aucun de ces renvois, sinon les CGV promettent un document
+// introuvable, et la phrase se retourne contre SODILAME à la première
+// discussion sur un prix. Le motif ci-dessous couvre les trois d'un coup.
+{
+  const renvois = (html.match(/barème[^.]{0,220}?sodilame\.com/gi) || [])
+    .concat(html.match(/publié sur[^.]{0,80}sodilame\.com/gi) || []);
+  verifier('les CGV n’annoncent le barème nulle part sur le site',
+    !renvois.length, renvois.join(' | '));
+}
+
+// v2.3 : l'article 11.10 encadre la révision des tarifs d'intervention. C'est
+// le seul apport de fond de cette version. S'il disparaissait, l'article 11.1
+// renverrait à un article inexistant — et SODILAME perdrait le mécanisme qui
+// rend ses hausses de tarif opposables.
+verifier('l’article 11.10 (révision du barème) est publié',
+  /11\.10\.\s*Révision du barème/i.test(html));
+
+for (const [nom, motif] of [
+  ['actualisation annuelle au 1er janvier', /actualisation annuelle prenant effet au 1er janvier/i],
+  ['révision en cours d’année encadrée', /11\.10\.2\./],
+  ['sans effet sur les devis acceptés', /sans effet sur les devis acceptés/i],
+  ['motivation, article 1164 du code civil', /article 1164 du code civil/i],
+  ['articulation avec les contrats d’entretien', /11\.10\.4\./],
+  ['renvoi de l’article 11.1 vers 11.10', /conditions de révision de l['’]article 11\.10/i],
+]) {
+  verifier(`11.10 — ${nom}`, motif.test(html));
+}
+
+// Contrepartie de la divergence assumée : la publication ayant été retirée,
+// c'est l'écrit adressé au Client qui rend la révision opposable. La page doit
+// donc le dire, sans quoi la clause n'a plus aucun mode d'information.
+verifier('la révision n’est opposable qu’après un écrit au Client',
+  /portée à la connaissance du Client[^.]{0,60}par tout moyen écrit/i.test(html));
 
 // Le site public n'affiche aucune grille tarifaire d'intervention. Les montants
 // cités dans les CGV sont ceux du contrat lui-même, pas un barème consultable.

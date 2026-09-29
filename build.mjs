@@ -1203,7 +1203,7 @@ ${L.tvaIntra ? `TVA intracommunautaire : ${L.tvaIntra}` : '<!-- TVA intracommuna
 }
 
 function conditionsGenerales() {
-  // Les CGV v2.1 entrent en vigueur au 1er novembre 2026. Tant que cette date
+  // Les CGV entrent en vigueur au 1er novembre 2026. Tant que cette date
   // n'est pas atteinte, la page le dit : publier « en vigueur » un texte qui ne
   // l'est pas encore, c'est se prévaloir d'un document qu'un client pourrait
   // faire écarter. Le calcul se fait au build, donc la mention bascule toute

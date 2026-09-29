@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // CONDITIONS GÉNÉRALES DE VENTE ET DE PRESTATIONS DE SERVICES
 //
-// Texte de référence : CGV SODILAME version 2.1, en vigueur au 1er novembre
+// Texte de référence : CGV SODILAME version 2.3, en vigueur au 1er novembre
 // 2026. Ce fichier est la version publiée sur www.sodilame.com/cgv, adresse
 // citée par le bloc COMMUN-2 imprimé au bas de chaque devis, bon de commande,
 // bon de livraison et facture (cahier des charges GDSOFT du 25/09/2026).
@@ -12,16 +12,38 @@
 //     ici doit rester identique au PDF remis aux clients et annexé aux devis.
 //     Si les deux divergent, c'est le client qui arbitrera — contre nous.
 //
-// ⚠️  UNE SEULE DIFFÉRENCE VOULUE AVEC LE PDF v2.1, décidée le 25/09/2026 :
-//     l'article 11.1 annonçait que le barème des communes et des zones était
-//     « disponible sur www.sodilame.com ». Il ne l'est pas, et il ne doit pas
-//     l'être — les tarifs d'intervention restent sur la plaquette papier. La
-//     phrase ne conserve donc que « communiqué sur simple demande ».
-//     Le PDF doit être corrigé à l'identique avant diffusion.
+// APPORT DE LA v2.3 PAR RAPPORT À LA v2.1 — un seul changement de fond :
+//     un article 11.10 nouveau, qui encadre la révision du barème de
+//     main-d'œuvre et de déplacement : actualisation annuelle au 1er janvier,
+//     révision en cours d'année sur circonstances extérieures, et garanties
+//     données au Client (aucun effet sur les devis acceptés et les commandes
+//     en cours, motivation du montant au titre de l'article 1164 du code
+//     civil). L'article 11.1 renvoie désormais à ce mécanisme au lieu du
+//     « révisables à tout moment » de la v2.1.
+//     Tout le reste du texte est identique à la v2.1, au caractère près.
+//
+// ⚠️  TROIS DIFFÉRENCES VOULUES AVEC LE PDF v2.3, décidées le 29/09/2026 dans
+//     la continuité de la décision du 25/09 :
+//     le PDF annonce à trois endroits que le barème des communes et des zones
+//     est « publié sur www.sodilame.com » — articles 11.1, 11.10.1 et 11.10.3.
+//     Il ne l'est pas, et il ne doit pas l'être : les tarifs d'intervention
+//     restent sur la plaquette papier, remise de la main à la main. Publier
+//     une grille que le site ne porte pas, c'est promettre au Client un
+//     document introuvable, et la phrase se retourne contre SODILAME à la
+//     première discussion sur un prix. Les trois passages ne conservent donc
+//     que la communication « sur simple demande » et l'écrit adressé au Client.
+//
+//     CONSÉQUENCE À CONNAÎTRE : dans le PDF, l'article 11.10.3 offre deux
+//     modes d'information du Client — l'écrit ET la publication du barème
+//     daté. En retirant le second, il ne reste que le premier : une révision
+//     de tarif n'est opposable qu'à partir de l'écrit adressé au Client. Il
+//     faut donc réellement l'envoyer, et en garder la trace.
+//
+//     Le PDF v2.3 doit être corrigé à l'identique avant diffusion.
 // ---------------------------------------------------------------------------
 
 export const cgv = {
-  version: '2.1',
+  version: '2.3',
   entreeEnVigueur: '1er novembre 2026',
   // Date ISO, pour comparer sans ambiguïté à la date du build.
   entreeEnVigueurIso: '2026-11-01',
@@ -194,7 +216,7 @@ export const cgv = {
 <li>les <b>pièces détachées, fluides et consommables</b> employés ;</li>
 <li>le cas échéant, les frais de traitement des déchets, de moyens de levage ou de manutention et les majorations pour intervention hors heures ouvrables.</li>
 </ul>
-<p>Le barème complet des communes et des zones est communiqué au Client sur simple demande. Les tarifs sont révisables à tout moment ; le tarif applicable est celui en vigueur au jour de l'intervention.</p>
+<p>Le barème complet des communes et des zones est communiqué au Client sur simple demande. Le tarif applicable est celui en vigueur au jour de l'intervention, dans les conditions de révision de l'article 11.10.</p>
 <p><b>11.2. Déplacement sans réparation.</b> Le forfait de déplacement, le temps de recherche de panne et le temps passé restent dus dans tous les cas, y compris lorsque : aucune panne n'est constatée, le défaut résulte d'une mauvaise utilisation ou d'un défaut d'entretien, l'accès au Matériel n'a pas été rendu possible, ou le Client refuse le devis de réparation.</p>
 <p><b>11.3. Annulation ou report d'une intervention programmée.</b> Toute demande d'intervention acceptée par SODILAME donne lieu à la <b>réservation d'un créneau et d'un technicien</b>, qui ne peuvent plus être affectés à un autre client. En conséquence, lorsque le Client annule, reporte ou rend impossible une intervention programmée <b>moins de vingt-quatre (24) heures ouvrables avant l'heure convenue</b>, ou le jour même, SODILAME est en droit de facturer, <b>à titre d'indemnité forfaitaire d'immobilisation</b>, le forfait de déplacement de la zone concernée majoré d'<b>une (1) heure de main-d'œuvre au tarif en vigueur</b>.</p>
 <p>Cette indemnité est due dans tous les cas d'annulation tardive, quel qu'en soit le motif, et notamment lorsque :</p>
@@ -210,7 +232,19 @@ export const cgv = {
 <p><b>11.6. Pièces remplacées.</b> Les pièces défectueuses remplacées deviennent la propriété de SODILAME et sont évacuées et traitées par ses soins, sauf demande écrite contraire du Client formulée avant l'intervention.</p>
 <p><b>11.7. Sécurité.</b> SODILAME se réserve le droit de <b>refuser ou d'interrompre toute intervention</b> sur un Matériel présentant un danger, non conforme, modifié, ou dont l'environnement (installation électrique, gaz, ventilation) présente un risque pour les personnes. Le Client en est informé par écrit et fait son affaire de la mise en conformité.</p>
 <p><b>11.8. Pièces en échange standard.</b> Certaines pièces (compresseurs, cartes électroniques, moteurs, pompes, groupes) ne sont fournies qu'en <b>échange standard</b>. La pièce défectueuse doit alors être restituée à SODILAME dans son emballage d'origine, complète et non démontée, <b>dans les quinze (15) jours</b> de la pose. À défaut de restitution dans ce délai, ou en cas de pièce détériorée, incomplète ou non identifiable, <b>la consigne facturée reste définitivement acquise à SODILAME</b>, ou la pièce est facturée à son prix neuf.</p>
-<p><b>11.9. Matériel de remplacement.</b> La mise à disposition d'un matériel de remplacement pendant l'immobilisation n'est jamais de droit. Lorsqu'elle est accordée, elle fait l'objet d'un écrit précisant sa durée et son coût. Le matériel prêté demeure la propriété de SODILAME ; le Client en est gardien, l'utilise conformément à sa destination, l'assure et le restitue en bon état de fonctionnement et de propreté. Toute détérioration, perte ou restitution tardive est facturée.</p>`,
+<p><b>11.9. Matériel de remplacement.</b> La mise à disposition d'un matériel de remplacement pendant l'immobilisation n'est jamais de droit. Lorsqu'elle est accordée, elle fait l'objet d'un écrit précisant sa durée et son coût. Le matériel prêté demeure la propriété de SODILAME ; le Client en est gardien, l'utilise conformément à sa destination, l'assure et le restitue en bon état de fonctionnement et de propreté. Toute détérioration, perte ou restitution tardive est facturée.</p>
+<h3>11.10. Révision du barème de main-d'œuvre et de déplacement</h3>
+<p><b>11.10.1. Actualisation annuelle.</b> Le barème des tarifs de main-d'œuvre et de déplacement fait l'objet d'une <b>actualisation annuelle prenant effet au 1er janvier de chaque année</b>. Le barème actualisé est communiqué au Client sur simple demande ; il s'applique de plein droit aux interventions réalisées à compter de cette date.</p>
+<p><b>11.10.2. Révision en cours d'année.</b> Indépendamment de cette actualisation annuelle, SODILAME se réserve le droit de réviser à tout moment ses tarifs de main-d'œuvre et de déplacement lorsque des circonstances extérieures à sa volonté en affectent significativement le coût de revient, notamment :</p>
+<ul>
+<li>la variation du prix des carburants, de l'énergie ou des péages ;</li>
+<li>la variation du coût des matières premières, des composants, des pièces détachées ou des fluides frigorigènes ;</li>
+<li>l'évolution des coûts salariaux, des charges sociales ou des dispositions conventionnelles applicables ;</li>
+<li>toute mesure fiscale, réglementaire ou administrative nouvelle affectant l'activité ou les véhicules ;</li>
+<li>les tensions géopolitiques, les ruptures ou raréfactions d'approvisionnement et les perturbations des chaînes logistiques.</li>
+</ul>
+<p><b>11.10.3. Modalités et garanties pour le Client.</b> Toute révision est portée à la connaissance du Client <b>par tout moyen écrit</b>, accompagnée du barème daté. Elle ne s'applique qu'aux interventions et prestations postérieures à cette information et demeure <b>sans effet sur les devis acceptés encore en cours de validité, sur les commandes en cours d'exécution et sur les prix fermes expressément convenus par écrit</b>. Conformément à l'article 1164 du code civil, SODILAME motive le montant retenu en cas de contestation du Client.</p>
+<p><b>11.10.4. Articulation avec les contrats d'entretien.</b> Le présent article régit le barème des interventions facturées à l'unité. Le prix des contrats d'entretien obéit à la règle de révision propre qui leur est applicable, prévue à l'article 12.3.</p>`,
     },
     {
       id: 'a12',
