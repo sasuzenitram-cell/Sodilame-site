@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // CONDITIONS GÉNÉRALES DE VENTE ET DE PRESTATIONS DE SERVICES
 //
-// Texte de référence : CGV SODILAME version 2.3, en vigueur au 1er novembre
+// Texte de référence : CGV SODILAME version 2.4, en vigueur au 1er novembre
 // 2026. Ce fichier est la version publiée sur www.sodilame.com/cgv, adresse
 // citée par le bloc COMMUN-2 imprimé au bas de chaque devis, bon de commande,
 // bon de livraison et facture (cahier des charges GDSOFT du 25/09/2026).
@@ -11,6 +11,23 @@
 //     modification doit venir du document de référence, et la version publiée
 //     ici doit rester identique au PDF remis aux clients et annexé aux devis.
 //     Si les deux divergent, c'est le client qui arbitrera — contre nous.
+//
+// APPORT DE LA v2.4 PAR RAPPORT À LA v2.3 — un seul changement, article 6.2 :
+//     le délai de paiement passe du plafond légal (60 jours date de facture,
+//     ou 45 jours fin de mois) à un délai contractuel de TRENTE (30) JOURS
+//     date de facture, « aucun délai supérieur ne pouvant être invoqué par le
+//     Client, sauf accord écrit exprès de SODILAME ».
+//
+//     C'est licite : l'article L. 441-10 du code de commerce fixe un plafond,
+//     pas un plancher ; un délai plus court est libre entre professionnels.
+//     Et c'est cohérent avec l'article 6.1, dont le tableau annonçait déjà
+//     « trente (30) jours date de facture » pour les comptes ouverts : la v2.3
+//     laissait les deux articles se contredire de 30 jours, la v2.4 les aligne.
+//
+//     Conséquence concrète : à réception, les modèles GDSOFT doivent porter
+//     une échéance à 30 jours. Une facture éditée à 60 jours accorderait au
+//     Client le délai que l'article 6.2 lui refuse — et c'est la mention
+//     portée sur la facture qui l'emporterait.
 //
 // APPORT DE LA v2.3 PAR RAPPORT À LA v2.1 — un seul changement de fond :
 //     un article 11.10 nouveau, qui encadre la révision du barème de
@@ -43,7 +60,7 @@
 // ---------------------------------------------------------------------------
 
 export const cgv = {
-  version: '2.3',
+  version: '2.4',
   entreeEnVigueur: '1er novembre 2026',
   // Date ISO, pour comparer sans ambiguïté à la date du build.
   entreeEnVigueurIso: '2026-11-01',
@@ -117,7 +134,7 @@ export const cgv = {
 <tr><td>Contrats d'entretien</td><td>Facturation annuelle d'avance, ou selon la périodicité prévue au contrat</td></tr>
 </tbody>
 </table>
-<p><b>6.2.</b> Lorsqu'un délai de paiement est accordé, il ne peut en aucun cas excéder les délais maximaux fixés par l'article L. 441-10 du code de commerce, soit <b>soixante (60) jours à compter de la date d'émission de la facture</b>, ou quarante-cinq (45) jours fin de mois si cette dérogation est expressément stipulée au contrat.</p>
+<p><b>6.2. Délai de paiement.</b> Lorsqu'un délai de paiement est accordé, il ne peut en aucun cas excéder <b>trente (30) jours à compter de la date d'émission de la facture</b>. Ce délai, fixé par SODILAME, est plus court que les délais maximaux de soixante (60) jours date de facture et de quarante-cinq (45) jours fin de mois autorisés par l'article L. 441-10 du code de commerce. <b>Aucun délai supérieur à trente (30) jours ne peut être invoqué par le Client</b>, sauf accord écrit exprès de SODILAME.</p>
 <h3>6.3. Modes de paiement</h3>
 <p>Les règlements s'effectuent par virement bancaire, chèque, carte bancaire ou espèces dans la limite légale. <b>Les lettres de change, billets à ordre et effets de commerce ne sont acceptés qu'après accord écrit exprès de SODILAME</b> et ne constituent ni novation ni dérogation à la clause de réserve de propriété. Le paiement n'est réputé réalisé qu'à l'encaissement effectif et définitif des fonds.</p>
 <h3>6.4. Escompte</h3>

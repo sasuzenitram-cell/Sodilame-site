@@ -62,6 +62,21 @@ for (const [nom, motif] of [
   verifier(`11.10 — ${nom}`, motif.test(html));
 }
 
+// v2.4 : le délai de paiement passe à trente jours date de facture, plus court
+// que le plafond légal. C'est une clause de trésorerie, pas une clause de
+// style : si elle disparaissait d'une future version, SODILAME retomberait de
+// plein droit sur les soixante jours de l'article L. 441-10 — un mois de
+// décalage sur l'encaissement, sans que rien ne le signale.
+verifier('le délai de paiement est bien de trente jours',
+  /ne peut en aucun cas excéder <b>trente \(30\) jours/i.test(html));
+verifier('le Client ne peut pas invoquer un délai plus long',
+  /Aucun délai supérieur à trente \(30\) jours ne peut être invoqué/i.test(html));
+// L'article 6.1 annonçait déjà trente jours pour les comptes ouverts. Les deux
+// articles doivent rester d'accord : c'est leur contradiction, dans la v2.3,
+// qui a motivé la v2.4.
+verifier('l’article 6.1 et l’article 6.2 annoncent le même délai',
+  /trente \(30\) jours date de facture pour les Clients titulaires d'un compte ouvert/i.test(html));
+
 // Contrepartie de la divergence assumée : la publication ayant été retirée,
 // c'est l'écrit adressé au Client qui rend la révision opposable. La page doit
 // donc le dire, sans quoi la clause n'a plus aucun mode d'information.
