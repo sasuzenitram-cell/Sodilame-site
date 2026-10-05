@@ -177,6 +177,11 @@
       "permanent": true
     },
     {
+      "source": "/produits/traitement-eau",
+      "destination": "/produits?famille=traitement-eau#catalogue",
+      "permanent": true
+    },
+    {
       "source": "/connexion",
       "destination": "/espace/connexion",
       "permanent": false

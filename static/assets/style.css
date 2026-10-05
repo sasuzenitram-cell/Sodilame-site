@@ -301,6 +301,24 @@ textarea{min-height:96px;resize:vertical}
 .formmsg.ok{display:block;background:#DFF0EA;color:#215246;border:1px solid #A9D5C8}
 .formmsg.ko{display:block;background:#F9E1D8;color:#8B3C17;border:1px solid #E6BCA8}
 
+/* ---------- pièce jointe CV (formulaire de candidature) ----------
+   Le champ <input type=file> natif est masqué : son libellé « Choisir un
+   fichier / Aucun fichier sélectionné » est illisible sur mobile et ne dit pas
+   ce qu'on attend. Le <label> stylé qui le remplace reste accessible au clavier
+   et au lecteur d'écran, puisqu'il pointe sur l'input par son id.             */
+.cv-zone{margin:.2rem 0 1rem}
+.cv-btn{display:flex;gap:.9rem;align-items:center;width:100%;cursor:pointer;
+  background:var(--cream);border:1.5px dashed #C9B894;border-radius:12px;padding:16px 18px;transition:.18s}
+.cv-btn:hover{border-color:var(--terra);background:#fff}
+.cv-btn svg{width:26px;height:26px;stroke:var(--navy);fill:none;stroke-width:1.6;flex:0 0 auto}
+.cv-btn b{display:block;font-family:Montserrat,sans-serif;font-size:.92rem;color:var(--navy)}
+.cv-btn small{display:block;font-size:.78rem;color:var(--muted);margin-top:.15rem}
+.cv-etat{font-size:.82rem;margin:.6rem 0 0;padding:.55rem .8rem;border-radius:8px;background:var(--cream-d);color:var(--muted)}
+.cv-etat.ok{background:#DFF0EA;color:#215246}
+.cv-etat.ko{background:#F9E1D8;color:#8B3C17}
+.cv-etat[hidden]{display:none}
+.cv-note{font-size:.76rem;color:var(--muted);margin:.6rem 0 0}
+
 /* ---------- footer ---------- */
 footer{background:var(--navy-d);color:#9FB0C4;font-size:.9rem;padding:64px 0 0}
 .f-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px;padding-bottom:44px}

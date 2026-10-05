@@ -63,6 +63,9 @@ export const icones = {
   camion: '<path d="M2 6.5h11v9H2z"/><path d="M13 9.5h4l3 3.2v2.8h-7z"/><circle cx="6.5" cy="18" r="1.7"/><circle cx="17" cy="18" r="1.7"/>',
   bidon: '<path d="M8 8h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z"/><path d="M10 8V5.5h4V8"/><path d="M15 5.5h2.2a1.3 1.3 0 0 1 1.3 1.3V9"/>',
   seau: '<path d="M5.5 8h13l-1.4 11.2a2 2 0 0 1-2 1.8H8.9a2 2 0 0 1-2-1.8z"/><path d="M4 8h16"/><path d="M8 8V6.4a4 4 0 0 1 8 0V8"/>',
+  outils: '<path d="M14.6 6.2a3.9 3.9 0 0 0 5.1 5.1l-2.1 2.1-5.1-5.1z"/><path d="m12.5 8.3-7.6 7.6a2.2 2.2 0 0 0 3.1 3.1l7.6-7.6"/><path d="m4 4 3.4 3.4"/>',
+  sac: '<path d="M7 7h10l1 11.5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 6 18.5z"/><path d="M7 7V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2"/><path d="M9.5 4.5h5"/>',
+  doc: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/>',
 };
 export const svg = (nom, cls = '') =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ''} aria-hidden="true">${icones[nom] || ''}</svg>`;
@@ -179,6 +182,8 @@ function pied(servicesNav, villesNav, produitsNav = []) {
         <a href="mailto:${site.email}">${site.email}</a>
         <p style="font-size:.84rem;margin:.6rem 0 1rem">${site.horaires.texte.replace(' — ', '<br>')}</p>
         <a class="btn btn-primary btn-sm" href="${site.portail.url}" target="_blank" rel="noopener" style="display:inline-flex">Espace client ${site.portail.nom}</a>
+        <h2 style="margin-top:1.6rem">Nous rejoindre</h2>
+        <a href="/recrutement"><b>Nous recrutons →</b></a>
       </div>
     </div>
     <div class="f-bottom">
@@ -200,6 +205,7 @@ function pied(servicesNav, villesNav, produitsNav = []) {
 </script>
 <script src="${versionne('/assets/form.js')}" defer></script>
 <script src="${versionne('/assets/panier.js')}" defer></script>
+<script src="${versionne('/assets/candidature.js')}" defer></script>
 </body>
 </html>`;
 }

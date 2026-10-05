@@ -120,6 +120,19 @@ export const categoriesProduits = [
     conseil:
       "Les granulés s'arrondissent en s'usant, et le lavage perd en efficacité sans qu'aucune alarme ne se déclenche. Le symptôme, ce sont des bacs qui ressortent sales alors que rien n'a changé sur la machine — et on accuse presque toujours le lave-batterie avant de penser aux granulés. Comptez 2 500 à 3 500 cycles par jeu, soit environ un an dans une cuisine qui tourne, et complétez le niveau chaque jour. C'est un des points que nos techniciens regardent en visite d'entretien : mieux vaut le voir avant que la plonge ne s'en plaigne.",
   },
+  {
+    slug: 'traitement-eau',
+    nom: "Sel et traitement de l'eau",
+    nomCourt: 'Traitement eau',
+    icone: 'sac',
+    titreSeo: "Sel en pastilles pour adoucisseur d'eau — cuisine professionnelle",
+    description:
+      "Sel en pastilles pour adoucisseur d'eau, sac de 25 kg. Livraison offerte dans notre zone d'intervention, sans minimum de commande.",
+    intro:
+      "Dans les Bouches-du-Rhône, le Gard et le Vaucluse, l'eau est dure — souvent très dure. L'adoucisseur est ce qui protège tout le reste : le surchauffeur du lave-vaisselle, les résistances du four, la pompe de la machine à café. Et un adoucisseur ne fonctionne que tant qu'il reste du sel dans le bac.",
+    conseil:
+      "La panne la plus fréquente sur un adoucisseur n'en est pas une : c'est un bac vide. Personne ne le surveille, parce que rien ne s'allume et que rien ne s'arrête — l'eau continue de couler, simplement elle n'est plus adoucie. Trois semaines plus tard, c'est la machine qui entartre, et là ça se voit. Prenez l'habitude d'ouvrir le couvercle une fois par mois : le sel doit toujours affleurer au-dessus du niveau d'eau.",
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -854,6 +867,46 @@ export const produits = [
       { label: 'Lot de 5 bidons de 10 L — 50 L', prix: null },
     ],
   },
+
+  // ---- Sel et traitement de l'eau ------------------------------------------
+  {
+    slug: 'sel-pastilles-adoucisseur-25kg',
+    machines: ['adoucisseur', 'lave-vaisselle', 'lave-verres'],
+    ref: 'SEL25',
+    // Le sel de régénération est une commodité : la marque du sac change d'un
+    // approvisionnement à l'autre, et aucune ne se revendique sur l'étiquette
+    // d'un bac à sel. Nous le vendons donc sous notre propre nom, ce qui évite
+    // d'annoncer une marque que la prochaine palette ne portera peut-être pas.
+    marque: 'SODILAME',
+    // ⚠️ Illustration, pas photographie : dessin original produit par
+    //    outils/illustration-sel.mjs, faute de visuel dont nous ayons les
+    //    droits. À remplacer par une photo du stock dès que possible.
+    photo: 'sel-pastilles-adoucisseur-25kg',
+    categorie: 'traitement-eau',
+    nom: 'Sel en pastilles pour adoucisseur — sac de 25 kg',
+    resume: "Le consommable le moins cher du parc, et celui qui évite les réparations les plus chères.",
+    description:
+      "Sel en pastilles destiné à la régénération des adoucisseurs d'eau. Les pastilles se dissolvent lentement et régulièrement, sans former la croûte compacte que donne le sel en grains au fond du bac — c'est ce qui évite les régénérations incomplètes et les remplissages à la pelle. Un sac de 25 kg couvre plusieurs semaines à plusieurs mois selon la dureté de votre eau, le volume consommé et le réglage de votre appareil. Sur l'eau de notre région, comptez large : c'est le produit qu'il vaut mieux avoir en avance qu'en rupture.",
+    usages: [
+      "Adoucisseurs d'eau de cuisine professionnelle",
+      'Adoucisseurs alimentant un lave-vaisselle ou un lave-verres',
+      "Lave-vaisselle et lave-verres à adoucisseur intégré — le sel va dans la machine elle-même",
+      'Adoucisseurs de laverie et de buanderie',
+      "Adoucisseurs domestiques — le format et le produit sont les mêmes",
+    ],
+    caracteristiques: [
+      'Sel en pastilles, sac de 25 kg',
+      "Pour tous les adoucisseurs à bac à sel",
+      'Dissolution régulière, sans prise en masse',
+      'Livraison offerte sur notre zone',
+    ],
+    attention:
+      "N'utilisez jamais de sel de déneigement, de sel de piscine ou de gros sel de cuisine dans un adoucisseur : les impuretés qu'ils contiennent encrassent la vanne et les résines, et la réparation coûte bien plus cher que la différence de prix sur le sac.",
+    conditionnements: [
+      // Prix public communiqué par la direction le 05/10/2026.
+      { label: 'Sac de 25 kg', prix: 25 },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -871,6 +924,9 @@ export const machinesCatalogue = [
   // « Lave-batterie » est le terme du métier en France ; « lave-ustensiles »
   // se dit aussi et figure dans le texte des fiches, pour la recherche.
   { slug: 'lave-batterie', nom: 'Lave-batterie', icone: 'extraction' },
+  // L'adoucisseur n'est pas une machine de production, mais c'est bien une
+  // machine qu'on alimente — et c'est par là que le client cherche son sel.
+  { slug: 'adoucisseur', nom: 'Adoucisseur', icone: 'goutte' },
 ];
 
 export const marquesCatalogue = [...new Set(produits.map((p) => p.marque))].sort();

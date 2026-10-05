@@ -10,6 +10,7 @@ import { villes, villesNav } from './data/villes.mjs';
 import { zones, zoneDeLaVille, totalCommunes } from './data/zones.mjs';
 import { articles } from './data/articles.mjs';
 import { cgv } from './data/cgv.mjs';
+import { offres, offresActives, postes, emailRecrutement } from './data/recrutement.mjs';
 import {
   categoriesProduits, produits, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
   machinesCatalogue, marquesCatalogue, ficheSodilame,
@@ -1091,6 +1092,329 @@ ${blocContact({ titre: 'Faisons connaissance', texte: "Un projet, une reprise d'
 }
 
 // ===========================================================================
+// RECRUTEMENT
+//
+// Deux niveaux : /recrutement présente l'entreprise vue du candidat et liste
+// les postes ouverts ; /recrutement/<slug> porte l'offre complète, son balisage
+// JobPosting et le formulaire de candidature.
+//
+// Pourquoi deux pages pour une seule offre : c'est la page de l'offre que
+// Google for Jobs indexe et affiche, et c'est son adresse qu'on colle dans une
+// annonce Facebook ou sur France Travail. Elle doit vivre à part, survivre à
+// l'ajout d'un second poste, et pouvoir basculer en « pourvu » sans emporter
+// la page de recrutement avec elle.
+// ===========================================================================
+
+/**
+ * Balisage JobPosting lu par Google for Jobs.
+ *
+ * Trois champs décident de l'affichage ou du rejet de l'offre, et c'est pour
+ * eux que ce bloc existe : `datePosted`, `validThrough` (une offre sans date de
+ * fin finit par être signalée en Search Console) et `hiringOrganization`, qui
+ * raccroche l'annonce à la fiche de l'entreprise plutôt qu'à un agrégateur.
+ */
+function schemaOffre(o) {
+  const texte = (t) => t.replace(/<[^>]+>/g, '');
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'JobPosting',
+    title: o.titre,
+    description:
+      `<p>${esc(o.accroche)}</p><p>${esc(o.resume)}</p>` +
+      `<h3>Missions</h3><ul>${o.missions.map((m) => `<li>${esc(texte(m))}</li>`).join('')}</ul>` +
+      `<h3>Profil</h3><ul>${o.profil.map((p) => `<li>${esc(texte(p))}</li>`).join('')}</ul>` +
+      `<h3>Conditions</h3><ul>${o.avantages.map((a) => `<li>${esc(a.titre)} — ${esc(a.detail)}</li>`).join('')}</ul>`,
+    identifier: { '@type': 'PropertyValue', name: site.nom, value: o.slug },
+    datePosted: o.publieeLe,
+    validThrough: `${o.valideJusquau}T23:59:59+01:00`,
+    employmentType: o.contratSchema,
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: site.nom,
+      sameAs: site.domaine,
+      logo: url('/assets/logo-sodilame-600.png'),
+    },
+    jobLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: `${A.rue}, ${A.complement}`,
+        addressLocality: A.ville,
+        postalCode: A.codePostal,
+        addressRegion: A.region,
+        addressCountry: A.pays,
+      },
+    },
+    baseSalary: {
+      '@type': 'MonetaryAmount',
+      currency: o.salaire.devise,
+      value: {
+        '@type': 'QuantitativeValue',
+        minValue: o.salaire.min,
+        maxValue: o.salaire.max,
+        unitText: o.salaire.unite,
+      },
+    },
+    directApply: true,
+    industry: 'Cuisine professionnelle, froid commercial, laverie',
+    qualifications: 'Permis B. Bases en électricité et en plomberie. Débutant motivé accepté, formation assurée en interne.',
+  };
+}
+
+/** Formulaire de candidature — commun à toutes les offres. */
+function formulaireCandidature(posteDefaut = '') {
+  return `<form class="devis" id="form-candidature" method="post" action="/api/candidature" novalidate
+      data-confirme="Nous avons bien reçu votre candidature.">
+  <h2>Postuler</h2>
+  <div class="field"><label for="k-poste">Poste *</label>
+    <select id="k-poste" name="poste" required>
+      ${postes.map((p) => `<option${p === posteDefaut ? ' selected' : ''}>${esc(p)}</option>`).join('\n      ')}
+    </select>
+  </div>
+  <div class="field"><label for="k-nom">Nom et prénom *</label><input id="k-nom" name="nom" autocomplete="name" required></div>
+  <div class="row2">
+    <div class="field"><label for="k-tel">Téléphone *</label><input id="k-tel" name="telephone" type="tel" autocomplete="tel" required></div>
+    <div class="field"><label for="k-email">E-mail *</label><input id="k-email" name="email" type="email" autocomplete="email" required></div>
+  </div>
+  <div class="field"><label for="k-ville">Ville</label><input id="k-ville" name="ville" autocomplete="address-level2" placeholder="Arles, Salon, Nîmes…"></div>
+  <div class="field"><label for="k-message">Quelques mots sur vous</label><textarea id="k-message" name="message" placeholder="Ce que vous faites aujourd'hui, ce qui vous intéresse dans ce poste, vos disponibilités. Trois lignes suffisent."></textarea></div>
+
+  <div class="cv-zone">
+    <label class="cv-btn" for="k-cv">
+      ${svg('doc')}
+      <span><b>Joindre votre CV</b><small>PDF, Word ou photo — 4 Mo maximum</small></span>
+    </label>
+    <input id="k-cv" name="cv" type="file" accept=".pdf,.doc,.docx,image/*" hidden>
+    <p class="cv-etat" id="k-cv-etat" hidden></p>
+    <p class="cv-note">Pas de CV sous la main ? Envoyez quand même : laissez votre numéro, nous vous rappelons.</p>
+  </div>
+
+  <label class="consent" style="font-size:.8rem;color:var(--muted);font-weight:400"><input type="checkbox" name="permis"> J'ai le permis B</label>
+  <div class="hp" aria-hidden="true"><label for="societe_web">Ne pas remplir</label><input id="societe_web" name="societe_web" tabindex="-1" autocomplete="off"></div>
+  <label class="consent"><input type="checkbox" name="consentement" required> J'accepte que mes informations et mon CV soient utilisés pour étudier ma candidature. Ils sont conservés deux ans au plus. <a href="/politique-de-confidentialite">Politique de confidentialité</a>.</label>
+  <button class="btn btn-primary" type="submit" id="btn-candidature" style="width:100%;justify-content:center">Envoyer ma candidature</button>
+  <p class="formmsg" id="candidature-msg" role="status" aria-live="polite"></p>
+  <p style="font-size:.76rem;color:var(--muted);margin:.9rem 0 0;text-align:center">Vous préférez en parler&nbsp;? Appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a></p>
+</form>`;
+}
+
+function recrutementHub() {
+  const fil = [{ nom: 'Accueil', url: '/' }, { nom: 'Recrutement', url: '/recrutement' }];
+
+  const cartes = offresActives.length
+    ? offresActives
+        .map(
+          (o) => `<a class="card" href="/recrutement/${o.slug}">
+          <div class="ico">${svg('outils')}</div>
+          <h3>${esc(o.titreCourt)} (H/F)</h3>
+          <p>${esc(o.accroche)}</p>
+          <p style="margin-top:.9rem;font-size:.86rem;color:var(--navy)"><b>${esc(o.contrat)}</b> · ${esc(o.tempsTravail)} · ${esc(o.lieu)}</p>
+          <span class="more">Lire l'offre et postuler →</span>
+        </a>`
+        )
+        .join('\n        ')
+    : `<div class="card"><h3>Pas de poste ouvert en ce moment</h3>
+         <p>Nous recrutons régulièrement, et nous gardons les candidatures. Si le métier vous intéresse, envoyez-nous votre CV : nous reprenons contact dès qu'un poste s'ouvre.</p>
+         <span class="more">Candidature spontanée ci-dessous ↓</span></div>`;
+
+  const corps = `
+<div class="phero">
+  <div class="wrap">
+    <p class="eyebrow on-dark">Recrutement</p>
+    <h1>Travailler chez ${site.nom}</h1>
+    <p>Ce sont nos techniciens qui font l'entreprise. Nous les recrutons pour leur curiosité et leur sens pratique, puis nous les formons sur nos machines : ce métier-là s'apprend sur le terrain.</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section>
+  <div class="wrap">
+    <div class="grid-art">
+      <div class="prose">
+        <h2>Le métier, tel qu'il est</h2>
+        <p>Un technicien de ${site.nom} part le matin avec sa tournée, son véhicule et ses pièces. Il passe la journée chez des restaurateurs, des hôteliers, des boulangers, des cuisines de collectivité. Il ouvre un four qui ne monte plus en température, démonte une pompe de lave-vaisselle, recherche une fuite sur un groupe froid, raccorde une machine neuve.</p>
+        <p>C'est un travail où l'on ne fait pas deux fois la même journée, où l'on est seul face au problème, et où l'on sait tout de suite si ce qu'on a fait fonctionne. Pour certains, c'est exactement ce qu'ils cherchent. Pour d'autres, c'est épuisant. Nous préférons le dire avant.</p>
+
+        <h2>Ce que nous apportons</h2>
+        <p>On n'apprend pas ce matériel dans une salle de classe : on l'apprend à côté de quelqu'un qui le connaît déjà, machine après machine. C'est pour cela que nous prenons des débutants motivés, et que nous n'exigeons pas d'expérience du secteur.</p>
+        <ul class="ul-check">
+          <li>Un binôme pendant la période d'apprentissage : vous ne partez pas seul sur une panne que vous ne connaissez pas.</li>
+          <li>Les formations des constructeurs dont nous sommes revendeurs.</li>
+          <li>Un atelier et un stock de pièces à ${A.ville}, pas une commande à passer à chaque intervention.</li>
+          <li>Une maison de ${site.ansExperience} ans, reprise en 2026 par deux associés qui y remettent des moyens.</li>
+        </ul>
+
+        <h2>Ce que nous attendons</h2>
+        <p>De la curiosité technique, de la rigueur, et une bonne tenue chez le client : nos techniciens entrent dans la cuisine de gens qui travaillent, souvent en plein service. Ce sont eux l'image de l'entreprise, bien plus que ce site.</p>
+        <p>Et une qualité qui ne se voit sur aucun CV : savoir dire « je ne sais pas, j'appelle ». Chez nous, c'est la bonne réponse.</p>
+      </div>
+      <aside>
+        <div class="card" style="margin-bottom:20px">
+          <h2 style="font-size:1.05rem">En bref</h2>
+          <div class="tier" style="border-color:var(--line);color:var(--ink)"><b style="color:var(--navy)">Basés à</b><span style="color:var(--terra)">${A.ville}</span></div>
+          <div class="tier" style="border-color:var(--line)"><b style="color:var(--navy)">Zone</b><span style="color:var(--terra)">13 · 30 · 84</span></div>
+          <div class="tier" style="border-color:var(--line)"><b style="color:var(--navy)">Horaires</b><span style="color:var(--terra)">Lun–Ven</span></div>
+          <div class="tier" style="border-color:var(--line)"><b style="color:var(--navy)">Débutants</b><span style="color:var(--terra)">Acceptés</span></div>
+        </div>
+        <div class="callout" style="margin:0">
+          <p><b>Vous connaissez quelqu'un&nbsp;?</b></p>
+          <p>Le bouche-à-oreille reste notre meilleur recrutement. Transmettez-lui cette page, ou donnez-lui notre numéro&nbsp;: <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a>.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <p class="eyebrow">Postes ouverts</p>
+    <h2>${offresActives.length ? `${offresActives.length} poste${offresActives.length > 1 ? 's' : ''} à pourvoir` : 'Aucun poste ouvert aujourd’hui'}</h2>
+    <div class="grid3" style="margin-top:28px">
+        ${cartes}
+    </div>
+  </div>
+</section>
+
+<section id="postuler">
+  <div class="wrap">
+    <div class="grid2 top">
+      <div>
+        <p class="eyebrow">Candidature</p>
+        <h2>Envoyez-nous votre candidature</h2>
+        <p>Votre candidature est lue par la direction, et nous revenons vers vous — y compris quand la réponse est non. C'est la moindre des choses, et c'est assez rare pour être écrit.</p>
+        <p>Vous pouvez aussi écrire directement à <a href="mailto:${emailRecrutement}">${emailRecrutement}</a> ou appeler le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a>.</p>
+      </div>
+      ${formulaireCandidature()}
+    </div>
+  </div>
+</section>`;
+
+  return page(
+    {
+      titre: `Recrutement — ${site.nom} recrute en cuisine professionnelle à ${A.ville}`,
+      description: `${site.nom} recrute des techniciens de maintenance en cuisine professionnelle à ${A.ville} (13). Débutants acceptés, formation assurée, véhicule fourni. Postulez en ligne.`,
+      chemin: '/recrutement',
+      schemas: [schemaAriane(fil), schemaLocalBusiness()],
+    },
+    corps,
+    nav
+  );
+}
+
+function offrePage(o) {
+  const fil = [
+    { nom: 'Accueil', url: '/' },
+    { nom: 'Recrutement', url: '/recrutement' },
+    { nom: o.titreCourt, url: `/recrutement/${o.slug}` },
+  ];
+
+  const faitsSaillants = [
+    ['Contrat', `${o.contrat} — ${o.tempsTravail}`],
+    ['Lieu', o.lieu],
+    ['Rémunération', o.salaire.texte],
+    ['Expérience', o.debutantAccepte ? 'Débutant accepté, formation assurée' : 'Expérience souhaitée'],
+  ];
+
+  const corps = `
+<div class="phero">
+  <div class="wrap">
+    <p class="eyebrow on-dark">${esc(o.contrat)} · ${esc(o.lieu)}</p>
+    <h1>${esc(o.titre)}</h1>
+    <p>${esc(o.accroche)}</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section>
+  <div class="wrap">
+    <div class="grid-art">
+      <div class="prose">
+        ${o.active ? '' : `<div class="callout"><p><b>Ce poste est pourvu.</b> L'offre reste en ligne pour mémoire. Nous recrutons régulièrement : envoyez une candidature spontanée, nous la conservons.</p></div>`}
+        <p class="lead">${esc(o.resume)}</p>
+
+        <h2>Vos missions</h2>
+        <ul>
+          ${o.missions.map((m) => `<li>${m}</li>`).join('\n          ')}
+        </ul>
+
+        <h2>Le profil que nous cherchons</h2>
+        <ul>
+          ${o.profil.map((p) => `<li>${p}</li>`).join('\n          ')}
+        </ul>
+        ${
+          o.debutantAccepte
+            ? `<div class="callout">
+          <p><b>Débutant&nbsp;? Postulez quand même.</b></p>
+          <p>Personne ne sort d'une formation en « dépannage de cuisine professionnelle » : cela n'existe pas. Nous formons sur notre matériel, en binôme, et c'est ainsi que la plupart de nos techniciens ont appris. Ce que nous ne pouvons pas vous apprendre, c'est l'envie de comprendre comment marche une machine.</p>
+        </div>`
+            : ''
+        }
+
+        <h2>Ce que nous proposons</h2>
+        <ul class="ul-check">
+          ${o.avantages.map((a) => `<li><b>${esc(a.titre)}</b> — ${esc(a.detail)}</li>`).join('\n          ')}
+        </ul>
+        <p><b>${esc(o.salaire.texte)}</b>, selon votre expérience et votre autonomie. Nous en parlons dès le premier échange : personne n'a de temps à perdre sur un poste dont la rémunération ne conviendra pas.</p>
+
+        <h2>Ce que nous préférons dire tout de suite</h2>
+        <ul>
+          ${o.franchise.map((f) => `<li>${esc(f)}</li>`).join('\n          ')}
+        </ul>
+        <p>Si ces trois points ne vous font pas reculer, il y a de fortes chances que le poste vous plaise.</p>
+
+        <h2>Comment ça se passe ensuite</h2>
+        <p>Vous envoyez votre candidature avec le formulaire ci-contre, ou vous appelez. Nous la lisons et nous répondons, même quand c'est non. Si le profil correspond, nous vous proposons de venir à l'atelier de ${A.ville} : vous verrez le matériel, l'équipe et les véhicules, et vous poserez vos questions avant de vous engager.</p>
+      </div>
+
+      <aside>
+        <div class="card" style="margin-bottom:20px">
+          <h2 style="font-size:1.05rem">L'essentiel</h2>
+          ${faitsSaillants
+            .map(
+              ([l, v]) =>
+                `<div class="tier" style="border-color:var(--line);color:var(--ink);align-items:flex-start"><b style="color:var(--navy);white-space:nowrap">${esc(l)}</b><span style="color:var(--terra);text-align:right">${esc(v)}</span></div>`
+            )
+            .join('\n          ')}
+          <a class="btn btn-primary btn-sm" href="#postuler" style="width:100%;justify-content:center;margin-top:18px">Postuler</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="postuler">
+  <div class="wrap">
+    <div class="grid2 top">
+      <div>
+        <p class="eyebrow">Candidature</p>
+        <h2>Postuler à ce poste</h2>
+        <p>Trois lignes et un CV suffisent. Si vous n'avez pas de CV à jour, envoyez quand même le formulaire avec votre numéro : nous vous rappelons, et c'est souvent plus parlant qu'une feuille A4.</p>
+        <div class="info-row"><i>${svg('tel')}</i><span><b>Téléphone</b><a href="tel:${site.telephoneE164}">${site.telephone}</a></span></div>
+        <div class="info-row"><i>${svg('pin')}</i><span><b>Atelier</b><span>${A.rue} — ${A.complement}<br>${A.codePostal} ${A.ville}</span></span></div>
+      </div>
+      ${formulaireCandidature(o.titreCourt)}
+    </div>
+  </div>
+</section>
+
+${blocCtaFinal(
+  'Un doute sur le poste ?',
+  `Appelez-nous. Cinq minutes au téléphone valent mieux qu'une candidature qu'on hésite à envoyer.`
+)}`;
+
+  return page(
+    {
+      titre: `${o.titre} — ${o.contrat} à ${A.ville} | ${site.nom}`,
+      description: `${site.nom} recrute un ${o.titreCourt.toLowerCase()} en ${o.contrat} à ${o.lieu}. ${o.debutantAccepte ? 'Débutant accepté, formation assurée. ' : ''}${o.salaire.texte}. Véhicule et outillage fournis.`,
+      chemin: `/recrutement/${o.slug}`,
+      schemas: [schemaAriane(fil), schemaOffre(o)],
+    },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
 // CONTACT
 // ===========================================================================
 function contact() {
@@ -1264,6 +1588,12 @@ function confidentialite() {
 <li>Ville (facultatif)</li>
 <li>Nature de votre demande et message libre</li>
 </ul>
+<p>Et, si vous postulez à une offre d'emploi via la page <a href="/recrutement">Recrutement</a> :</p>
+<ul>
+<li>Nom et prénom, téléphone, adresse e-mail, ville</li>
+<li>Le poste visé et le message que vous rédigez</li>
+<li>Votre CV, lorsque vous choisissez d'en joindre un</li>
+</ul>
 <p>Nous ne collectons aucune donnée sensible et nous ne pratiquons aucun profilage.</p>
 
 <h2>Pourquoi nous les traitons</h2>
@@ -1272,9 +1602,11 @@ function confidentialite() {
 
 <h2>Combien de temps nous les conservons</h2>
 <p>Les demandes sans suite sont conservées 3 ans à compter du dernier contact. Les données liées à une relation commerciale sont conservées pendant la durée de la relation, puis selon les durées légales de conservation applicables aux documents commerciaux et comptables.</p>
+<p><b>Candidatures :</b> votre dossier et votre CV sont conservés <b>deux ans au plus</b> à compter de notre dernier échange, conformément à la recommandation de la CNIL, afin de pouvoir vous recontacter si un poste correspondant s'ouvre. Vous pouvez demander leur suppression à tout moment, et nous la faisons sans vous demander de motif.</p>
 
 <h2>Qui y a accès</h2>
 <p>Les demandes sont reçues par courrier électronique par l'équipe de ${site.legal.raisonSociale}. Les prestataires techniques qui interviennent dans l'acheminement (hébergeur du site, service d'envoi d'e-mails, fournisseur de messagerie) agissent en tant que sous-traitants et n'utilisent pas vos données pour leur propre compte.</p>
+<p><b>Les candidatures font exception :</b> elles sont adressées à la seule direction, et non à la boîte partagée par l'équipe. Un CV n'a pas à circuler dans l'entreprise.</p>
 
 <h2>Cookies et mesure d'audience</h2>
 <p>Ce site ne dépose <b>aucun cookie de suivi publicitaire</b> et n'utilise aucun traceur nécessitant votre consentement préalable. Deux ressources externes sont chargées pour l'affichage : les polices de caractères (Google Fonts) et, sur certaines pages, la carte de localisation (Google Maps). L'affichage de la carte peut donner lieu au dépôt de cookies par ce service ; elle n'est présente que sur les pages où elle est utile.</p>
@@ -1416,9 +1748,19 @@ function retraitVente(p) {
         </div>`;
 }
 
-const noticePrix = produits.some((p) => p.conditionnements.some((c) => typeof c.prix === 'number'))
-  ? ''
-  : `<div class="notice-prix"><b>Tarifs en cours de mise en ligne.</b> Composez votre commande normalement : nous vous confirmons le montant exact par retour de mail, avant toute expédition et avant toute facturation.</div>`;
+// Bandeau d'explication des prix. Trois états, et c'est le deuxième qui compte :
+// dès qu'un seul produit porte un prix, le catalogue devient mixte, et un
+// visiteur qui voit « 25,00 € HT » sur un article et « Prix sur demande » sur
+// les vingt autres se demande ce qu'on lui cache. La version précédente faisait
+// disparaître le bandeau à ce moment précis — exactement quand il devenait le
+// plus utile.
+const sansPrix = produits.filter((p) => p.conditionnements.every((c) => typeof c.prix !== 'number')).length;
+const noticePrix =
+  sansPrix === 0
+    ? ''
+    : sansPrix === produits.length
+      ? `<div class="notice-prix"><b>Tarifs en cours de mise en ligne.</b> Composez votre commande normalement : nous vous confirmons le montant exact par retour de mail, avant toute expédition et avant toute facturation.</div>`
+      : `<div class="notice-prix"><b>Tous les tarifs ne sont pas encore en ligne.</b> Les articles affichés « Prix sur demande » se commandent exactement comme les autres : nous vous confirmons le montant par retour de mail, avant toute expédition et avant toute facturation.</div>`;
 
 // ===========================================================================
 // PRODUITS — page hub
@@ -1893,6 +2235,13 @@ await ecrire('/produits/ma-commande', commandePage(), { priorite: 0.1, dansSitem
 await ecrire('/conseils', conseilsHub(), { priorite: 0.7 });
 for (const a of articles) await ecrire(`/conseils/${a.slug}`, articlePage(a), { priorite: 0.6, majParDefaut: a.date });
 await ecrire('/a-propos', aPropos(), { priorite: 0.7 });
+await ecrire('/recrutement', recrutementHub(), { priorite: 0.6 });
+// Une offre pourvue reste publiée, en priorité basse : les candidats qui ont
+// gardé le lien tombent sur « poste pourvu » plutôt que sur un 404, et la page
+// conserve le référencement qu'elle a mis des mois à acquérir.
+for (const o of offres) {
+  await ecrire(`/recrutement/${o.slug}`, offrePage(o), { priorite: o.active ? 0.7 : 0.2, majParDefaut: o.publieeLe });
+}
 await ecrire('/contact', contact(), { priorite: 0.9 });
 await ecrire('/mentions-legales', mentions(), { priorite: 0.2 });
 // Les CGV sont l'adresse citée au bas de chaque devis, bon de commande, bon de
