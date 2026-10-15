@@ -1,8 +1,10 @@
+import { articlesNouveaux } from './articles-nouveaux.mjs'
 // ---------------------------------------------------------------------------
 // Articles « Conseils » — longue traîne SEO
 // ---------------------------------------------------------------------------
 
 export const articles = [
+    ...articlesNouveaux,
   // =========================================================================
   {
     slug: 'plan-de-maitrise-sanitaire-restaurant',
