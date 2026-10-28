@@ -120,6 +120,7 @@ export const formules = [
 // ---- Navigation principale --------------------------------------------------
 export const navPrincipale = [
   { label: 'Nos services', url: '/services' },
+  { label: 'Marques', url: '/marques' },
   { label: "Zone d'intervention", url: '/zone-intervention' },
   { label: 'Conseils', url: '/conseils' },
   { label: "L'entreprise", url: '/a-propos' },
