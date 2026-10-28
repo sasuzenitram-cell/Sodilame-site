@@ -11,6 +11,7 @@ import { zones, zoneDeLaVille, totalCommunes } from './data/zones.mjs';
 import { articles } from './data/articles.mjs';
 import { cgv } from './data/cgv.mjs';
 import { offres, offresActives, postes, emailRecrutement } from './data/recrutement.mjs';
+import { marques, universMarques, marquesDeLUnivers, marquesPied, totalMarques, faqDe } from './data/marques.mjs';
 import {
   categoriesProduits, produits, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
   machinesCatalogue, marquesCatalogue, ficheSodilame,
@@ -448,6 +449,33 @@ ${blocCtaFinal('Un projet, une panne, une question ?', "Décrivez-nous votre bes
 // ===========================================================================
 // SERVICES — page détail
 // ===========================================================================
+/**
+ * Les marques rattachées à un service, affichées au bas de sa page.
+ *
+ * Sans ce bloc, les pages marques n'étaient atteignables que depuis le menu et
+ * le pied de page : dix-neuf pages sans aucun lien contextuel entrant, c'est
+ * dix-neuf pages que Google considère comme secondaires. L'index inverse se
+ * construit à partir du champ `services` de data/marques.mjs — un seul endroit
+ * à tenir à jour, et les deux sens du lien restent cohérents.
+ */
+function blocMarquesDuService(slugService) {
+  const liees = marques.filter((m) => (m.services || []).includes(slugService));
+  if (!liees.length) return '';
+  return `<section>
+  <div class="wrap">
+    <div class="sec-head center">
+      <p class="eyebrow">Marques</p>
+      <h2>Les marques que nous installons et dépannons</h2>
+      <p class="lead">Nous ne vendons que du matériel que nos techniciens savent réparer. Voici celles qui concernent ce service.</p>
+    </div>
+    <div class="zone-list" style="justify-content:center">
+      ${liees.map((m) => `<a href="/marques/${m.slug}">${esc(m.nom)}</a>`).join('\n      ')}
+    </div>
+    <p style="text-align:center;margin-top:1.4rem"><a href="/marques"><b>Voir les ${totalMarques} marques distribuées →</b></a></p>
+  </div>
+</section>`;
+}
+
 function servicePage(s) {
   const fil = [
     { nom: 'Accueil', url: '/' },
@@ -506,6 +534,8 @@ ${ariane(fil)}
     </div>
   </div>
 </section>
+
+${blocMarquesDuService(s.slug)}
 
 ${blocFaq(s.faq, `Questions fréquentes — ${s.nomCourt.toLowerCase()}`)}
 
@@ -1415,6 +1445,294 @@ ${blocCtaFinal(
 }
 
 // ===========================================================================
+// MARQUES
+//
+// Une page par marque distribuée, regroupées par univers sur /marques.
+//
+// Pourquoi ces pages existent : « four Rational Arles », « dépannage
+// Winterhalter Nîmes », « armoire Infrico Avignon » sont des recherches que
+// personne ne fait sur un hub générique. Chaque page croise une marque et un
+// territoire, et c'est ce croisement qui se positionne.
+//
+// Le piège de l'exercice, c'est la page satellite : dix-neuf pages qui disent
+// la même chose avec un nom différent, que Google classe en contenu dupliqué
+// et qu'un visiteur reconnaît en trois secondes. D'où le champ `aRetenir` de
+// data/marques.mjs : chaque page porte au moins deux faits techniques vrais et
+// propres à SA marque, relevés dans la documentation constructeur. Si on ne
+// peut pas écrire ces deux faits, la page n'a pas lieu d'être.
+// ===========================================================================
+
+/**
+ * Balisage de la page marque.
+ *
+ * C'est un `Service` rendu PAR SODILAME SUR la marque — pas une page de la
+ * marque. La nuance n'est pas cosmétique : se déclarer éditeur du contenu
+ * d'une marque qu'on ne possède pas est une erreur que Google sanctionne, et
+ * qu'un fabricant peut contester.
+ */
+function schemaMarque(m) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: `${m.nom} — vente, installation et dépannage`,
+    serviceType: `Distribution et maintenance de matériel ${m.nom}`,
+    brand: { '@type': 'Brand', name: m.nom },
+    provider: {
+      '@type': 'LocalBusiness',
+      name: site.nom,
+      telephone: site.telephoneE164,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: `${A.rue}, ${A.complement}`,
+        addressLocality: A.ville,
+        postalCode: A.codePostal,
+        addressRegion: A.region,
+        addressCountry: A.pays,
+      },
+    },
+    areaServed: ZONE_DEPARTEMENTS.map((d) => ({ '@type': 'AdministrativeArea', name: d })),
+    url: url(`/marques/${m.slug}`),
+  };
+}
+
+// Les trois départements où SODILAME vend ET dépanne. C'est la même liste qui
+// sert au balisage et au texte : le jour où la zone bouge, elle bouge partout.
+const ZONE_DEPARTEMENTS = ['Bouches-du-Rhône (13)', 'Gard (30)', 'Vaucluse (84)'];
+
+/** Le bloc « nous vendons et nous dépannons », commun à toutes les pages marque. */
+function blocZoneMarque(m) {
+  return `<div class="callout">
+  <p><b>Nous vendons ce que nous savons dépanner.</b></p>
+  <p>Le matériel ${esc(m.nom)} est livré, installé et mis en service par nos équipes dans les ${ZONE_DEPARTEMENTS.join(', ')} — et c'est le même technicien qui revient quand quelque chose ne va pas. Nous ne référençons pas une marque dont nous ne saurions pas assurer le service après-vente.</p>
+  <p><a href="/zone-intervention"><b>Voir le détail de notre zone d'intervention →</b></a></p>
+</div>`;
+}
+
+function marquesHub() {
+  const fil = [{ nom: 'Accueil', url: '/' }, { nom: 'Marques', url: '/marques' }];
+
+  const blocs = universMarques
+    .map((u) => {
+      const liste = marquesDeLUnivers(u.slug);
+      if (!liste.length) return '';
+      return `<section class="${u.slug === 'froid' || u.slug === 'blanchisserie' || u.slug === 'residentiel' ? 'alt' : ''}">
+  <div class="wrap">
+    <p class="eyebrow">${esc(u.nom)}</p>
+    <h2>${esc(u.nom)}</h2>
+    <p style="max-width:62ch">${esc(u.intro)}</p>
+    <div class="grid3" style="margin-top:28px">
+      ${liste
+        .map(
+          (m) => `<a class="card" href="/marques/${m.slug}">
+        <h3>${esc(m.nom)}</h3>
+        <p>${esc(m.resume)}</p>
+        <p style="margin-top:.8rem;font-size:.84rem;color:var(--navy)"><b>${esc(m.pays)}</b>${m.depuis ? ` · depuis ${m.depuis}` : ''}</p>
+        <span class="more">Voir la marque →</span>
+      </a>`
+        )
+        .join('\n      ')}
+    </div>
+  </div>
+</section>`;
+    })
+    .join('\n');
+
+  const corps = `
+<div class="phero">
+  <div class="wrap">
+    <p class="eyebrow on-dark">Marques</p>
+    <h1>Les marques que nous distribuons</h1>
+    <p>${totalMarques} marques, et une règle qui ne bouge pas : nous ne vendons que du matériel que nos techniciens savent installer, régler et réparer. C'est ce qui explique que ce catalogue soit resté volontairement limité.</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section>
+  <div class="wrap-sm">
+    <div class="prose">
+      <h2>Pourquoi cette liste et pas une autre</h2>
+      <p>Un distributeur peut référencer trois cents marques : il suffit de les commander. Entretenir un parc, c'est autre chose. Il faut connaître la machine, avoir suivi la formation du constructeur, tenir les pièces d'usure en stock et savoir où trouver les autres en vingt-quatre heures.</p>
+      <p>Chaque marque de cette page représente donc un engagement : celui de pouvoir intervenir dessus. Quand un fabricant ne nous le permet pas, nous ne le vendons pas — c'est plus honnête que de livrer un appareil et de renvoyer le client vers un numéro national.</p>
+      <p>Nous sommes <b>distributeur agréé</b> des marques listées ici, et nous intervenons dans les ${ZONE_DEPARTEMENTS.join(', ')}.</p>
+    </div>
+  </div>
+</section>
+
+${blocs}
+
+${blocCtaFinal(
+  'Une marque qui ne figure pas dans cette liste ?',
+  `Nous dépannons aussi du matériel que nous n'avons pas vendu, et nous pouvons souvent fournir la pièce. Appelez-nous avec la plaque signalétique sous les yeux : c'est le plus rapide.`
+)}`;
+
+  return page(
+    {
+      titre: `Marques distribuées — ${site.nom}, cuisines professionnelles en Provence`,
+      description: `${totalMarques} marques de matériel de cuisine professionnelle distribuées, installées et dépannées par ${site.nom} dans les Bouches-du-Rhône, le Gard et le Vaucluse : RATIONAL, Winterhalter, UNOX, Infrico, Robot Coupe…`,
+      chemin: '/marques',
+      schemas: [schemaAriane(fil), schemaLocalBusiness()],
+    },
+    corps,
+    nav
+  );
+}
+
+function marquePage(m) {
+  const univers = universMarques.find((u) => u.slug === m.univers);
+  const fil = [
+    { nom: 'Accueil', url: '/' },
+    { nom: 'Marques', url: '/marques' },
+    { nom: m.nom, url: `/marques/${m.slug}` },
+  ];
+
+  const servicesLies = (m.services || [])
+    .map((slug) => services.find((s) => s.slug === slug))
+    .filter(Boolean);
+
+  // Gaggenau est de l'électroménager domestique : la page ne promet ni SAV de
+  // production ni contrat d'entretien, et le dit dès le chapeau.
+  const verbe = m.domestique
+    ? `Nous installons le matériel ${m.nom} dans les cuisines privées`
+    : `Nous vendons, installons et dépannons le matériel ${m.nom}`;
+
+  // Deux lignes courtes plutôt qu'une longue : « Allemagne — Landsberg am Lech,
+  // Bavière » sur une seule ligne débordait de la carte, le libellé de gauche
+  // étant en nowrap.
+  const identite = [
+    ['Origine', m.pays],
+    m.lieu ? ['Site', m.lieu] : null,
+    m.depuis ? ['Depuis', String(m.depuis)] : null,
+    ['Notre statut', m.agree ? 'Distributeur agréé' : 'Vente, installation et dépannage'],
+    ['Zone', '13 · 30 · 84'],
+  ].filter(Boolean);
+
+  const corps = `
+<div class="phero">
+  <div class="wrap">
+    <p class="eyebrow on-dark">${esc(univers ? univers.nom : 'Marque')}${m.agree ? ' · Distributeur agréé' : ''}</p>
+    <h1>${esc(m.nom)} — ${m.domestique ? 'installation en cuisine privée' : 'vente, installation et dépannage'} en Provence</h1>
+    <p>${esc(m.accroche)}</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section>
+  <div class="wrap">
+    <div class="grid-art">
+      <div class="prose">
+        <h2>La marque</h2>
+        ${m.description.map((p) => `<p>${p}</p>`).join('\n        ')}
+
+        <h3>Ce qu'elle fabrique</h3>
+        <ul>
+          ${m.familles.map((f) => `<li>${esc(f)}</li>`).join('\n          ')}
+        </ul>
+
+        <h3>Gammes que nous proposons</h3>
+        <p>${m.gammes.map((g) => `<b>${esc(g)}</b>`).join(' · ')}</p>
+
+        <h2>Ce qu'il faut savoir avant d'acheter</h2>
+        <p>Trois points que nous répétons à chaque client, parce qu'ils se décident avant la commande et se paient cher après.</p>
+        <ul class="ul-check">
+          ${m.aRetenir.map((r) => `<li>${r}</li>`).join('\n          ')}
+        </ul>
+
+        <h2>${esc(verbe)}</h2>
+        <p>${
+          m.domestique
+            ? `Notre métier d'installateur s'applique directement : encastrement, raccordements, extraction, mise en service. Pour une cuisine de production, en revanche, nous vous orienterons vers une marque professionnelle — c'est dans votre intérêt, pas dans le nôtre.`
+            : `Étude et chiffrage, livraison, installation et raccordement, mise en service et prise en main par votre équipe, puis dépannage et entretien. Nous tenons les pièces d'usure courantes à notre atelier de ${A.ville}, et nos techniciens sont formés sur les matériels que nous installons.`
+        }</p>
+        ${blocZoneMarque(m)}
+
+        <h3>Qui l'utilise chez nous</h3>
+        <p>${m.clients.map((c) => esc(c)).join(' · ')}</p>
+      </div>
+
+      <aside>
+        <div class="card" style="margin-bottom:20px">
+          <h2 style="font-size:1.05rem">${esc(m.nom)} en bref</h2>
+          ${identite
+            .map(
+              ([l, v]) =>
+                `<div class="tier" style="border-color:var(--line);color:var(--ink);align-items:flex-start"><b style="color:var(--navy);white-space:nowrap">${esc(l)}</b><span style="color:var(--terra);text-align:right;min-width:0;overflow-wrap:anywhere">${esc(v)}</span></div>`
+            )
+            .join('\n          ')}
+          <a class="btn btn-primary btn-sm" href="/contact?sujet=materiel" style="width:100%;justify-content:center;margin-top:18px">Demander un devis</a>
+          <a class="btn btn-outline btn-sm" href="tel:${site.telephoneE164}" style="width:100%;justify-content:center;margin-top:.6rem">${site.telephone}</a>
+          <p style="font-size:.76rem;color:var(--muted);margin:.9rem 0 0;text-align:center">Site du fabricant&nbsp;: <a href="${m.site}" target="_blank" rel="noopener nofollow">${esc(m.site.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))}</a></p>
+        </div>
+
+        ${
+          m.boutique
+            ? `<div class="card" style="margin-bottom:20px">
+          <div class="ico">${svg('panier')}</div>
+          <h3 style="font-size:1rem">Consommables en boutique</h3>
+          <p>${esc(m.boutiqueTexte)}.</p>
+          <a class="btn btn-outline btn-sm" href="/produits?famille=${m.boutique}#catalogue" style="width:100%;justify-content:center;margin-top:1rem">Voir les produits →</a>
+        </div>`
+            : ''
+        }
+
+        ${
+          servicesLies.length
+            ? `<div class="card">
+          <h3 style="font-size:1rem">Nos services sur cette marque</h3>
+          <ul style="margin:.8rem 0 0;padding-left:1.1rem;font-size:.92rem">
+            ${servicesLies.map((s) => `<li style="margin-bottom:.5rem"><a href="/services/${s.slug}">${esc(s.nomCourt)}</a></li>`).join('\n            ')}
+          </ul>
+        </div>`
+            : ''
+        }
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <p class="eyebrow">Autres marques</p>
+    <h2>${esc(univers ? univers.nom : 'Nos marques')}</h2>
+    <div class="grid3" style="margin-top:24px">
+      ${marquesDeLUnivers(m.univers)
+        .filter((x) => x.slug !== m.slug)
+        .map(
+          (x) => `<a class="card" href="/marques/${x.slug}">
+        <h3>${esc(x.nom)}</h3>
+        <p>${esc(x.resume)}</p>
+        <span class="more">Voir la marque →</span>
+      </a>`
+        )
+        .join('\n      ')}
+      <a class="card" href="/marques">
+        <h3>Toutes nos marques</h3>
+        <p>${totalMarques} marques distribuées, installées et dépannées en Provence.</p>
+        <span class="more">Voir la liste →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+${blocFaq(faqDe(m.slug), `Questions fréquentes — ${m.nom}`)}
+
+${blocContact({
+  titre: `Un projet ou une panne sur du matériel ${m.nom} ?`,
+  texte: `Décrivez-nous votre besoin : remplacement d'un appareil, équipement complet, panne à traiter ou simple question sur une référence. Nous répondons sous 24 heures ouvrées.`,
+})}`;
+
+  return page(
+    {
+      titre: `${m.nom} — ${m.domestique ? 'installation' : 'vente, installation et dépannage'} | ${site.nom}`,
+      description: `${site.nom}, distributeur agréé ${m.nom} dans les Bouches-du-Rhône, le Gard et le Vaucluse. ${m.resume} Devis, installation, mise en service et dépannage par nos techniciens.`,
+      chemin: `/marques/${m.slug}`,
+      schemas: [schemaAriane(fil), schemaMarque(m), ...(faqDe(m.slug).length ? [schemaFaq(faqDe(m.slug))] : [])],
+    },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
 // CONTACT
 // ===========================================================================
 function contact() {
@@ -2235,6 +2553,8 @@ await ecrire('/produits/ma-commande', commandePage(), { priorite: 0.1, dansSitem
 await ecrire('/conseils', conseilsHub(), { priorite: 0.7 });
 for (const a of articles) await ecrire(`/conseils/${a.slug}`, articlePage(a), { priorite: 0.6, majParDefaut: a.date });
 await ecrire('/a-propos', aPropos(), { priorite: 0.7 });
+await ecrire('/marques', marquesHub(), { priorite: 0.8 });
+for (const m of marques) await ecrire(`/marques/${m.slug}`, marquePage(m), { priorite: 0.7 });
 await ecrire('/recrutement', recrutementHub(), { priorite: 0.6 });
 // Une offre pourvue reste publiée, en priorité basse : les candidats qui ont
 // gardé le lien tombent sur « poste pourvu » plutôt que sur un 404, et la page
