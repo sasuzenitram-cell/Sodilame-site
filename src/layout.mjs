@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { site, navPrincipale, secteurs, etapes, formules } from '../data/site.mjs';
 import { sujets } from '../data/formulaire.mjs';
+import { marquesPied } from '../data/marques.mjs';
 
 // ---------------------------------------------------------------------------
 // Empreinte des fichiers statiques (anti-cache)
@@ -172,7 +173,10 @@ function pied(servicesNav, villesNav, produitsNav = []) {
         ${produitsNav.length ? `<h2 style="margin-top:1.6rem">Produits lessiviels</h2>\n        ${produitsNav.map((p) => `<a href="${p.url}">${p.nom}</a>`).join('\n        ')}\n        <a href="/produits"><b>Voir le catalogue →</b></a>` : ''}
       </div>
       <div>
-        <h2>Zone d'intervention</h2>
+        <h2>Marques</h2>
+        ${marquesPied.map((m) => `<a href="/marques/${m.slug}">${m.nom}</a>`).join('\n        ')}
+        <a href="/marques"><b>Toutes nos marques →</b></a>
+        <h2 style="margin-top:1.6rem">Zone d'intervention</h2>
         ${villesNav.map((v) => `<a href="${v.url}">${v.nom}</a>`).join('\n        ')}
         <a href="/zone-intervention"><b>Voir toute la zone →</b></a>
       </div>
