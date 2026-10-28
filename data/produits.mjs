@@ -51,9 +51,12 @@
 //    ou celles fournies par le fabricant pour ses distributeurs.
 // ---------------------------------------------------------------------------
 
+import { produitsMiele } from './miele.mjs';
+
 export const categoriesProduits = [
   {
     slug: 'detergents-lave-vaisselle',
+    univers: 'entretien',
     nom: 'Détergents lave-vaisselle et lave-verres',
     nomCourt: 'Détergents',
     icone: 'laverie',
@@ -67,6 +70,7 @@ export const categoriesProduits = [
   },
   {
     slug: 'liquides-de-rincage',
+    univers: 'entretien',
     nom: 'Liquides de rinçage',
     nomCourt: 'Rinçage',
     icone: 'goutte',
@@ -80,6 +84,7 @@ export const categoriesProduits = [
   },
   {
     slug: 'entretien-machine-laverie',
+    univers: 'entretien',
     nom: 'Entretien des lave-vaisselle et lave-verres',
     nomCourt: 'Entretien machine',
     icone: 'seau',
@@ -96,6 +101,7 @@ export const categoriesProduits = [
     // URL déjà partagées et dans les redirections de vercel.json. Le libellé,
     // lui, couvre désormais les deux marques de fours du catalogue.
     slug: 'entretien-four-rational',
+    univers: 'entretien',
     nom: 'Entretien des fours mixtes',
     nomCourt: 'Entretien four',
     icone: 'cuisson',
@@ -109,6 +115,7 @@ export const categoriesProduits = [
   },
   {
     slug: 'granules-lave-batterie',
+    univers: 'entretien',
     nom: 'Granulés de lavage pour lave-batterie',
     nomCourt: 'Granulés',
     icone: 'bidon',
@@ -122,6 +129,7 @@ export const categoriesProduits = [
   },
   {
     slug: 'traitement-eau',
+    univers: 'entretien',
     nom: "Sel et traitement de l'eau",
     nomCourt: 'Traitement eau',
     icone: 'sac',
@@ -132,6 +140,131 @@ export const categoriesProduits = [
       "Dans les Bouches-du-Rhône, le Gard et le Vaucluse, l'eau est dure — souvent très dure. L'adoucisseur est ce qui protège tout le reste : le surchauffeur du lave-vaisselle, les résistances du four, la pompe de la machine à café. Et un adoucisseur ne fonctionne que tant qu'il reste du sel dans le bac.",
     conseil:
       "La panne la plus fréquente sur un adoucisseur n'en est pas une : c'est un bac vide. Personne ne le surveille, parce que rien ne s'allume et que rien ne s'arrête — l'eau continue de couler, simplement elle n'est plus adoucie. Trois semaines plus tard, c'est la machine qui entartre, et là ça se voit. Prenez l'habitude d'ouvrir le couvercle une fois par mois : le sel doit toujours affleurer au-dessus du niveau d'eau.",
+  },
+
+  // Lessives : rayon entretien, à la suite des familles ci-dessus.
+  {
+    slug: 'lessives-blanchisserie',
+    univers: 'entretien',
+    nom: 'Lessives et produits de blanchisserie',
+    nomCourt: 'Lessives',
+    icone: 'bidon',
+    titreSeo: 'Lessives professionnelles ProCare Tex — blanchisserie',
+    description:
+      "Lessives liquides et en poudre, renforçateur, adoucissant et désinfectant pour lave-linge professionnels. Livrés sans frais de port sur notre zone d'intervention.",
+    intro:
+      "Une lessive professionnelle se choisit avec la machine qui la dose : en bidon pour les lave-linge équipés de pompes doseuses, en poudre pour ceux qu'on charge à la main. Le bon produit, au bon dosage, c'est moins de relavage et un linge qui dure plus longtemps.",
+    conseil:
+      "Si vos pompes doseuses ont été réglées pour une autre marque de lessive, faites-les recalibrer au changement de produit : deux lessives n'ont ni la même concentration ni le même dosage. Nos techniciens le font lors de la livraison.",
+  },
+
+  // =========================================================================
+  // MATÉRIEL — familles de machines, vendues avec leur forfait d'installation
+  // =========================================================================
+  {
+    slug: 'lave-linge-professionnels',
+    univers: 'materiel',
+    nom: 'Lave-linge professionnels',
+    nomCourt: 'Lave-linge',
+    icone: 'buanderie',
+    titreSeo: 'Lave-linge professionnels Miele — vente et installation',
+    description:
+      "Lave-linge professionnels de 6 à 20 kg pour hôtels, campings, EHPAD et restaurants, livrés, installés et mis en service par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Une blanchisserie se dimensionne à l'envers : on part du linge à traiter chaque jour et du temps disponible pour le faire, on en déduit la capacité du séchoir, et seulement ensuite celle de la laveuse. C'est l'essorage qui fait le lien entre les deux — une machine qui essore fort laisse moins d'eau au séchoir, et le séchage va plus vite.",
+    conseil:
+      "Chaque machine est vendue avec son forfait de livraison, d'installation et de mise en service. Une laveuse professionnelle est lourde et vibre à l'essorage : le plancher, l'évacuation et l'alimentation électrique se vérifient avant la livraison, pas le jour où l'on cherche à la faire passer par la porte.",
+  },
+  {
+    slug: 'seche-linge-professionnels',
+    univers: 'materiel',
+    nom: 'Sèche-linge professionnels',
+    nomCourt: 'Sèche-linge',
+    icone: 'buanderie',
+    titreSeo: 'Sèche-linge professionnels Miele — vente et installation',
+    description:
+      "Sèche-linge professionnels de 8 à 22 kg, à évacuation ou à pompe à chaleur, en commande libre-service pour les laveries de camping. Livrés, installés et mis en service par nos techniciens.",
+    intro:
+      "Un séchoir se choisit d'abord sur son local : s'il est possible de sortir une gaine vers l'extérieur, la version à évacuation ; sinon, la pompe à chaleur, qui condense l'humidité et consomme beaucoup moins. Ensuite vient la capacité, qui doit absorber la charge entière de la laveuse — un tambour de séchoir est toujours plus grand que celui du lave-linge qu'il accompagne.",
+    conseil:
+      "La première cause de mauvais séchage sur une machine neuve n'est pas la machine : c'est une gaine trop longue, trop coudée, ou un local qui ne laisse pas entrer assez d'air. Nous les vérifions avant la livraison, et nous nettoyons le filtre à peluches avec vous à la mise en service.",
+  },
+  {
+    slug: 'repassage-finition',
+    univers: 'materiel',
+    nom: 'Repassage et finition du linge',
+    nomCourt: 'Repassage',
+    icone: 'buanderie',
+    titreSeo: 'Repasseuses à cylindre et centre de repassage professionnels',
+    description:
+      "Repasseuses à cylindre pour nappes, serviettes et draps, et centre de repassage vapeur professionnel, livrés et installés par nos techniciens.",
+    intro:
+      "Le linge de table repassé à la main, c'est une heure par jour pour une personne. Une repasseuse à cylindre fait le même travail en une fraction du temps, avec un rendu régulier : c'est souvent ce qui permet de rapatrier le linge qu'on confiait à une blanchisserie extérieure.",
+    conseil:
+      "Une repasseuse ne repasse bien qu'un linge correctement essoré et encore légèrement humide : elle se choisit avec la laveuse. Pensez aussi à la paraffine — un cylindre entretenu ne marque pas le linge.",
+  },
+  {
+    slug: 'lave-vaisselle-professionnel',
+    univers: 'materiel',
+    nom: 'Lave-vaisselle professionnels',
+    nomCourt: 'Lave-vaisselle',
+    icone: 'laverie',
+    titreSeo: 'Lave-vaisselle professionnels Miele — vente et installation',
+    description:
+      "Lave-vaisselle frontaux à surchauffeur et lave-vaisselle à eau renouvelée, livrés, installés et mis en service par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Deux principes de lavage, deux usages. Le lave-vaisselle à surchauffeur (PTD) lave en quelques minutes dans un bain maintenu en température : c'est la machine du débit, au bar comme au restaurant. Le lave-vaisselle à eau renouvelée (PFD) change son eau à chaque cycle : c'est celle des crèches, des EHPAD et des établissements de santé.",
+    conseil:
+      "Chaque machine de cette famille est vendue avec son forfait de livraison, d'installation et de mise en service : nous la recevons à l'atelier, la préparons, la livrons, la raccordons et la réglons sur votre eau, puis nous montrons son fonctionnement à votre équipe. Sur l'eau de notre région, c'est ce réglage qui décide de l'aspect de votre vaisselle pendant les dix ans qui suivent.",
+  },
+  {
+    slug: 'accessoires-blanchisserie',
+    univers: 'materiel',
+    nom: 'Accessoires de blanchisserie',
+    nomCourt: 'Accessoires linge',
+    icone: 'outils',
+    titreSeo: 'Accessoires pour lave-linge et sèche-linge professionnels Miele',
+    description:
+      "Cadres de superposition, socles, monnayeurs et boîtiers de paiement pour laverie libre-service, chariots de linge. Livrés et posés avec votre machine.",
+    intro:
+      "Les accessoires qui changent la vie d'une buanderie ne sont pas les plus chers : un cadre de superposition qui libère la moitié du sol, un socle qui remonte le hublot à hauteur de bras, un chariot qui évite de porter le linge mouillé.",
+    conseil:
+      "Commandez les accessoires avec la machine : ils sont posés le jour de l'installation, et nous vérifions leur compatibilité avant de passer la commande chez Miele.",
+  },
+  {
+    slug: 'paniers-lave-vaisselle',
+    univers: 'materiel',
+    nom: 'Paniers pour lave-vaisselle',
+    nomCourt: 'Paniers',
+    icone: 'laverie',
+    titreSeo: 'Paniers 500 x 500 mm pour lave-vaisselle professionnels Miele',
+    description:
+      "Paniers à assiettes, à couverts, à verres et bistro au format 500 x 500 mm, pour les lave-vaisselle frontaux Miele PTD 702 et PTD 703.",
+    intro:
+      "Un panier de plus, c'est un panier qui se charge pendant que l'autre lave : au coup de feu, c'est souvent ce qui manque le plus à la plonge.",
+    conseil:
+      "Les paniers se choisissent au format de la machine. Ceux-ci sont au format 500 x 500 mm ; pour une autre machine, donnez-nous sa référence avant de commander.",
+  },
+
+  // =========================================================================
+  // FORFAITS — famille technique, jamais affichée au public
+  //
+  // Les forfaits d'installation sont déclarés comme des articles ordinaires :
+  // ils passent ainsi par le panier, la validation du serveur et la grille de
+  // prix de l'administration sans une ligne de code supplémentaire. La famille
+  // porte `cache: true`, et le générateur du site l'exclut de toutes les pages
+  // publiques — catalogue, sitemap, menus, filtres et compteurs.
+  // =========================================================================
+  {
+    slug: 'forfaits',
+    univers: 'service',
+    cache: true,
+    nom: "Forfaits de livraison, d'installation et de mise en service",
+    nomCourt: 'Forfaits',
+    icone: 'installation',
+    description: '',
+    intro: '',
+    conseil: '',
   },
 ];
 
@@ -907,7 +1040,105 @@ export const produits = [
       { label: 'Sac de 25 kg', prix: 25 },
     ],
   },
+  // =========================================================================
+  // MIELE PROFESSIONAL — fiches, versions et prix dans data/miele.mjs
+  // =========================================================================
+  ...produitsMiele,
 ];
+
+// ---------------------------------------------------------------------------
+// FORFAITS DE LIVRAISON, D'INSTALLATION ET DE MISE EN SERVICE
+//
+// Une machine n'est jamais vendue seule : SODILAME la reçoit à l'atelier, la
+// prépare, la livre, l'installe, la raccorde, la met en service et montre son
+// fonctionnement à l'équipe. Ce travail est facturé par un forfait PROPRE À
+// CHAQUE MACHINE, dont le montant varie avec la machine — un lave-verres ne se
+// pose pas comme une laveuse de 27 kg.
+//
+// Chaque forfait est généré ici à partir de sa machine, et :
+//   — le panier l'ajoute automatiquement avec la machine, en suit la quantité
+//     et le retire avec elle (static/assets/panier.js) ;
+//   — le serveur IGNORE les lignes de forfait envoyées par le navigateur et
+//     les recalcule lui-même à partir des machines commandées
+//     (api/commande.js). Un forfait ne peut donc ni être retiré, ni être
+//     commandé seul, même par une requête fabriquée à la main.
+//
+// 💶 PRIX : à renseigner ici, machine par machine (référence de la machine →
+//    montant HT), ou dans l'administration, où les forfaits apparaissent dans
+//    leur propre rubrique. `null` affiche « prix sur demande ».
+// ---------------------------------------------------------------------------
+const PRIX_FORFAITS = {
+  'PWM 906': null,
+  'PWM 507': null,
+  'PWM 508': null,
+  'PWM 908': null,
+  'PWM 506 MOPSTAR': null,
+  'PWM 509': null,
+  'PWM 909': null,
+  'PWM 511': null,
+  'PWM 912': null,
+  'PWM 514': null,
+  'PWM 916': null,
+  'PWM 520': null,
+  'PWM 1108': null,
+  'PDR 508': null,
+  'PDR 908': null,
+  'PDR 510': null,
+  'PDR 910': null,
+  'PDR 514': null,
+  'PDR 518': null,
+  'PDR 522': null,
+  'PDR 1108': null,
+  'HM 16-83': null,
+  'PRI 210': null,
+  'PTD 702': null,
+  'PTD 703': null,
+  'PFD 101': null,
+  'PFD 404': null,
+  'PFD 407': null,
+};
+
+const LIBELLE_FORFAIT = 'Forfait';
+
+for (const m of produits.filter((x) => x.type === 'machine')) {
+  const ref = `${m.ref.replace(/\s+/g, '')}-INST`;
+  m.forfait = ref;
+  produits.push({
+    slug: `forfait-${m.slug}`,
+    type: 'forfait',
+    pour: m.ref,
+    machines: [],
+    ref,
+    marque: 'SODILAME',
+    photo: null,
+    categorie: 'forfaits',
+    nom: `Livraison, installation et mise en service — ${m.ref}`,
+    resume: 'Réception à l’atelier, préparation, livraison, installation, raccordement, mise en service et prise en main par votre équipe.',
+    description: '',
+    usages: [],
+    caracteristiques: [],
+    conditionnements: [{ label: LIBELLE_FORFAIT, prix: PRIX_FORFAITS[m.ref] ?? null }],
+  });
+}
+
+/** Ce que comprend un forfait — affiché sur la fiche de chaque machine. */
+export const etapesForfait = [
+  'Réception de la machine dans nos locaux de Saint-Martin-de-Crau',
+  'Contrôle et préparation à l’atelier',
+  'Livraison sur votre site',
+  'Installation et raccordement aux réseaux',
+  'Mise en service et réglage sur votre eau',
+  'Prise en main par votre équipe',
+];
+
+/** Le forfait d'une machine, ou `undefined`. */
+export const forfaitDe = (m) => (m.forfait ? produits.find((p) => p.ref === m.forfait) : undefined);
+
+// Ce que voit le public : ni forfaits, ni familles techniques. Toute page,
+// grille, compteur, filtre ou menu du site doit passer par ces deux listes.
+export const produitsPublics = produits.filter((p) => p.type !== 'forfait');
+export const categoriesPubliques = categoriesProduits.filter((c) => !c.cache);
+
 
 // ---------------------------------------------------------------------------
 // Types de machine — troisième axe de filtrage du catalogue.
@@ -927,9 +1158,12 @@ export const machinesCatalogue = [
   // L'adoucisseur n'est pas une machine de production, mais c'est bien une
   // machine qu'on alimente — et c'est par là que le client cherche son sel.
   { slug: 'adoucisseur', nom: 'Adoucisseur', icone: 'goutte' },
+  { slug: 'lave-linge', nom: 'Lave-linge', icone: 'buanderie' },
+  { slug: 'seche-linge', nom: 'Sèche-linge', icone: 'buanderie' },
+  { slug: 'repasseuse', nom: 'Repasseuse', icone: 'buanderie' },
 ];
 
-export const marquesCatalogue = [...new Set(produits.map((p) => p.marque))].sort();
+export const marquesCatalogue = [...new Set(produitsPublics.map((p) => p.marque))].sort();
 
 // ---------------------------------------------------------------------------
 // Aides
@@ -950,10 +1184,44 @@ export const ficheSodilame = (p) =>
 
 export const produitsDeCategorie = (slugCat) => produits.filter((p) => p.categorie === slugCat);
 export const categorieDuProduit = (p) => categoriesProduits.find((c) => c.slug === p.categorie);
-// Les familles ne sont plus des pages : ce sont des filtres du catalogue.
-export const produitsNav = categoriesProduits.map((c) => ({
+
+// ---------------------------------------------------------------------------
+// E-SHOP — arborescence publique
+//
+//   /eshop                         accueil de la boutique : les collections
+//   /eshop/catalogue               toutes les références, filtrables
+//   /eshop/<collection>            une famille de produits
+//   /eshop/<collection>/<produit>  la fiche produit
+//   /eshop/panier                  le panier et l'envoi de la commande
+//
+// Les anciennes adresses /produits/... redirigent en 301 (vercel.json).
+// « catalogue » et « panier » sont donc réservés : aucune famille ne peut
+// porter ces noms (vérifié par tests/catalogue.mjs).
+// ---------------------------------------------------------------------------
+export const ESHOP = '/eshop';
+export const urlCollection = (slugCat) => `${ESHOP}/${slugCat}`;
+export const urlProduit = (p) => `${ESHOP}/${p.categorie}/${p.slug}`;
+export const URL_PANIER = `${ESHOP}/panier`;
+export const URL_CATALOGUE = `${ESHOP}/catalogue`;
+
+/** Les deux rayons de la boutique, dans l'ordre d'affichage. */
+export const universBoutique = [
+  {
+    slug: 'materiel',
+    nom: 'Matériel professionnel',
+    accroche: 'Livré, installé et mis en service par nos techniciens.',
+  },
+  {
+    slug: 'entretien',
+    nom: "Produits lessiviels et d'entretien",
+    accroche: 'Livrés sans frais de port par nos techniciens, dès une unité.',
+  },
+];
+export const collectionsDe = (u) => categoriesPubliques.filter((c) => c.univers === u);
+
+export const produitsNav = categoriesPubliques.map((c) => ({
   nom: c.nomCourt,
-  url: `/produits?famille=${c.slug}`,
+  url: urlCollection(c.slug),
 }));
-export const totalProduits = produits.length;
-export const auMoinsUnPrix = produits.some((p) => p.conditionnements.some((c) => typeof c.prix === 'number'));
+export const totalProduits = produitsPublics.length;
+export const auMoinsUnPrix = produitsPublics.some((p) => p.conditionnements.some((c) => typeof c.prix === 'number'));
