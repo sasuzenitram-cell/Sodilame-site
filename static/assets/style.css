@@ -337,6 +337,27 @@ footer .fbrand .bs{font-size:.57rem;letter-spacing:.155em;text-transform:upperca
 .mcall{display:none}
 
 /* ---------- responsive ---------- */
+/* ---------- en-tête : bascule en menu déroulant à 1100 px ----------
+   Le menu est passé de quatre à cinq entrées le 28/10/2026 avec l'ajout de
+   « Marques ». À 1024 px — la largeur d'un iPad en paysage et de beaucoup de
+   portables — la cinquième entrée poussait le bouton « Boutique en ligne »
+   hors de l'écran. Les règles d'en-tête sont donc sorties du bloc 1000 px et
+   basculent à 1180 px, largeur mesurée en dessous de laquelle l'en-tête
+   complet ne tient plus. Les grilles de contenu, elles, n'avaient aucune
+   raison de bouger et restent à 1000 px.                                    */
+@media(max-width:1180px){
+  nav.main{position:fixed;inset:118px 0 auto;background:var(--cream);flex-direction:column;align-items:stretch;padding:18px 24px 26px;gap:0;border-bottom:1px solid var(--line);box-shadow:0 18px 40px rgba(24,50,83,.12);display:none;max-height:calc(100vh - 118px);overflow:auto}
+  nav.main.open{display:flex}
+  nav.main a{padding:.85rem 0;border-bottom:1px solid var(--line)}
+  nav.main a.only-m{display:block;color:var(--terra)}
+  /* L'entrée de la boutique porte le vert de la boutique, comme le bouton du
+     même nom en version bureau. Le reste du menu déroulant reste en terracotta. */
+  nav.main a.lien-boutique{color:var(--boutique)}
+  nav.main a.only-m:last-child{border-bottom:0}
+  .burger{display:block;order:3}
+  .hd-cta .hide-m{display:none}
+}
+
 @media(max-width:1000px){
   .hero .wrap{grid-template-columns:1fr;gap:40px;padding:56px 24px 64px}
   .facets{display:none}
@@ -347,17 +368,7 @@ footer .fbrand .bs{font-size:.57rem;letter-spacing:.155em;text-transform:upperca
   .strip div:nth-child(2){border-right:0}
   .strip div:nth-child(1),.strip div:nth-child(2){border-bottom:1px solid var(--line)}
   .f-grid{grid-template-columns:1fr 1fr}
-  nav.main{position:fixed;inset:118px 0 auto;background:var(--cream);flex-direction:column;align-items:stretch;padding:18px 24px 26px;gap:0;border-bottom:1px solid var(--line);box-shadow:0 18px 40px rgba(24,50,83,.12);display:none;max-height:calc(100vh - 118px);overflow:auto}
-  nav.main.open{display:flex}
-  nav.main a{padding:.85rem 0;border-bottom:1px solid var(--line)}
-  nav.main a.only-m{display:block;color:var(--terra)}
-  /* L'entrée de la boutique porte le vert de la boutique, comme le bouton du
-     même nom en version bureau. Le reste du menu déroulant reste en terracotta. */
-  nav.main a.lien-boutique{color:var(--boutique)}
-  nav.main a.only-m:last-child{border-bottom:0}
   .grid-art{grid-template-columns:1fr;gap:34px}
-  .burger{display:block;order:3}
-  .hd-cta .hide-m{display:none}
   section{padding:60px 0}
 }
 @media(max-width:640px){
