@@ -24,7 +24,7 @@ import { readFileSync } from 'node:fs';
 // Toutes les routes du site, depuis le sitemap.
 const xml = readFileSync(new URL('../public/sitemap.xml', import.meta.url), 'utf8');
 const routes = [...xml.matchAll(/<loc>https?:\/\/[^/]+([^<]*)<\/loc>/g)].map(m => m[1] || '/');
-routes.push('/qr', '/qr/panne', '/qr/audit', '/produits/ma-commande');
+routes.push('/qr', '/qr/panne', '/qr/audit', '/eshop/panier');
 
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 const LARGEURS = [[360, 740, 'petit'], [390, 844, 'courant'], [430, 932, 'grand']];

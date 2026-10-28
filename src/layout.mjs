@@ -136,14 +136,14 @@ function entete(chemin) {
     </a>
     <nav class="main" id="nav" aria-label="Navigation principale">
       ${navPrincipale.map(lien).join('\n      ')}
-      <a class="only-m lien-boutique" href="/produits"><b>Boutique en ligne</b></a>
+      <a class="only-m lien-boutique" href="/eshop"><b>Boutique en ligne</b></a>
       <a class="only-m" href="${site.portail.url}" target="_blank" rel="noopener">My SODILAME ↗</a>
       <a class="only-m" href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a>
     </nav>
     <div class="hd-cta">
-      <a class="panier-lien" href="/produits/ma-commande" id="panier-lien" aria-label="Voir ma commande">${svg('panier')}<span class="pc" id="panier-compte" hidden>0</span></a>
+      <a class="panier-lien" href="/eshop/panier" id="panier-lien" aria-label="Voir mon panier">${svg('panier')}<span class="pc" id="panier-compte" hidden>0</span></a>
       <a class="btn btn-outline btn-sm hide-m" href="${site.portail.url}" target="_blank" rel="noopener">${svg('user')}My SODILAME</a>
-      <a class="btn btn-primary btn-sm" href="/produits">Boutique en ligne</a>
+      <a class="btn btn-primary btn-sm" href="/eshop">Boutique en ligne</a>
     </div>
     <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
   </div>
@@ -170,7 +170,7 @@ function pied(servicesNav, villesNav, produitsNav = []) {
       <div>
         <h2>Nos services</h2>
         ${servicesNav.map((s) => `<a href="${s.url}">${s.nomCourt}</a>`).join('\n        ')}
-        ${produitsNav.length ? `<h2 style="margin-top:1.6rem">Produits lessiviels</h2>\n        ${produitsNav.map((p) => `<a href="${p.url}">${p.nom}</a>`).join('\n        ')}\n        <a href="/produits"><b>Voir le catalogue →</b></a>` : ''}
+        ${produitsNav.length ? `<h2 style="margin-top:1.6rem">Boutique en ligne</h2>\n        ${produitsNav.map((p) => `<a href="${p.url}">${p.nom}</a>`).join('\n        ')}\n        <a href="/eshop"><b>Voir la boutique →</b></a>` : ''}
       </div>
       <div>
         <h2>Marques</h2>
@@ -466,7 +466,7 @@ export function blocContact({ titre = 'Parlons de votre cuisine', texte = "Proje
 export function page(meta, corps, nav) {
   // Les pages boutique basculent sur la déclinaison verte du thème :
   // le visiteur voit immédiatement qu'il change d'univers.
-  const theme = meta.theme ?? (meta.chemin?.startsWith('/produits') ? 'boutique' : '');
+  const theme = meta.theme ?? ((meta.chemin === '/eshop' || meta.chemin?.startsWith('/eshop/')) ? 'boutique' : '');
   return head({ ...meta, theme }) + entete(meta.chemin) + corps + pied(nav.services, nav.villes, nav.produits);
 }
 

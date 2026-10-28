@@ -335,6 +335,35 @@ console.log('\n═══ 8. Ce qu\'un client ne doit pas pouvoir faire ═══
     corps: { adresse: 'x', codePostal: '132', commune: 'Arles', lignes: [{ ref: 'F420e', cond: 'Bidon de 12 kg', qte: 1 }] },
   });
   verifier('un code postal invalide est refusé', cp.statut === 400, String(cp.statut));
+
+  // Forfaits d'installation : le navigateur ne décide de rien. On envoie une
+  // machine à 2 exemplaires, son forfait falsifié à 5, et le forfait d'une
+  // AUTRE machine seul. Le serveur doit garder la machine, lui adjoindre son
+  // forfait à 2, et jeter le forfait orphelin.
+  const machine = produits.find((x) => x.type === 'machine');
+  const autre = produits.filter((x) => x.type === 'machine')[1];
+  const fm = produits.find((x) => x.ref === machine.forfait);
+  const fa = produits.find((x) => x.ref === autre.forfait);
+  const avecForfait = await appel('client', '/api/commande', {
+    methode: 'POST',
+    corps: {
+      adresse: 'x', codePostal: '13200', commune: 'Arles',
+      lignes: [
+        { ref: machine.ref, cond: machine.conditionnements[0].label, qte: 2 },
+        { ref: fm.ref, cond: fm.conditionnements[0].label, qte: 5 },
+        { ref: fa.ref, cond: fa.conditionnements[0].label, qte: 1 },
+      ],
+    },
+  });
+  const jm = JSON.parse(avecForfait.texte);
+  const lm = jm.reference
+    ? await q(`SELECT l.ref, l.qte FROM commande_lignes l JOIN commandes c ON c.id = l.commande_id WHERE c.reference=$1 ORDER BY l.id`, [jm.reference])
+    : [];
+  const resume = lm.map((x) => `${x.ref}×${x.qte}`).join(', ');
+  verifier('une machine emporte son forfait, à sa quantité', resume === `${machine.ref}×2, ${fm.ref}×2`, resume || avecForfait.texte);
+  verifier('un forfait ne se commande pas seul', !lm.some((x) => x.ref === fa.ref));
+  const mailMachine = mails[mails.length - 2];
+  verifier('la notification signale une commande de machine', /\[MACHINE\]/.test(mailMachine?.subject || mailMachine?.sujet || ''), mailMachine?.subject);
 }
 
 console.log('\n═══ 9. Traitement de la commande côté SODILAME ═══');

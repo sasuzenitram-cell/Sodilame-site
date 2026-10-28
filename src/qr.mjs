@@ -188,7 +188,7 @@ export function pageQr() {
   ${action('sav', '/qr/panne',
     ico('<path d="M10.3 3.6 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.6a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'),
     'Signaler une panne', 'Un technicien vous rappelle')}
-  ${action('produits', '/produits',
+  ${action('produits', '/eshop',
     ico('<path d="M8 8h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z"/><path d="M10 8V5.5h4V8"/><path d="M15 5.5h2.2a1.3 1.3 0 0 1 1.3 1.3V9"/>'),
     'Commander mes produits', 'Livraison offerte dès un bidon')}
   ${action('audit', '/qr/audit',

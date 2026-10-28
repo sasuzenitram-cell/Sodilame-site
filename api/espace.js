@@ -121,9 +121,9 @@ ${
         .join('')}
     </table></div>`
         : `<div class="carte vide"><p>Vous n'avez pas encore passé de commande.</p>
-           <p><a class="b p" href="/produits">Voir le catalogue</a></p></div>`
+           <p><a class="b p" href="/eshop">Voir la boutique</a></p></div>`
     }
-    <p style="margin-top:16px"><a class="b p" href="/produits">Passer une nouvelle commande</a></p>
+    <p style="margin-top:16px"><a class="b p" href="/eshop">Passer une nouvelle commande</a></p>
   </div>
 
   <div class="carte">
@@ -164,7 +164,7 @@ function pageConnexion(query) {
 
     <p class="aide" style="margin-top:18px">L'accès à la commande en ligne est réservé aux clients SODILAME. Vous n'avez pas encore d'accès ? Appelez-nous au <b>${TEL}</b>, nous vous ouvrons un compte.</p>
   </div>
-  <p style="text-align:center;font-size:13px"><a href="/produits">← Retour au catalogue</a>
+  <p style="text-align:center;font-size:13px"><a href="/eshop">← Retour à la boutique</a>
     &nbsp;·&nbsp; <a href="/espace/diagnostic">Vérifier la configuration</a></p>
 </div>
 

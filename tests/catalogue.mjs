@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Cohérence du catalogue filtrable.
+// Cohérence de la boutique /eshop : catalogue, collections, fiches, forfaits.
 //
 // Le filtrage lui-même vit dans le navigateur ; ce qui peut casser en silence,
 // c'est la donnée : un produit sans type de machine devient invisible dès qu'on
@@ -8,9 +8,13 @@
 // ---------------------------------------------------------------------------
 import { readFileSync } from 'node:fs';
 import {
-  produits, categoriesProduits, machinesCatalogue, marquesCatalogue, produitsDeCategorie,
-  ficheSodilame,
+  produits as tousProduits, produitsPublics as produits, categoriesProduits, categoriesPubliques,
+  machinesCatalogue, marquesCatalogue, produitsDeCategorie, ficheSodilame, forfaitDe, etapesForfait,
+  urlProduit, urlCollection, produitsNav, totalProduits,
 } from '../data/produits.mjs';
+
+// Les fiches sont générées sous /eshop/<collection>/<produit>.
+const fichier = (p) => `public${urlProduit(p)}/index.html`;
 
 let ok = 0;
 let ko = 0;
@@ -21,6 +25,7 @@ const verifier = (nom, cond, detail = '') => {
 
 const slugsMachines = new Set(machinesCatalogue.map((m) => m.slug));
 const slugsFamilles = new Set(categoriesProduits.map((c) => c.slug));
+const slugsPublics = new Set(categoriesPubliques.map((c) => c.slug));
 
 console.log('\n═══ Données du catalogue ═══');
 {
@@ -38,12 +43,14 @@ console.log('\n═══ Données du catalogue ═══');
     machineInconnue.map((p) => `${p.ref}: ${p.machines.join(',')}`).join(' | ')
   );
 
-  const familleInconnue = produits.filter((p) => !slugsFamilles.has(p.categorie));
+  const familleInconnue = produits.filter((p) => !slugsPublics.has(p.categorie));
   verifier('chaque produit appartient à une famille connue', !familleInconnue.length,
     familleInconnue.map((p) => p.ref).join(', '));
 
-  verifier('aucun slug de produit en double',
-    new Set(produits.map((p) => p.slug)).size === produits.length);
+  verifier('aucun slug de produit en double (forfaits compris)',
+    new Set(tousProduits.map((p) => p.slug)).size === tousProduits.length);
+  verifier('aucune référence en double (forfaits compris)',
+    new Set(tousProduits.map((p) => p.ref)).size === tousProduits.length);
 
   verifier('chaque marque du filtre a au moins un produit',
     marquesCatalogue.every((m) => produits.some((p) => p.marque === m)),
@@ -56,7 +63,7 @@ console.log('\n═══ Données du catalogue ═══');
   verifier('aucun filtre machine ne renvoie zéro produit', !machinesVides.length,
     machinesVides.map((m) => m.slug).join(', '));
 
-  const famillesVides = categoriesProduits.filter((c) => !produitsDeCategorie(c.slug).length);
+  const famillesVides = categoriesPubliques.filter((c) => !produitsDeCategorie(c.slug).length);
   verifier('aucune famille vide', !famillesVides.length, famillesVides.map((c) => c.slug).join(', '));
 
   // Un produit repris sur une fiche du fabricant doit porter au minimum sa
@@ -106,7 +113,7 @@ console.log('\n═══ Fiches PDF sur les pages produit ═══');
 {
   const fs = await import('node:fs');
   for (const x of produits.filter((y) => y.fiches)) {
-    const f = `public/produits/${x.categorie}/${x.slug}/index.html`;
+    const f = fichier(x);
     let html = '';
     try { html = fs.readFileSync(f, 'utf8'); } catch { /* page absente */ }
     const attendus = [x.fiches.technique, x.fiches.securite, ficheSodilame(x)].filter(Boolean);
@@ -115,11 +122,11 @@ console.log('\n═══ Fiches PDF sur les pages produit ═══');
   }
 }
 
-console.log('\n═══ Page /produits générée ═══');
+console.log('\n═══ Page /eshop/catalogue générée ═══');
 {
   let html = '';
   try {
-    html = readFileSync('public/produits/index.html', 'utf8');
+    html = readFileSync('public/eshop/catalogue/index.html', 'utf8');
   } catch {
     console.log('  ✗ page absente — lance `node build.mjs` avant les tests');
     process.exit(1);
@@ -135,20 +142,18 @@ console.log('\n═══ Page /produits générée ═══');
     /id="barre-filtres"[^>]*\shidden/.test(html));
 
   const boutons = (html.match(/data-filtre="/g) || []).length;
-  const attendus = categoriesProduits.length + machinesCatalogue.length + marquesCatalogue.length;
+  const machinesUtiles = machinesCatalogue.filter((m) => produits.some((p) => (p.machines || []).includes(m.slug)));
+  const attendus = categoriesPubliques.length + machinesUtiles.length + marquesCatalogue.length;
   verifier(`${attendus} boutons de filtre`, boutons === attendus, `${boutons} trouvés`);
 
-  for (const c of categoriesProduits) {
+  for (const c of categoriesPubliques) {
     verifier(`conseil technique présent pour « ${c.nomCourt} »`, html.includes(`data-conseil="${c.slug}"`));
   }
 
-  // Les anciennes pages de famille ne doivent plus exister ni être liées :
-  // elles redirigent désormais vers le catalogue filtré.
-  const lienFamille = new RegExp(`href="/produits/(${[...slugsFamilles].join('|')})"`).test(html);
-  verifier('plus aucun lien vers les anciennes pages de famille', !lienFamille);
+  verifier('plus aucun lien vers les anciennes adresses /produits', !/href="\/produits/.test(html));
 
   verifier('chaque fiche produit est liée depuis le catalogue',
-    produits.every((p) => html.includes(`href="/produits/${p.categorie}/${p.slug}"`)));
+    produits.every((p) => html.includes(`href="${urlProduit(p)}"`)));
 }
 
 console.log('\n═══ Retrait de vente depuis l’administration ═══');
@@ -158,7 +163,7 @@ console.log('\n═══ Retrait de vente depuis l’administration ═══');
   // désaligner sans que rien ne casse visiblement : le marquage dans le HTML,
   // le pont entre les deux scripts, et la règle CSS qui rend le masquage
   // effectif. On les épingle ici.
-  const catalogue = readFileSync('public/produits/index.html', 'utf8');
+  const catalogue = readFileSync('public/eshop/catalogue/index.html', 'utf8');
   const script = readFileSync('static/assets/panier.js', 'utf8');
   const filtres = readFileSync('src/catalogue.mjs', 'utf8');
   const css = readFileSync('static/assets/style.css', 'utf8');
@@ -187,7 +192,7 @@ console.log('\n═══ Retrait de vente depuis l’administration ═══');
   // Chaque fiche doit porter sa référence et son bloc de repli, sinon le retrait
   // masque la carte du catalogue mais laisse la fiche commandable.
   const fichesKo = produits.filter((p) => {
-    const f = readFileSync(`public/produits/${p.categorie}/${p.slug}/index.html`, 'utf8');
+    const f = readFileSync(fichier(p), 'utf8');
     return !f.includes(`data-fiche-ref="${p.ref}"`) || !/class="achat retrait-vente" hidden/.test(f);
   });
   verifier('chaque fiche porte sa référence et son bloc de repli', !fichesKo.length,
@@ -206,7 +211,7 @@ console.log('\n═══ Produits commandés chez le fabricant (champ delai) ═
 
   const fautes = [];
   for (const p of surCommande) {
-    const f = `public/produits/${p.categorie}/${p.slug}/index.html`;
+    const f = fichier(p);
     if (!fs.existsSync(f)) { fautes.push(`${p.ref} : page absente`); continue; }
     const h = fs.readFileSync(f, 'utf8');
     if (!h.includes('Livraison comprise dans le prix')) fautes.push(`${p.ref} : livraison comprise absente`);
@@ -216,27 +221,211 @@ console.log('\n═══ Produits commandés chez le fabricant (champ delai) ═
   verifier('aucune promesse de stock sur un produit sur commande', !fautes.length, fautes.join(' · '));
 
   // Et l'inverse : les produits réellement en stock doivent garder la promesse.
-  const enStock = produits.find((p) => !p.delai);
-  const hStock = fs.readFileSync(`public/produits/${enStock.categorie}/${enStock.slug}/index.html`, 'utf8');
+  const enStock = produits.find((p) => !p.delai && p.type !== 'machine');
+  const hStock = fs.readFileSync(fichier(enStock), 'utf8');
   verifier(`${enStock.ref} garde la livraison offerte et le stock`,
     hStock.includes('sans frais de port dès une unité') && hStock.includes('En stock à Saint-Martin-de-Crau'));
+}
+
+console.log('\n═══ Arborescence de la boutique /eshop ═══');
+{
+  const fs = await import('node:fs');
+  const lire = (f) => { try { return fs.readFileSync(f, 'utf8'); } catch { return ''; } };
+
+  verifier('« catalogue » et « panier » ne sont pas des noms de collection',
+    !slugsFamilles.has('catalogue') && !slugsFamilles.has('panier'));
+
+  const accueil = lire('public/eshop/index.html');
+  verifier('/eshop existe', !!accueil);
+  verifier('/eshop lie chaque collection publique',
+    categoriesPubliques.every((c) => accueil.includes(`href="${urlCollection(c.slug)}"`)));
+  verifier('/eshop lie le catalogue complet', accueil.includes('href="/eshop/catalogue"'));
+  verifier('/eshop présente les deux rayons (matériel, entretien)',
+    accueil.includes('Matériel professionnel') && accueil.includes("Produits lessiviels et d'entretien"));
+
+  for (const c of categoriesPubliques) {
+    const h = lire(`public${urlCollection(c.slug)}/index.html`);
+    const liste = produitsDeCategorie(c.slug);
+    verifier(`collection ${c.slug} : ${liste.length} fiches liées`,
+      !!h && liste.every((p) => h.includes(`href="${urlProduit(p)}"`)));
+  }
+
+  verifier('/eshop/panier existe et n’est pas indexée',
+    /noindex/.test(lire('public/eshop/panier/index.html')));
+
+  // Aucune page générée ne doit encore pointer vers l'ancienne boutique : les
+  // 301 rattrapent les liens externes, pas nos propres liens.
+  const pagesHtml = [];
+  const parcourir = (d) => {
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const f = `${d}/${e.name}`;
+      if (e.isDirectory()) parcourir(f);
+      else if (e.name.endsWith('.html')) pagesHtml.push(f);
+    }
+  };
+  parcourir('public');
+  const anciens = pagesHtml.filter((f) => /href="\/produits(?:[/?"#])/.test(lire(f)));
+  verifier('aucun lien interne vers /produits', !anciens.length, anciens.slice(0, 5).join(', '));
+  verifier('l’ancien dossier /produits n’est plus généré', !fs.existsSync('public/produits'));
+
+  verifier('menu et pied de page pointent vers la boutique',
+    produitsNav.every((n) => n.url.startsWith('/eshop/')) && /href="\/eshop\/panier"/.test(accueil));
+
+  const plan = lire('public/plan-du-site/index.html');
+  verifier('le plan du site liste chaque fiche publique',
+    produits.every((p) => plan.includes(`href="${urlProduit(p)}"`)));
+
+  const sitemap = lire('public/sitemap.xml');
+  verifier('le sitemap contient les collections et pas le panier',
+    categoriesPubliques.every((c) => sitemap.includes(`/eshop/${c.slug}</loc>`)) && !sitemap.includes('/eshop/panier</loc>'));
+}
+
+console.log('\n═══ Forfaits de livraison, d’installation et de mise en service ═══');
+{
+  const fs = await import('node:fs');
+  const machines = produits.filter((p) => p.type === 'machine');
+  const forfaits = tousProduits.filter((p) => p.type === 'forfait');
+
+  verifier(`${machines.length} machines en ligne`, machines.length >= 7);
+  verifier('chaque machine a exactement un forfait',
+    machines.every((m) => forfaitDe(m) && forfaits.filter((f) => f.pour === m.ref).length === 1),
+    machines.filter((m) => !forfaitDe(m)).map((m) => m.ref).join(', '));
+  verifier('aucun forfait sans machine', forfaits.every((f) => machines.some((m) => m.forfait === f.ref)));
+  verifier('les forfaits sont absents des listes publiques',
+    !produits.some((p) => p.type === 'forfait') && !categoriesPubliques.some((c) => c.slug === 'forfaits'));
+  verifier('les forfaits ne comptent pas dans le total affiché', totalProduits === produits.length);
+  verifier('aucune page de forfait générée', !fs.existsSync('public/eshop/forfaits'));
+  // Les forfaits sont « marque SODILAME » : ils ne doivent pas à eux seuls
+  // faire apparaître un bouton de filtre (le sel, lui, est bien un produit SODILAME).
+  verifier('le filtre des marques ne compte que les produits publics',
+    marquesCatalogue.join() === [...new Set(produits.map((p) => p.marque))].sort().join());
+
+  const fautes = [];
+  for (const m of machines) {
+    const h = fs.readFileSync(fichier(m), 'utf8');
+    const f = forfaitDe(m);
+    if (!h.includes(`data-forfait-ref="${f.ref}"`)) fautes.push(`${m.ref} : bouton sans forfait`);
+    if (!h.includes(`data-forfait-de="${f.ref}"`)) fautes.push(`${m.ref} : ligne forfait absente`);
+    if (!etapesForfait.every((e) => h.includes(e.replace(/’/g, '’')))) fautes.push(`${m.ref} : étapes incomplètes`);
+    // Une machine n'est ni « en stock » ni « livrée sans frais dès une unité ».
+    if (h.includes('En stock à Saint-Martin-de-Crau')) fautes.push(`${m.ref} : annonce « en stock »`);
+    if (h.includes('dès une unité')) fautes.push(`${m.ref} : promet la livraison offerte`);
+    if (/"availability":"https:\/\/schema.org\/InStock"/.test(h)) fautes.push(`${m.ref} : InStock dans le balisage`);
+  }
+  verifier('chaque fiche machine porte son forfait et rien d’autre', !fautes.length, fautes.join(' · '));
+
+  // Le serveur recalcule les forfaits : c'est la seule défense qui compte.
+  const api = fs.readFileSync('api/commande.js', 'utf8');
+  verifier('le serveur ignore les forfaits envoyés par le navigateur',
+    /if \(officiel\.estForfait\) continue;/.test(api));
+  verifier('le serveur ajoute le forfait derrière chaque machine, à la même quantité',
+    /FORFAITS\.get\(officiel\.forfait\)/.test(api) && /lignes\.push\(\{ \.\.\.f, qte,/.test(api));
+
+  const js = fs.readFileSync('static/assets/panier.js', 'utf8');
+  verifier('le panier synchronise les forfaits à chaque lecture et écriture',
+    (js.match(/synchroForfaits\(/g) || []).length >= 3);
+  verifier('le panier n’envoie pas les lignes de forfait', /lire\(\)\.filter\(function \(l\) \{ return !l\.pour; \}\)/.test(js));
+}
+
+console.log('\n═══ Sélection Miele Professional ═══');
+{
+  const fs = await import('node:fs');
+  const { refsMieleManquantes, produitsMiele } = await import('../data/miele.mjs');
+  const { tarifMiele } = await import('../data/miele-tarif.mjs');
+
+  verifier('toutes les références Miele sont au tarif généré', !refsMieleManquantes.length, refsMieleManquantes.join(', '));
+
+  // Le tarif généré ne doit porter que des données publiables : un champ de
+  // plus, c'est peut-être le prix d'achat qui fuit sur le site.
+  const autorises = new Set(['prix', 'ean', 'fiche', 'description']);
+  const champs = new Set(Object.values(tarifMiele).flatMap((t) => Object.keys(t)));
+  verifier('le tarif généré ne contient que prix public, EAN, fiche et descriptif',
+    [...champs].every((c) => autorises.has(c)), [...champs].join(', '));
+  const brut = fs.readFileSync('data/miele-tarif.mjs', 'utf8');
+  verifier('aucune trace de prix de revient dans le tarif généré', !/cost|revient|achat -|-33/i.test(brut.split('\n').filter((l) => !l.startsWith('//')).join('\n')));
+
+  const conds = produitsMiele.flatMap((p) => p.conditionnements.map((c) => ({ p, c })));
+  verifier(`${conds.length} versions Miele, toutes avec un prix public`, conds.every(({ c }) => typeof c.prix === 'number' && c.prix > 0));
+  verifier('chaque version a sa fiche produit Miele', conds.every(({ c }) => /^https:\/\/media\.miele\.com\//.test(c.ficheMiele || '')));
+  verifier('chaque libellé de version tient dans 80 caractères (limite du serveur)', conds.every(({ c }) => c.label.length <= 80),
+    conds.filter(({ c }) => c.label.length > 80).map(({ c }) => c.label).join(' | '));
+  verifier('aucun libellé de version en double dans une fiche',
+    produitsMiele.every((p) => new Set(p.conditionnements.map((c) => c.label)).size === p.conditionnements.length));
+
+  // Décision de la direction (28/10/2026) : ni lave-verres, ni machines à capot.
+  verifier('ni lave-verres ni machine à capot en ligne',
+    !produits.some((p) => /^PTD 70?1\b|^PTD 901/.test(p.ref) || /lave-verres frontal|à capot/i.test(p.nom)));
+
+  const fautes = [];
+  for (const p of produitsMiele) {
+    const h = fs.readFileSync(fichier(p), 'utf8');
+    if (!h.includes('media.miele.com')) fautes.push(`${p.ref} : lien fiche Miele absent`);
+    if (p.conditionnements.some((c) => c.ean) && !h.includes('"gtin13"')) fautes.push(`${p.ref} : gtin13 absent`);
+    if (p.type !== 'machine' && h.includes('En stock à Saint-Martin-de-Crau')) fautes.push(`${p.ref} : annonce un stock`);
+    if (p.type !== 'machine' && h.includes('lors de sa prochaine tournée')) fautes.push(`${p.ref} : promet la tournée`);
+  }
+  verifier('fiches Miele : lien fabricant, GTIN, et aucune promesse de stock', !fautes.length, fautes.slice(0, 6).join(' · '));
+}
+
+console.log('\n═══ Bandeau des prix ═══');
+{
+  const fs = await import('node:fs');
+  const js = fs.readFileSync('static/assets/panier.js', 'utf8');
+  // L'ancienne version retirait le bandeau dès le PREMIER prix reçu : un
+  // catalogue mixte perdait son explication au moment où elle servait.
+  verifier('le bandeau n’est plus retiré au premier prix',
+    !/tarifs\.some\(function \(t\) \{ return typeof t\.prix === 'number'; \}\)/.test(js));
+  verifier('le bandeau compare la liste des articles sans prix', js.includes('majNotices(carte)') && js.includes('sansPrix'));
+  const h = fs.readFileSync('public/eshop/index.html', 'utf8');
+  verifier('le bandeau livré porte la liste des articles sans prix',
+    /class="notice-prix" data-total="\d+" data-sans-prix="/.test(h));
 }
 
 console.log('\n═══ Redirections des anciennes URL ═══');
 {
   const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
-  for (const c of categoriesProduits) {
-    const r = vercel.redirects.find((x) => x.source === `/produits/${c.slug}`);
-    verifier(`/produits/${c.slug} redirige en 301`,
-      !!r && r.permanent === true && r.destination.includes(`famille=${c.slug}`),
-      r ? r.destination : 'absente');
+
+  // Simulation fidèle à l'ordre de Vercel : la première règle qui correspond
+  // l'emporte, `has` filtre sur la query, les groupes nommés passent dans la
+  // destination.
+  const resoudre = (chemin) => {
+    const [p, qs = ''] = chemin.split('?');
+    const q = new URLSearchParams(qs);
+    for (const r of vercel.redirects) {
+      const params = {};
+      const motif = '^' + r.source.replace(/:(\w+)\*/g, (_, n) => `(?<${n}>.*)`).replace(/:(\w+)/g, (_, n) => `(?<${n}>[^/]+)`) + '$';
+      const m = p.match(new RegExp(motif));
+      if (!m) continue;
+      Object.assign(params, m.groups || {});
+      let ok = true;
+      for (const h of r.has || []) {
+        if (h.type !== 'query' || !q.has(h.key)) { ok = false; break; }
+        if (h.value) {
+          const mv = q.get(h.key).match(new RegExp('^' + h.value + '$'));
+          if (!mv) { ok = false; break; }
+          Object.assign(params, mv.groups || {});
+        }
+      }
+      if (!ok) continue;
+      return { dest: r.destination.replace(/:(\w+)\*?/g, (_, n) => params[n] ?? ''), permanent: r.permanent };
+    }
+    return null;
+  };
+
+  const cas = [
+    ['/produits', '/eshop'],
+    ['/boutique', '/eshop'],
+    ['/produits/ma-commande', '/eshop/panier'],
+    ['/produits?famille=traitement-eau', '/eshop/traitement-eau'],
+    ['/produits?marque=Winterhalter', '/eshop/catalogue'],
+    ['/produits/detergents-lave-vaisselle', '/eshop/detergents-lave-vaisselle'],
+    ...produits.filter((p) => p.type !== 'machine').slice(0, 3).map((p) => [`/produits/${p.categorie}/${p.slug}`, urlProduit(p)]),
+  ];
+  for (const [de, vers] of cas) {
+    const r = resoudre(de);
+    verifier(`${de} → ${vers} (301)`, r && r.dest === vers && r.permanent === true, r ? r.dest : 'aucune');
   }
-  // La redirection ne doit surtout pas avaler les fiches produit.
-  const trop = vercel.redirects.filter(
-    (r) => r.source.startsWith('/produits/') && (r.source.includes(':') || r.source.includes('*'))
-  );
-  verifier('aucune redirection générique qui capterait les fiches produit', !trop.length,
-    trop.map((r) => r.source).join(', '));
+  verifier('aucune redirection ne capte /eshop', !['/eshop', '/eshop/catalogue', '/eshop/panier', urlProduit(produits[0])].some((x) => resoudre(x)));
 }
 
 console.log(`\n${'─'.repeat(56)}\n${ok} tests passés, ${ko} échec${ko > 1 ? 's' : ''}\n`);

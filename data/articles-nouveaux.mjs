@@ -393,7 +393,7 @@ export const articlesNouveaux = [
 
 <p>Nous installons et entretenons les laveries de restauration de la Crau au Comtat, toutes marques. Sur ce sujet précis, notre travail consiste à mesurer avant de proposer : la dureté, l'état de l'existant, la cadence réelle. Ensuite seulement on parle de matériel.</p>
 
-<p>Nous livrons également les détergents et liquides de rinçage adaptés à l'eau traitée — un produit dosé pour une eau à 38 °f n'est pas le même que pour une eau osmosée, et beaucoup de surdosages viennent de là. Le catalogue est sur notre page <a href="/produits">produits d'entretien</a>, livraison assurée par nos techniciens. Le détartrage périodique du surchauffeur, lui, fait partie des points vus lors des visites de <a href="/services/contrat-entretien-cuisine-professionnelle">contrat d'entretien</a> : sur une eau dure, c'est une opération de calendrier, pas une réparation.</p>
+<p>Nous livrons également les détergents et liquides de rinçage adaptés à l'eau traitée — un produit dosé pour une eau à 38 °f n'est pas le même que pour une eau osmosée, et beaucoup de surdosages viennent de là. Le catalogue est sur notre page <a href="/eshop/detergents-lave-vaisselle">produits d'entretien</a>, livraison assurée par nos techniciens. Le détartrage périodique du surchauffeur, lui, fait partie des points vus lors des visites de <a href="/services/contrat-entretien-cuisine-professionnelle">contrat d'entretien</a> : sur une eau dure, c'est une opération de calendrier, pas une réparation.</p>
 `,
     faq: [
       {

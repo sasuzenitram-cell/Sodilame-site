@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// CATALOGUE FILTRABLE — /produits
+// CATALOGUE FILTRABLE — /eshop/catalogue
 //
 // Une seule page porte toutes les références, filtrables sur trois axes :
 // famille (détergent, rinçage, entretien machine, entretien four), marque et
@@ -44,8 +44,8 @@ export const SCRIPT_FILTRES = `
     var q = new URLSearchParams();
     AXES.forEach(function(a){ if (etat[a]) q.set(a, etat[a]); });
     var s = q.toString();
-    // Sans filtre, aucune ancre : sinon le simple chargement de /produits
-    // réécrivait l'URL en /produits#catalogue et sautait par-dessus le hero.
+    // Sans filtre, aucune ancre : sinon le simple chargement de /eshop/catalogue
+    // réécrivait l’URL en /eshop/catalogue#catalogue et sautait par-dessus le hero.
     history.replaceState(null, '', s ? '?' + s + '#catalogue' : location.pathname);
   }
 

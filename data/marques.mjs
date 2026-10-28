@@ -403,6 +403,13 @@ export const marques = [
     ],
     clients: ['Crèches, EHPAD et établissements de santé', 'Bars et restaurants', 'Hôtels et campings', 'Cabinets dentaires et laboratoires'],
     services: ['laverie-restauration', 'buanderie-professionnelle', 'contrat-entretien-cuisine-professionnelle'],
+    // Première marque de matériel vendue en ligne : ses produits sont répartis
+    // sur plusieurs collections, d'où un lien vers le catalogue filtré sur la
+    // marque plutôt que vers une seule collection.
+    boutique: 'lave-linge-professionnels',
+    boutiqueTitre: 'Miele Professional en boutique',
+    boutiqueTexte: 'Lave-linge, sèche-linge, repasseuses et lave-vaisselle Miele Professional au prix public, livrés, installés et mis en service par nos techniciens — avec les accessoires et les produits ProCare',
+    boutiqueUrl: '/eshop/catalogue?marque=Miele+Professional#catalogue',
   },
 
   // =========================================================================

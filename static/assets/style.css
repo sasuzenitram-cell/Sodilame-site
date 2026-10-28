@@ -543,6 +543,38 @@ table.panier a{color:var(--navy)}
 .panier-note{font-size:.83rem;color:var(--muted);margin:.5rem 0 0;line-height:1.6}
 .hint{font-size:.8rem;color:var(--muted);margin:-.3rem 0 1rem;line-height:1.55}
 
+/* ---- E-shop : accueil et collections ------------------------------------ */
+.univers-bloc+.univers-bloc{margin-top:3.4rem}
+.card.collec{display:flex;flex-direction:column}
+.card.collec h3{font-size:1.1rem;margin:0 0 .5rem}
+.card.collec p{flex:1}
+.lien-catalogue{text-align:center;margin:2.4rem 0 0}
+.collec-intro{max-width:none;margin:0 0 1.4rem}
+.marques-boutique{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.8rem}
+.marques-boutique a{display:flex;flex-direction:column;gap:.2rem;background:#fff;border:1px solid var(--line);
+  border-radius:11px;padding:1rem 1.2rem;color:var(--navy);text-decoration:none;min-width:0}
+.marques-boutique a:hover{border-color:var(--gold)}
+.marques-boutique b{font-size:.98rem;overflow-wrap:anywhere}
+.marques-boutique span{font-size:.78rem;color:var(--muted)}
+.collec-liens{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.7rem}
+.collec-liens a{display:flex;align-items:center;gap:.75rem;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:.85rem 1rem;color:var(--navy);font-weight:600;font-size:.92rem;text-decoration:none;min-width:0}
+.collec-liens a:hover{border-color:var(--gold)}
+.collec-liens svg{width:22px;height:22px;flex:none;stroke:var(--gold);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.collec-liens span{min-width:0;overflow-wrap:anywhere}
+
+/* Forfait d'installation : sous la machine sur la fiche, et dans le panier */
+.cond-row.forfait-row{margin-top:.5rem;background:#fff;border-style:dashed}
+.cond-row.forfait-row .cl{font-weight:500;font-size:.85rem}
+.forfait-note{grid-column:1/-1;font-size:.74rem;color:var(--muted)}
+tr.ligne-forfait td{background:var(--cream);font-size:.88rem}
+/* Sur mobile, l'encart de commande passe AVANT la description : le client
+   voit le prix et le bouton sans faire défiler toute la fiche. */
+@media (max-width:900px){
+  [data-fiche-ref] .grid-art>aside{order:-1}
+}
+.qte-fixe{display:inline-block;min-width:30px;text-align:center;font-weight:600;color:var(--muted)}
+
 /* Grille à une colonne (réutilisée dans les encarts) */
 .grid1{display:grid;gap:.9rem}
 

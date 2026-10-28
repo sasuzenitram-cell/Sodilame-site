@@ -147,38 +147,97 @@
       "permanent": false
     },
     {
+      "source": "/eshop/blanchisserie-professionnelle",
+      "destination": "/eshop/lave-linge-professionnels",
+      "permanent": true
+    },
+    {
+      "source": "/eshop/blanchisserie-professionnelle/miele-pwm-909-lave-linge-benchmark",
+      "destination": "/eshop/lave-linge-professionnels/miele-pwm-909-lave-linge-benchmark",
+      "permanent": true
+    },
+    {
+      "source": "/eshop/blanchisserie-professionnelle/miele-pdr-910-seche-linge-benchmark",
+      "destination": "/eshop/seche-linge-professionnels/miele-pdr-910-seche-linge-benchmark",
+      "permanent": true
+    },
+    {
+      "source": "/eshop/lave-vaisselle-professionnel/miele-ptd-701-lave-verres",
+      "destination": "/eshop/lave-vaisselle-professionnel",
+      "permanent": true
+    },
+    {
+      "source": "/eshop/lave-vaisselle-professionnel/miele-ptd-901-lave-vaisselle-capot",
+      "destination": "/eshop/lave-vaisselle-professionnel",
+      "permanent": true
+    },
+    {
       "source": "/boutique",
-      "destination": "/produits",
+      "destination": "/eshop",
       "permanent": true
     },
     {
-      "source": "/produits/detergents-lave-vaisselle",
-      "destination": "/produits?famille=detergents-lave-vaisselle#catalogue",
+      "source": "/boutique/:chemin*",
+      "destination": "/eshop",
       "permanent": true
     },
     {
-      "source": "/produits/liquides-de-rincage",
-      "destination": "/produits?famille=liquides-de-rincage#catalogue",
+      "source": "/shop",
+      "destination": "/eshop",
       "permanent": true
     },
     {
-      "source": "/produits/entretien-machine-laverie",
-      "destination": "/produits?famille=entretien-machine-laverie#catalogue",
+      "source": "/produits/ma-commande",
+      "destination": "/eshop/panier",
       "permanent": true
     },
     {
-      "source": "/produits/entretien-four-rational",
-      "destination": "/produits?famille=entretien-four-rational#catalogue",
+      "source": "/produits",
+      "has": [
+        {
+          "type": "query",
+          "key": "famille",
+          "value": "(?<famille>[a-z0-9-]+)"
+        }
+      ],
+      "destination": "/eshop/:famille",
       "permanent": true
     },
     {
-      "source": "/produits/granules-lave-batterie",
-      "destination": "/produits?famille=granules-lave-batterie#catalogue",
+      "source": "/produits",
+      "has": [
+        {
+          "type": "query",
+          "key": "marque"
+        }
+      ],
+      "destination": "/eshop/catalogue",
       "permanent": true
     },
     {
-      "source": "/produits/traitement-eau",
-      "destination": "/produits?famille=traitement-eau#catalogue",
+      "source": "/produits",
+      "has": [
+        {
+          "type": "query",
+          "key": "machine"
+        }
+      ],
+      "destination": "/eshop/catalogue",
+      "permanent": true
+    },
+    {
+      "source": "/produits",
+      "destination": "/eshop",
+      "permanent": true
+    },
+    {
+      "source": "/produits/:famille",
+      "destination": "/eshop/:famille",
+      "permanent": true
+    },
+    {
+      "source": "/produits/:famille/:produit",
+      "destination": "/eshop/:famille/:produit",
       "permanent": true
     },
     {

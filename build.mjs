@@ -13,8 +13,9 @@ import { cgv } from './data/cgv.mjs';
 import { offres, offresActives, postes, emailRecrutement } from './data/recrutement.mjs';
 import { marques, universMarques, marquesDeLUnivers, marquesPied, totalMarques, faqDe } from './data/marques.mjs';
 import {
-  categoriesProduits, produits, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
-  machinesCatalogue, marquesCatalogue, ficheSodilame,
+  produits, produitsPublics, categoriesPubliques, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
+  machinesCatalogue, marquesCatalogue, ficheSodilame, forfaitDe, etapesForfait,
+  ESHOP, URL_PANIER, URL_CATALOGUE, urlCollection, urlProduit, universBoutique, collectionsDe,
 } from './data/produits.mjs';
 import { pageQr, pagePanne, pageAudit } from './src/qr.mjs';
 import { SCRIPT_FILTRES, groupeFiltres } from './src/catalogue.mjs';
@@ -1667,9 +1668,9 @@ ${ariane(fil)}
           m.boutique
             ? `<div class="card" style="margin-bottom:20px">
           <div class="ico">${svg('panier')}</div>
-          <h3 style="font-size:1rem">Consommables en boutique</h3>
+          <h3 style="font-size:1rem">${esc(m.boutiqueTitre || 'Consommables en boutique')}</h3>
           <p>${esc(m.boutiqueTexte)}.</p>
-          <a class="btn btn-outline btn-sm" href="/produits?famille=${m.boutique}#catalogue" style="width:100%;justify-content:center;margin-top:1rem">Voir les produits →</a>
+          <a class="btn btn-outline btn-sm" href="${m.boutiqueUrl || urlCollection(m.boutique)}" style="width:100%;justify-content:center;margin-top:1rem">Voir les produits →</a>
         </div>`
             : ''
         }
@@ -1953,14 +1954,15 @@ function planDuSite() {
 ${bloc('Pages principales', [
       { nom: 'Accueil', url: '/' },
       { nom: 'Nos services', url: '/services' },
-      { nom: 'Produits lessiviels et d’entretien', url: '/produits' },
+      { nom: 'Boutique en ligne', url: ESHOP },
+      { nom: 'Tout le catalogue de la boutique', url: URL_CATALOGUE },
       { nom: "Zone d'intervention", url: '/zone-intervention' },
       { nom: 'Conseils', url: '/conseils' },
       { nom: "L'entreprise", url: '/a-propos' },
       { nom: 'Contact', url: '/contact' },
     ])}
 ${bloc('Services', services.map((s) => ({ nom: s.nom, url: `/services/${s.slug}` })))}
-${categoriesProduits.map((c) => bloc(c.nom, produitsDeCategorie(c.slug).map((p) => ({ nom: `${p.marque} ${p.nom} — réf. ${p.ref}`, url: `/produits/${c.slug}/${p.slug}` })))).join('\n')}
+${categoriesPubliques.map((c) => bloc(`<a href="${urlCollection(c.slug)}">${esc(c.nom)}</a>`, produitsDeCategorie(c.slug).map((p) => ({ nom: `${p.marque} ${p.nom} — réf. ${p.ref}`, url: urlProduit(p) })))).join('\n')}
 ${bloc("Zones d'intervention", zones.map((z) => ({ nom: `Zone ${z.numero} — ${z.nom}`, url: `/zone-intervention/${z.slug}` })))}
 ${bloc('Villes', villes.map((v) => ({ nom: `Cuisine professionnelle à ${v.nom}`, url: `/zone-intervention/${v.slug}` })))}
 ${bloc('Conseils', articles.map((a) => ({ nom: a.titre, url: `/conseils/${a.slug}` })))}
@@ -2000,47 +2002,85 @@ function page404() {
 }
 
 // ===========================================================================
-// PRODUITS — helpers
+// E-SHOP — helpers
+//
+// Arborescence : /eshop (accueil, collections) → /eshop/<collection> →
+// /eshop/<collection>/<produit>, plus /eshop/catalogue (tout, filtrable) et
+// /eshop/panier. Les forfaits d'installation ne sont JAMAIS listés : seules
+// produitsPublics et categoriesPubliques alimentent les pages.
 // ===========================================================================
+const estMachine = (p) => p.type === 'machine';
+
+// 3 768,00 € : espace fine insécable entre les milliers, virgule décimale.
+const euros = (n) => {
+  const [e, d] = n.toFixed(2).split('.');
+  return `${e.replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f')},${d}\u00a0€`;
+};
 const prixTexte = (c) =>
   typeof c.prix === 'number'
-    ? `<b class="prix">${c.prix.toFixed(2).replace('.', ',')} € HT</b>`
+    ? `<b class="prix">${euros(c.prix)} HT</b>`
     : `<span class="prix-nc">Prix sur demande</span>`;
+/** Le plus petit prix connu d'un produit, ou null. */
+const prixMini = (p) => {
+  const l = p.conditionnements.map((c) => c.prix).filter((x) => typeof x === 'number');
+  return l.length ? Math.min(...l) : null;
+};
+
+/** La page marque d'une marque du catalogue, si elle existe. */
+const pageMarque = (nom) => marques.find((m) => m.nom === nom);
 
 function boutonAjout(p, c, k) {
   const prix = typeof c.prix === 'number' ? c.prix : '';
+  // Une machine emporte son forfait : panier.js lit ces attributs pour créer la
+  // ligne liée. Le serveur, lui, ne leur fait pas confiance et recalcule.
+  const f = estMachine(p) ? forfaitDe(p) : null;
+  const fc = f?.conditionnements[0];
+  const attrsForfait = f
+    ? ` data-forfait-ref="${esc(f.ref)}" data-forfait-nom="${esc(f.nom)}" data-forfait-cond="${esc(fc.label)}" data-forfait-prix="${typeof fc.prix === 'number' ? fc.prix : ''}"`
+    : '';
   return `<button class="btn btn-primary btn-sm ajout" type="button"
     data-ref="${esc(p.ref)}" data-nom="${esc(p.nom)}" data-marque="${esc(p.marque)}"
-    data-cond="${esc(c.label)}" data-prix="${prix}" data-url="/produits/${p.categorie}/${p.slug}" data-k="${p.slug}-${k}">
-    ${svg('panier')}Ajouter</button>`;
+    data-cond="${esc(c.label)}" data-prix="${prix}" data-url="${urlProduit(p)}" data-k="${p.slug}-${k}"${attrsForfait}>
+    ${svg('panier')}Ajouter au panier</button>`;
 }
 
 // Vignette produit : la vraie photo si elle existe, sinon une vignette de
 // remplacement cohérente avec la charte. Jamais d'image cassée, jamais d'image
-// dont nous n'avons pas les droits.
+// dont nous n'avons pas les droits — les visuels Miele arriveront avec le kit
+// revendeur officiel.
 function vignetteProduit(p, taille = '') {
   if (p.photo) {
     return `<span class="vign${taille}"><img src="/assets/produits/${p.photo}.jpg" width="800" height="800" alt="${esc(p.marque)} ${esc(p.nom)} — référence ${esc(p.ref)}" loading="lazy" decoding="async"></span>`;
   }
-  const liquide = p.caracteristiques.some((c) => /liquide/i.test(c));
-  const icone = liquide ? 'bidon' : 'seau';
+  const icone = estMachine(p)
+    ? categorieDuProduit(p)?.icone || 'installation'
+    : p.caracteristiques.some((c) => /liquide/i.test(c))
+      ? 'bidon'
+      : 'seau';
   return `<span class="vign vide${taille}" aria-hidden="true">${svg(icone)}<span class="vr">${esc(p.ref)}</span></span>`;
 }
 
 function carteProduit(p) {
-  const cat = categorieDuProduit(p);
   const c0 = p.conditionnements[0];
   // Les data-* portent les critères de filtrage : le script du catalogue ne
   // lit que ça, il n'a aucune connaissance du contenu des cartes.
   // data-ref sert au retrait de vente : panier.js marque la carte des produits
   // que l'administration n'a plus cochés « en vente ».
-  return `<a class="card prod" href="/produits/${p.categorie}/${p.slug}"
+  const mini = prixMini(p);
+  const bas = mini !== null
+    ? `<span class="cond">${p.conditionnements.length > 1 ? 'dès ' : ''}<b class="prix-carte">${euros(mini)} HT</b></span>`
+    : estMachine(p)
+    ? '<span class="cond">Livrée, installée, mise en service</span>'
+    : p.conditionnements.length > 1
+      ? `<span class="cond">${p.conditionnements.length} conditionnements</span>`
+      : `<span class="cond">${esc(c0.label)}</span>`;
+  return `<a class="card prod" href="${urlProduit(p)}"
         data-produit data-ref="${esc(p.ref)}" data-famille="${esc(p.categorie)}" data-marque="${esc(p.marque)}" data-machines="${esc((p.machines || []).join(' '))}">
         ${vignetteProduit(p)}
         <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">${esc(p.ref)}</span></span>
         <h3>${esc(p.nom)}</h3>
         <p>${esc(p.resume)}</p>
-        <span class="prod-bas">${p.conditionnements.length > 1 ? `<span class="cond">${p.conditionnements.length} conditionnements</span>` : `<span class="cond">${esc(c0.label)}</span>`}<span class="more">Voir →</span></span>
+        <span class="prod-bas">${bas}<span class="more">Voir →</span></span>
       </a>`;
 }
 
@@ -2060,153 +2100,198 @@ function retraitVente(p) {
           ${vignetteProduit(p, ' grande')}
           <h2>Plus au catalogue</h2>
           <p class="achat-sub">Cette référence n'est plus proposée à la commande en ligne.</p>
-          <p class="achat-note" style="margin:0 0 1.1rem">Nous pouvons vous dire par quoi la remplacer sur votre machine, et vous la fournir encore si vous avez un stock à écouler. Un appel est le plus rapide.</p>
+          <p class="achat-note" style="margin:0 0 1.1rem">Nous pouvons vous dire par quoi la remplacer, et vous la fournir encore s'il en reste en stock. Un appel est le plus rapide.</p>
           <a class="btn btn-primary btn-sm" href="tel:${site.telephoneE164}" style="width:100%;justify-content:center">${site.telephone}</a>
-          <a class="btn btn-outline btn-sm" href="/produits" style="width:100%;justify-content:center;margin-top:.6rem">Voir la boutique →</a>
+          <a class="btn btn-outline btn-sm" href="${ESHOP}" style="width:100%;justify-content:center;margin-top:.6rem">Voir la boutique →</a>
         </div>`;
 }
 
 // Bandeau d'explication des prix. Trois états, et c'est le deuxième qui compte :
-// dès qu'un seul produit porte un prix, le catalogue devient mixte, et un
+// dès qu'un seul article porte un prix, le catalogue devient mixte, et un
 // visiteur qui voit « 25,00 € HT » sur un article et « Prix sur demande » sur
-// les vingt autres se demande ce qu'on lui cache. La version précédente faisait
-// disparaître le bandeau à ce moment précis — exactement quand il devenait le
-// plus utile.
-const sansPrix = produits.filter((p) => p.conditionnements.every((c) => typeof c.prix !== 'number')).length;
+// les autres se demande ce qu'on lui cache. Le bandeau doit alors rester, avec
+// un autre texte — pas disparaître.
+//
+// Les prix réels vivent en base. Le bandeau livré porte donc la liste des
+// articles sans prix au moment du build (forfaits compris) : panier.js la
+// confronte à /api/catalogue et ne retire le bandeau que lorsque plus aucun
+// article n'est « sur demande ».
+const NOTICE_TOUS = `<b>Tarifs en cours de mise en ligne.</b> Composez votre commande normalement : nous vous confirmons le montant exact par retour de mail, avant toute expédition et avant toute facturation.`;
+const NOTICE_MIXTE = `<b>Tous les tarifs ne sont pas encore en ligne.</b> Les articles affichés « Prix sur demande » se commandent exactement comme les autres : nous vous confirmons le montant par retour de mail, avant toute expédition et avant toute facturation.`;
+const clesTarifs = produits.flatMap((p) => p.conditionnements.map((c) => ({ cle: `${p.ref}__${c.label}`, prix: c.prix })));
+const clesSansPrix = clesTarifs.filter((x) => typeof x.prix !== 'number').map((x) => x.cle);
 const noticePrix =
-  sansPrix === 0
+  clesSansPrix.length === 0
     ? ''
-    : sansPrix === produits.length
-      ? `<div class="notice-prix"><b>Tarifs en cours de mise en ligne.</b> Composez votre commande normalement : nous vous confirmons le montant exact par retour de mail, avant toute expédition et avant toute facturation.</div>`
-      : `<div class="notice-prix"><b>Tous les tarifs ne sont pas encore en ligne.</b> Les articles affichés « Prix sur demande » se commandent exactement comme les autres : nous vous confirmons le montant par retour de mail, avant toute expédition et avant toute facturation.</div>`;
+    : `<div class="notice-prix" data-total="${clesTarifs.length}" data-sans-prix="${esc(JSON.stringify(clesSansPrix))}">${
+        clesSansPrix.length === clesTarifs.length ? NOTICE_TOUS : NOTICE_MIXTE
+      }</div>`;
 
-// ===========================================================================
-// PRODUITS — page hub
-// ===========================================================================
-// ===========================================================================
-// PRODUITS — catalogue filtrable (page unique)
-// ===========================================================================
-function boutiqueHub() {
-  const fil = [{ nom: 'Accueil', url: '/' }, { nom: 'Produits', url: '/produits' }];
-  const faq = [
-    {
-      q: 'La livraison est-elle vraiment offerte, même pour un seul bidon ?',
-      r: `Oui, sans minimum de commande, partout sur notre zone d'intervention. Nos techniciens circulent toute la journée entre deux rendez-vous : votre commande voyage avec eux. Nous ne facturons pas un port que nous ne payons pas.`,
-    },
-    {
-      q: 'Comment se passe le paiement ?',
-      r: `Il n'y a aucun paiement sur le site. Vous composez votre commande, nous la recevons par mail, nous vous la validons avec le montant exact, puis nous vous livrons et nous vous facturons dans les conditions habituelles de votre compte client.`,
-    },
-    {
-      q: 'Dans quel délai suis-je livré ?',
-      r: `Les références courantes sont en stock dans nos locaux de Saint-Martin-de-Crau. La livraison se cale sur la prochaine tournée d'un technicien dans votre secteur — comptez généralement quelques jours ouvrés. Pour une rupture bloquante, appelez le ${site.telephone} : nous trouvons une solution.`,
-    },
-    {
-      q: 'Je ne sais pas quelle référence commander pour mon four ou ma machine.',
-      r: `Envoyez-nous une photo de la plaque signalétique ou appelez-nous. La bonne référence dépend de la génération de l'appareil et, pour les fours Rational, de la présence du système CareControl ou de l'AutoDose. Nous vérifions avant de livrer.`,
-    },
-    {
-      q: 'Puis-je commander si je ne suis pas déjà client ?',
-      r: `Oui. La première commande sert souvent de premier contact. Nous ouvrons le compte à cette occasion et nous en profitons pour faire le point sur votre parc si vous le souhaitez.`,
-    },
-  ];
+const nbCollection = (slug) => produitsDeCategorie(slug).length;
+const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? 's' : ''}`;
 
-  const nbFamille = (s) => produitsDeCategorie(s).length;
-  const nbMarque = (m) => produits.filter((p) => p.marque === m).length;
-  const nbMachine = (s) => produits.filter((p) => (p.machines || []).includes(s)).length;
+function carteCollection(c) {
+  const n = nbCollection(c.slug);
+  return `<a class="card collec" href="${urlCollection(c.slug)}">
+        <div class="ico">${svg(c.icone)}</div>
+        <h3>${esc(c.nom)}</h3>
+        <p>${esc(c.description)}</p>
+        <span class="prod-bas"><span class="cond">${pluriel(n, 'référence')}</span><span class="more">Voir la collection →</span></span>
+      </a>`;
+}
 
-  const corps = `
-<div class="phero">
+/** Le forfait expliqué : sur les collections de matériel et les fiches machine. */
+function blocForfait({ titre = 'Une machine, livrée et installée', avecCarte = true } = {}) {
+  return `<section class="alt">
   <div class="wrap">
-    <p class="eyebrow on-dark">Produits lessiviels et d'entretien</p>
-    <h1>Commandez vos consommables, nous vous les livrons</h1>
-    <p>Détergents, liquides de rinçage et produits d'entretien pour vos machines. Vous composez votre commande en ligne, nous vous la confirmons par mail, et un technicien vous la dépose lors de sa prochaine tournée — <b>sans frais de port, dès un seul bidon</b>.</p>
-    <div class="btn-row">
-      <a class="btn btn-primary" href="#catalogue">Voir le catalogue</a>
-      <a class="btn btn-ghost" href="tel:${site.telephoneE164}">${svg('tel')}${site.telephone}</a>
-    </div>
-  </div>
-</div>
-${ariane(fil)}
-
-<section id="boutique">
-  <div class="wrap">
-    ${noticePrix}
-    <div class="sec-head">
-      <p class="eyebrow">Le catalogue</p>
-      <h2>${totalProduits} références en stock</h2>
-      <p class="lead">Nous ne référençons que des produits dont nous savons régler les machines. C'est plus court qu'un catalogue de grossiste, et c'est volontaire.</p>
-    </div>
-
-    <div class="filtres" id="barre-filtres" hidden>
-      ${groupeFiltres('Type de produit', 'famille', categoriesProduits.map((c) => ({ slug: c.slug, nom: c.nomCourt, n: nbFamille(c.slug) })), esc)}
-      ${groupeFiltres('Machine', 'machine', machinesCatalogue.map((m) => ({ slug: m.slug, nom: m.nom, n: nbMachine(m.slug) })), esc)}
-      ${groupeFiltres('Marque', 'marque', marquesCatalogue.map((m) => ({ slug: m, nom: m, n: nbMarque(m) })), esc)}
-      <div class="fbilan">
-        <span id="compte">${totalProduits} références</span>
-        <button type="button" id="reinit" class="freinit" hidden>Tout afficher</button>
+    <div class="grid2 top">
+      <div>
+        <p class="eyebrow">Le forfait d'installation</p>
+        <h2>${titre}</h2>
+        <p>Nous ne vendons pas de machine « en carton ». Chaque machine de la boutique est vendue avec <b>son forfait de livraison, d'installation et de mise en service</b>, ajouté automatiquement à votre panier. Son montant dépend de la machine : un lave-verres ne se pose pas comme une laveuse de blanchisserie.</p>
+        <p>Avant de commander la machine chez le fabricant, nous vérifions avec vous l'arrivée d'eau, l'évacuation, l'alimentation électrique et le passage jusqu'à l'emplacement. Une machine qui ne passe pas la porte, cela se découvre au relevé — pas le jour de la livraison.</p>
       </div>
+      ${
+        avecCarte
+          ? `<div class="avantage">
+        <i>${svg('installation')}</i>
+        <b>Ce que comprend le forfait</b>
+        <ul class="ul-check">${etapesForfait.map((e) => `<li>${esc(e)}</li>`).join('')}</ul>
+      </div>`
+          : ''
+      }
     </div>
-
-    ${categoriesProduits
-      .map(
-        (c) => `<div class="conseil-famille" data-conseil="${c.slug}" hidden>
-      <b>${esc(c.nomCourt)} — le conseil de nos techniciens.</b> ${esc(c.conseil)}
-    </div>`
-      )
-      .join('\n    ')}
-
-    <div class="grid3" id="catalogue">
-      ${produits.map(carteProduit).join('\n      ')}
-    </div>
-
-    <p class="aucun-resultat" id="aucun" hidden>
-      Aucune référence ne correspond à cette combinaison. <b>Cela ne veut pas dire que nous ne l'avons pas</b> :
-      notre catalogue en ligne est plus court que notre stock. Appelez le
-      <a href="tel:${site.telephoneE164}">${site.telephone}</a> ou <a href="/contact?sujet=produits">écrivez-nous</a>.
-    </p>
   </div>
-</section>
+</section>`;
+}
 
-${blocLivraison()}
-
-<section class="alt">
+const etapesCommande = `<section class="alt">
   <div class="wrap">
     <div class="sec-head center">
       <p class="eyebrow">Comment ça marche</p>
       <h2>Quatre étapes, aucun paiement en ligne</h2>
     </div>
     <div class="steps">
-      <div class="step"><h3>Vous composez</h3><p>Vous ajoutez vos produits et vos conditionnements à votre commande, sans compte à créer.</p></div>
-      <div class="step"><h3>Vous envoyez</h3><p>Vos coordonnées, votre adresse de livraison, et c'est parti. Aucune carte bancaire demandée.</p></div>
-      <div class="step"><h3>Nous validons</h3><p>Vous recevez par mail la confirmation avec le montant exact et la date de passage prévue.</p></div>
-      <div class="step"><h3>Nous livrons et facturons</h3><p>Un technicien vous dépose la commande. La facture suit dans vos conditions habituelles.</p></div>
+      <div class="step"><h3>Vous composez</h3><p>Vous ajoutez machines et consommables à votre panier, sans compte à créer.</p></div>
+      <div class="step"><h3>Vous envoyez</h3><p>Vos coordonnées et votre adresse de livraison. Aucune carte bancaire demandée.</p></div>
+      <div class="step"><h3>Nous validons</h3><p>Vous recevez par mail la confirmation du montant exact. Pour une machine, nous vérifions l'installation avec vous avant de la commander.</p></div>
+      <div class="step"><h3>Nous livrons et facturons</h3><p>Un technicien vous livre — et installe s'il s'agit d'une machine. La facture suit dans vos conditions habituelles.</p></div>
+    </div>
+  </div>
+</section>`;
+
+const faqBoutique = [
+  {
+    q: 'Qui peut commander sur la boutique ?',
+    r: `Les professionnels — restaurants, hôtels, campings, collectivités, établissements de santé — installés sur notre zone d'intervention : Bouches-du-Rhône, Gard et Vaucluse. Pas besoin d'être déjà client : la première commande sert souvent de premier contact.`,
+  },
+  {
+    q: 'Comment se passe le paiement ?',
+    r: `Il n'y a aucun paiement sur le site. Vous composez votre panier, nous recevons la commande par mail, nous vous la confirmons avec le montant exact, puis nous livrons et facturons dans les conditions de votre compte client.`,
+  },
+  {
+    q: "Pourquoi le forfait d'installation est-il obligatoire avec une machine ?",
+    r: `Parce qu'une machine professionnelle mal raccordée ou mal réglée sur votre eau donne de mauvais résultats dès le premier jour, et que c'est nous qui en assurons ensuite l'entretien et le SAV. Nous la recevons, la préparons, la livrons, l'installons, la mettons en service et montrons son fonctionnement à votre équipe : c'est ce travail que couvre le forfait.`,
+  },
+  {
+    q: "Quel est le délai pour une machine ?",
+    r: `Il dépend de la disponibilité chez le fabricant et de la préparation de votre installation. Nous vous l'indiquons à la confirmation de commande, avant de commander la machine — jamais un délai que nous ne pouvons pas tenir.`,
+  },
+  {
+    q: 'La livraison des produits d’entretien est-elle vraiment offerte, même pour un seul bidon ?',
+    r: `Oui, sans minimum de commande, partout sur notre zone d'intervention. Nos techniciens circulent toute la journée entre deux rendez-vous : votre commande voyage avec eux. Nous ne facturons pas un port que nous ne payons pas.`,
+  },
+  {
+    q: 'Je ne sais pas quelle référence commander pour ma machine.',
+    r: `Envoyez-nous une photo de la plaque signalétique ou appelez le ${site.telephone}. La bonne référence dépend de la génération de l'appareil et, pour les fours Rational, de la présence du système CareControl ou de l'AutoDose. Nous vérifions avant de livrer.`,
+  },
+];
+
+// ===========================================================================
+// E-SHOP — accueil /eshop
+// ===========================================================================
+function eshopAccueil() {
+  const fil = [{ nom: 'Accueil', url: '/' }, { nom: 'Boutique', url: ESHOP }];
+  const marquesBoutique = marquesCatalogue.map((nom) => ({ nom, page: pageMarque(nom), n: produitsPublics.filter((p) => p.marque === nom).length }));
+
+  const corps = `
+<div class="phero">
+  <div class="wrap">
+    <p class="eyebrow on-dark">La boutique ${esc(site.nom)}</p>
+    <h1>Équipez et entretenez votre cuisine, nous livrons et installons</h1>
+    <p>Machines livrées, installées et mises en service par nos techniciens ; produits d'entretien livrés sans frais de port. Pour les professionnels des Bouches-du-Rhône, du Gard et du Vaucluse — <b>aucun paiement en ligne</b>, chaque commande vous est confirmée par mail.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#collections">Voir les collections</a>
+      <a class="btn btn-ghost" href="${URL_CATALOGUE}">Tout le catalogue</a>
+    </div>
+  </div>
+</div>
+${ariane(fil)}
+
+<section id="collections">
+  <div class="wrap">
+    ${noticePrix}
+    ${universBoutique
+      .map((u) => {
+        const cols = collectionsDe(u.slug);
+        if (!cols.length) return '';
+        return `<div class="univers-bloc">
+      <div class="sec-head">
+        <p class="eyebrow">${esc(u.nom)}</p>
+        <h2>${esc(u.accroche)}</h2>
+      </div>
+      <div class="grid3">
+      ${cols.map(carteCollection).join('\n      ')}
+      </div>
+    </div>`;
+      })
+      .join('\n    ')}
+    <p class="lien-catalogue"><a class="btn btn-outline" href="${URL_CATALOGUE}">Parcourir les ${totalProduits} références, avec filtres →</a></p>
+  </div>
+</section>
+
+${blocForfait()}
+
+<section>
+  <div class="wrap">
+    <div class="sec-head center">
+      <p class="eyebrow">Les marques de la boutique</p>
+      <h2>Des marques que nous installons et dépannons</h2>
+      <p class="lead">Nous ne vendons que ce que nous savons entretenir. C'est plus court qu'un catalogue de grossiste, et c'est volontaire.</p>
+    </div>
+    <div class="marques-boutique">
+      ${marquesBoutique
+        .map(
+          (m) =>
+            `<a href="${m.page ? `/marques/${m.page.slug}` : `${URL_CATALOGUE}?marque=${encodeURIComponent(m.nom)}#catalogue`}"><b>${esc(m.nom)}</b><span>${pluriel(m.n, 'référence')}</span></a>`
+        )
+        .join('\n      ')}
     </div>
   </div>
 </section>
 
-${blocFaq(faq, 'Questions sur les commandes de consommables')}
-${blocCtaFinal('Un doute sur une référence ?', "Appelez-nous ou envoyez une photo de la plaque signalétique de votre machine : nous confirmons la bonne référence avant de livrer.")}
-<script>${SCRIPT_FILTRES}</script>`;
+${etapesCommande}
+${blocFaq(faqBoutique, 'Questions sur la boutique')}
+${blocCtaFinal('Un doute sur une machine ou une référence ?', "Appelez-nous ou envoyez une photo de la plaque signalétique : nous vous orientons avant que vous commandiez.")}`;
 
   return page(
     {
-      titre: `Produits lessiviels et d'entretien — livraison offerte | ${site.nom}`,
-      description: `Détergents, liquides de rinçage et produits d'entretien pour lave-vaisselle, lave-verres et fours professionnels. ${totalProduits} références, livraison offerte dès un bidon en Provence.`,
-      chemin: '/produits',
+      titre: `Boutique en ligne — matériel et produits d'entretien pour cuisine professionnelle | ${site.nom}`,
+      description: `Lave-vaisselle, lave-verres, blanchisserie et produits d'entretien professionnels. Machines livrées et installées, consommables livrés sans frais de port dans les Bouches-du-Rhône, le Gard et le Vaucluse.`,
+      chemin: ESHOP,
       schemas: [
         schemaAriane(fil),
-        schemaFaq(faq),
+        schemaFaq(faqBoutique),
         {
           '@context': 'https://schema.org',
           '@type': 'ItemList',
-          name: 'Catalogue des produits lessiviels et d’entretien',
-          numberOfItems: produits.length,
-          itemListElement: produits.map((p, k) => ({
+          name: `Collections de la boutique ${site.nom}`,
+          numberOfItems: categoriesPubliques.length,
+          itemListElement: categoriesPubliques.map((c, k) => ({
             '@type': 'ListItem',
             position: k + 1,
-            name: `${p.marque} ${p.nom}`,
-            url: url(`/produits/${p.categorie}/${p.slug}`),
+            name: c.nom,
+            url: url(urlCollection(c.slug)),
           })),
         },
       ],
@@ -2217,15 +2302,192 @@ ${blocCtaFinal('Un doute sur une référence ?', "Appelez-nous ou envoyez une ph
 }
 
 // ===========================================================================
-// PRODUITS — fiche produit
+// E-SHOP — une collection /eshop/<famille>
+// ===========================================================================
+function collectionPage(c) {
+  const u = universBoutique.find((x) => x.slug === c.univers);
+  const fil = [
+    { nom: 'Accueil', url: '/' },
+    { nom: 'Boutique', url: ESHOP },
+    { nom: c.nomCourt, url: urlCollection(c.slug) },
+  ];
+  const liste = produitsDeCategorie(c.slug);
+  const autres = categoriesPubliques.filter((x) => x.slug !== c.slug);
+  const materiel = c.univers === 'materiel';
+
+  const corps = `
+<div class="phero compact">
+  <div class="wrap">
+    <p class="eyebrow on-dark">${esc(u ? u.nom : 'Boutique')}</p>
+    <h1>${esc(c.nom)}</h1>
+    <p>${esc(c.description)}</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section>
+  <div class="wrap">
+    ${noticePrix}
+    ${c.intro ? `<p class="lead collec-intro">${esc(c.intro)}</p>` : ''}
+    ${c.conseil ? `<div class="conseil-famille"><b>Le conseil de nos techniciens.</b> ${esc(c.conseil)}</div>` : ''}
+    <div class="grid3" id="catalogue">
+      ${liste.map(carteProduit).join('\n      ')}
+    </div>
+    <p class="aucun-resultat">
+      Vous ne trouvez pas votre référence ? <b>Notre boutique en ligne est plus courte que notre offre</b> :
+      appelez le <a href="tel:${site.telephoneE164}">${site.telephone}</a> ou <a href="/contact?sujet=${materiel ? 'materiel' : 'produits'}">écrivez-nous</a>.
+    </p>
+  </div>
+</section>
+
+${materiel ? blocForfait() : blocLivraison()}
+
+<section${materiel ? '' : ' class="alt"'}>
+  <div class="wrap">
+    <div class="sec-head center">
+      <p class="eyebrow">Boutique</p>
+      <h2>Les autres collections</h2>
+    </div>
+    <div class="collec-liens">
+      ${autres.map((x) => `<a href="${urlCollection(x.slug)}">${svg(x.icone)}<span>${esc(x.nom)}</span></a>`).join('\n      ')}
+      <a href="${URL_CATALOGUE}">${svg('panier')}<span>Tout le catalogue</span></a>
+    </div>
+  </div>
+</section>
+
+${blocCtaFinal(materiel ? 'Un projet d’équipement ?' : 'Un doute sur une référence ?', materiel ? "Dites-nous ce que vous lavez, combien et avec quelle eau : nous vous indiquons la machine adaptée avant que vous commandiez." : "Appelez-nous ou envoyez une photo de la plaque signalétique de votre machine : nous confirmons la bonne référence avant de livrer.")}`;
+
+  return page(
+    {
+      titre: `${c.titreSeo || c.nom} | ${site.nom}`,
+      description: `${c.description} ${pluriel(liste.length, 'référence')} en ligne, commande sans paiement en ligne.`,
+      chemin: urlCollection(c.slug),
+      schemas: [
+        schemaAriane(fil),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: c.nom,
+          description: c.description,
+          url: url(urlCollection(c.slug)),
+          mainEntity: {
+            '@type': 'ItemList',
+            numberOfItems: liste.length,
+            itemListElement: liste.map((p, k) => ({
+              '@type': 'ListItem',
+              position: k + 1,
+              name: `${p.marque} ${p.nom}`,
+              url: url(urlProduit(p)),
+            })),
+          },
+        },
+      ],
+    },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
+// E-SHOP — tout le catalogue, filtrable /eshop/catalogue
+// ===========================================================================
+function cataloguePage() {
+  const fil = [
+    { nom: 'Accueil', url: '/' },
+    { nom: 'Boutique', url: ESHOP },
+    { nom: 'Tout le catalogue', url: URL_CATALOGUE },
+  ];
+  const nbMarque = (m) => produitsPublics.filter((p) => p.marque === m).length;
+  const nbMachine = (s) => produitsPublics.filter((p) => (p.machines || []).includes(s)).length;
+  const machinesUtiles = machinesCatalogue.filter((m) => nbMachine(m.slug) > 0);
+
+  const corps = `
+<div class="phero compact">
+  <div class="wrap">
+    <p class="eyebrow on-dark">Boutique</p>
+    <h1>Tout le catalogue</h1>
+    <p>Les ${totalProduits} références de la boutique, à filtrer par collection, par machine ou par marque.</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section id="boutique">
+  <div class="wrap">
+    ${noticePrix}
+    <div class="filtres" id="barre-filtres" hidden>
+      ${groupeFiltres('Collection', 'famille', categoriesPubliques.map((c) => ({ slug: c.slug, nom: c.nomCourt, n: nbCollection(c.slug) })), esc)}
+      ${groupeFiltres('Machine', 'machine', machinesUtiles.map((m) => ({ slug: m.slug, nom: m.nom, n: nbMachine(m.slug) })), esc)}
+      ${groupeFiltres('Marque', 'marque', marquesCatalogue.map((m) => ({ slug: m, nom: m, n: nbMarque(m) })), esc)}
+      <div class="fbilan">
+        <span id="compte">${totalProduits} références</span>
+        <button type="button" id="reinit" class="freinit" hidden>Tout afficher</button>
+      </div>
+    </div>
+
+    ${categoriesPubliques
+      .map(
+        (c) => `<div class="conseil-famille" data-conseil="${c.slug}" hidden>
+      <b>${esc(c.nomCourt)} — le conseil de nos techniciens.</b> ${esc(c.conseil)}
+    </div>`
+      )
+      .join('\n    ')}
+
+    <div class="grid3" id="catalogue">
+      ${produitsPublics.map(carteProduit).join('\n      ')}
+    </div>
+
+    <p class="aucun-resultat" id="aucun" hidden>
+      Aucune référence ne correspond à cette combinaison. <b>Cela ne veut pas dire que nous ne l'avons pas</b> :
+      notre boutique en ligne est plus courte que notre offre. Appelez le
+      <a href="tel:${site.telephoneE164}">${site.telephone}</a> ou <a href="/contact?sujet=produits">écrivez-nous</a>.
+    </p>
+  </div>
+</section>
+
+${blocCtaFinal('Un doute sur une référence ?', "Appelez-nous ou envoyez une photo de la plaque signalétique de votre machine : nous confirmons la bonne référence avant de livrer.")}
+<script>${SCRIPT_FILTRES}</script>`;
+
+  return page(
+    {
+      titre: `Tout le catalogue — matériel et produits d'entretien | ${site.nom}`,
+      description: `Les ${totalProduits} références de la boutique ${site.nom} : lave-vaisselle, blanchisserie, détergents, liquides de rinçage, entretien des fours et traitement de l'eau.`,
+      chemin: URL_CATALOGUE,
+      schemas: [
+        schemaAriane(fil),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          name: `Catalogue de la boutique ${site.nom}`,
+          numberOfItems: produitsPublics.length,
+          itemListElement: produitsPublics.map((p, k) => ({
+            '@type': 'ListItem',
+            position: k + 1,
+            name: `${p.marque} ${p.nom}`,
+            url: url(urlProduit(p)),
+          })),
+        },
+      ],
+    },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
+// E-SHOP — fiche produit /eshop/<famille>/<produit>
 // ===========================================================================
 function produitPage(p) {
   const c = categorieDuProduit(p);
+  const machine = estMachine(p);
+  const forfait = machine ? forfaitDe(p) : null;
+  const fc = forfait?.conditionnements[0];
+  const marque = pageMarque(p.marque);
+  const adresse = urlProduit(p);
   const fil = [
     { nom: 'Accueil', url: '/' },
-    { nom: 'Produits', url: '/produits' },
-    { nom: c.nomCourt, url: `/produits?famille=${c.slug}#catalogue` },
-    { nom: p.nom, url: `/produits/${c.slug}/${p.slug}` },
+    { nom: 'Boutique', url: ESHOP },
+    { nom: c.nomCourt, url: urlCollection(c.slug) },
+    { nom: p.nom, url: adresse },
   ];
   // Sélection glissante, pour que chaque référence reçoive des liens entrants
   // au lieu que les trois premières de la famille captent tout.
@@ -2233,9 +2495,11 @@ function produitPage(p) {
   const ip = famille.findIndex((x) => x.slug === p.slug);
   const memeFamille = [1, 2, 3]
     .map((d) => famille[(ip + d) % famille.length])
-    .filter((x) => x && x.slug !== p.slug);
-  const prixConnus = p.conditionnements.filter((x) => typeof x.prix === 'number');
+    .filter((x, k, t) => x && x.slug !== p.slug && t.findIndex((y) => y.slug === x.slug) === k);
 
+  // Une machine n'est pas « en stock » : elle est commandée chez le fabricant
+  // une fois l'installation validée. On ne lui attribue donc ni disponibilité
+  // ni frais de port nuls — le transport est dans le forfait.
   const schemaProduit = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -2245,74 +2509,33 @@ function produitPage(p) {
     brand: { '@type': 'Brand', name: p.marque },
     category: c.nom,
     description: p.description,
-    url: url(`/produits/${c.slug}/${p.slug}`),
-    offers: p.conditionnements.map((cd) => ({
-      '@type': 'Offer',
-      name: cd.label,
-      ...(typeof cd.prix === 'number'
-        ? { price: cd.prix.toFixed(2), priceCurrency: 'EUR', availability: 'https://schema.org/InStock' }
-        : { availability: 'https://schema.org/InStock' }),
-      url: url(`/produits/${c.slug}/${p.slug}`),
-      seller: { '@id': url('/#entreprise') },
-      areaServed: { '@type': 'AdministrativeArea', name: "Bouches-du-Rhône, Gard, Vaucluse" },
-      shippingDetails: {
-        '@type': 'OfferShippingDetails',
-        shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'EUR' },
-        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'FR' },
-      },
-    })),
+    url: url(adresse),
+    offers: p.conditionnements
+      .filter((cd) => !machine || typeof cd.prix === 'number')
+      .map((cd) => ({
+        '@type': 'Offer',
+        name: cd.label,
+        ...(typeof cd.prix === 'number' ? { price: cd.prix.toFixed(2), priceCurrency: 'EUR' } : {}),
+        ...(cd.ean ? { gtin13: cd.ean } : {}),
+        ...(machine ? {} : { availability: 'https://schema.org/InStock' }),
+        url: url(adresse),
+        seller: { '@id': url('/#entreprise') },
+        areaServed: { '@type': 'AdministrativeArea', name: 'Bouches-du-Rhône, Gard, Vaucluse' },
+        ...(machine
+          ? {}
+          : {
+              shippingDetails: {
+                '@type': 'OfferShippingDetails',
+                shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'EUR' },
+                shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'FR' },
+              },
+            }),
+      })),
   };
+  if (!schemaProduit.offers.length) delete schemaProduit.offers;
 
-  const corps = `
-<div class="phero compact">
-  <div class="wrap">
-    <p class="eyebrow on-dark">${esc(p.marque)} · Réf. ${esc(p.ref)}</p>
-    <h1>${esc(p.nom)}</h1>
-    <p>${esc(p.resume)}</p>
-  </div>
-</div>
-${ariane(fil)}
-
-<section data-fiche-ref="${esc(p.ref)}">
-  <div class="wrap">
-    <div class="grid-art">
-      <article class="prose">
-        ${noticePrix}
-        <h2>À quoi sert ce produit</h2>
-        <p>${esc(p.description)}</p>
-
-        <h2>Machines et usages concernés</h2>
-        <ul class="ul-check">${p.usages.map((u) => `<li>${esc(u)}</li>`).join('')}</ul>
-
-        <h2>Caractéristiques</h2>
-        <ul>${p.caracteristiques.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-        ${p.dosage ? `<p><b>Dosage constructeur :</b> ${esc(p.dosage)}</p>` : ''}
-
-        ${
-          // Les incompatibilités de matériaux viennent de la fiche technique du
-          // fabricant. Elles doivent être lues AVANT la commande, pas après :
-          // un détergent fortement alcalin sur de l'argenterie, c'est
-          // irréversible. D'où un encadré et non une puce de liste.
-          p.attention
-            ? `<div class="mise-en-garde">
-          <p><b>À vérifier avant de commander.</b> ${esc(p.attention)}</p>
-        </div>`
-            : ''
-        }
-
-        ${
-          // Trois documents au plus, et l'ordre compte.
-          //
-          // 1. La fiche technique à la charte SODILAME : c'est celle qu'on
-          //    envoie à un client, lisible et à notre nom.
-          // 2. La fiche du fabricant : elle reste en ligne comme source. Nos
-          //    données en sont tirées, et c'est elle qui fait foi en cas d'écart.
-          // 3. La fiche de données de sécurité : le PDF ORIGINAL du fabricant,
-          //    jamais remis en page. C'est lui qui engage sa responsabilité sur
-          //    le contenu, et une erreur de recopie dans une mention H ou P se
-          //    paierait sur la santé de quelqu'un.
-          p.fiches
-            ? `<h2>Documentation</h2>
+  const blocDocs = p.fiches
+    ? `<h2>Documentation</h2>
         <p>${
           ficheSodilame(p)
             ? `La fiche technique SODILAME reprend les données du fabricant sous une forme lisible, sur une page. Le document d'origine ${esc(p.marque)} reste disponible : c'est lui qui fait foi. `
@@ -2329,23 +2552,135 @@ ${ariane(fil)}
               ? `<li><a href="/assets/fiches/${p.fiches.technique}" target="_blank" rel="noopener">Fiche technique ${esc(p.ref)} — ${esc(p.marque)}</a> <span>PDF — document d'origine du fabricant</span></li>`
               : ''
           }
-          <li><a href="/assets/fiches/${p.fiches.securite}" target="_blank" rel="noopener">Fiche de données de sécurité ${esc(p.ref)}</a> <span>PDF — document du fabricant, à conserver dans votre PMS</span></li>
+          ${
+            // Trois documents au plus, et l'ordre compte. La FDS est le PDF
+            // ORIGINAL du fabricant, jamais remis en page : une erreur de
+            // recopie dans une mention H ou P se paierait sur la santé de
+            // quelqu'un.
+            p.fiches.securite
+              ? `<li><a href="/assets/fiches/${p.fiches.securite}" target="_blank" rel="noopener">Fiche de données de sécurité ${esc(p.ref)}</a> <span>PDF — document du fabricant, à conserver dans votre PMS</span></li>`
+              : ''
+          }
         </ul>`
-            : ''
-        }
+    : '';
 
-        <h2>Livraison et facturation</h2>
+  // Fiches produit du fabricant, une par version : un LIEN vers le document
+  // hébergé par Miele, jamais une copie.
+  const fichesFabricant = p.conditionnements.filter((cd) => cd.ficheMiele);
+  const blocFichesFabricant = fichesFabricant.length
+    ? `<h2>Fiche produit ${esc(p.marque)}</h2>
+        <p>Dimensions, raccordements et caractéristiques complètes${fichesFabricant.length > 1 ? ', version par version' : ''}, sur le document officiel du fabricant.</p>
+        <ul class="fiches-pdf">
+          ${fichesFabricant
+            .map((cd) => `<li><a href="${esc(cd.ficheMiele)}" target="_blank" rel="noopener nofollow">Fiche produit ${esc(cd.refMiele || p.ref)}</a> <span>PDF — site ${esc(p.marque)}</span></li>`)
+            .join('\n          ')}
+        </ul>`
+    : '';
+
+  const livraison = machine
+    ? `<h2>Livraison, installation et mise en service</h2>
+        <p>Cette machine est vendue avec son <b>forfait de livraison, d'installation et de mise en service</b>, ajouté automatiquement à votre panier. Il comprend :</p>
+        <ul class="ul-check">${etapesForfait.map((e) => `<li>${esc(e)}</li>`).join('')}</ul>
+        <p>Avant de commander la machine chez ${esc(p.marque)}, nous vérifions avec vous l'arrivée d'eau, l'évacuation, l'alimentation électrique et le passage jusqu'à l'emplacement. Le délai vous est confirmé à ce moment-là.</p>
+        <h2>Commande et facturation</h2>
+        <p>Aucun paiement n'est demandé sur le site : nous vous confirmons le montant exact de la machine et de son forfait par mail, puis nous vous facturons dans les conditions habituelles de votre compte.</p>
+        <p>Vous hésitez entre deux modèles ? Appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a> : dites-nous ce que vous lavez, en quelle quantité et avec quelle eau, nous vous dirons laquelle choisir.</p>`
+    : p.surCommande
+      ? `<h2>Livraison et facturation</h2>
+        <p>Cet article est commandé chez ${esc(p.marque)} à la validation de votre commande : nous vous confirmons son délai par mail. Il vous est ensuite livré <b>sans frais de port</b> par l'un de nos techniciens, sur l'ensemble de notre zone d'intervention.</p>
+        <p>Aucun paiement n'est demandé sur le site : nous vous confirmons votre commande et son montant par mail, puis nous vous facturons dans les conditions habituelles de votre compte.</p>
+        <p>Un doute sur la compatibilité avec votre machine ? Appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a> : nous vérifions avant de commander.</p>`
+      : `<h2>Livraison et facturation</h2>
         ${
           // Tout n'est pas en stock. Quand un produit part en commande chez le
           // fabricant, son délai réel doit REMPLACER la promesse de tournée, pas
-          // s'y ajouter : annoncer les deux, c'est promettre le plus rapide des
-          // deux et décevoir à coup sûr.
+          // s'y ajouter.
           p.delai
             ? `<p>${esc(p.delai)}</p>`
             : `<p>Ce produit est livré <b>sans frais de port dès une unité</b> sur l'ensemble de notre zone d'intervention, par l'un de nos techniciens lors de sa prochaine tournée dans votre secteur.</p>`
         }
         <p>Aucun paiement n'est demandé sur le site : nous vous confirmons votre commande et son montant par mail, puis nous vous facturons dans les conditions habituelles de votre compte.</p>
-        <p>Vous ne savez pas si cette référence correspond à votre machine ? Envoyez-nous une photo de la plaque signalétique, ou appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a> : nous vérifions avant de livrer.</p>
+        <p>Vous ne savez pas si cette référence correspond à votre machine ? Envoyez-nous une photo de la plaque signalétique, ou appelez le <a href="tel:${site.telephoneE164}"><b>${site.telephone}</b></a> : nous vérifions avant de livrer.</p>`;
+
+  const lignesAchat = p.conditionnements
+    .map(
+      (cd, k) => `<div class="cond-row">
+            <span class="cl">${esc(cd.label)}${cd.aConfirmer ? ' <i title="Caractéristiques à confirmer par nos équipes">*</i>' : ''}</span>
+            ${prixTexte(cd)}
+            ${boutonAjout(p, cd, k)}
+          </div>`
+    )
+    .join('\n          ');
+
+  // La ligne du forfait n'a pas de bouton : elle n'est pas « ajoutable », elle
+  // accompagne la machine. Son prix est rafraîchi par panier.js comme les autres.
+  const ligneForfait = forfait
+    ? `<div class="cond-row forfait-row" data-forfait-de="${esc(forfait.ref)}">
+            <span class="cl">+ Forfait livraison, installation et mise en service</span>
+            ${prixTexte(fc)}
+            <span class="forfait-note">Ajouté automatiquement avec la machine</span>
+          </div>`
+    : '';
+
+  const plus = machine
+    ? `<span>${svg('installation')}Livrée, installée et mise en service</span>
+            <span>${svg('outils')}${marque?.agree ? `Distributeur agréé ${esc(p.marque)}` : 'Entretien et SAV par nos techniciens'}</span>
+            <span>${svg('user')}Aucun paiement en ligne</span>`
+    : p.surCommande
+      ? `<span>${svg('camion')}Livraison offerte sur notre zone</span>
+            <span>${svg('horloge')}Commandé chez ${esc(p.marque)}, délai confirmé par mail</span>
+            <span>${svg('user')}Aucun paiement en ligne</span>`
+    : p.delai
+      ? `<span>${svg('camion')}Livraison comprise dans le prix</span>
+            <span>${svg('horloge')}Commandé chez le fabricant, environ 10 jours</span>
+            <span>${svg('user')}Aucun paiement en ligne</span>`
+      : `<span>${svg('camion')}Livraison offerte dès une unité</span>
+            <span>${svg('bidon')}En stock à Saint-Martin-de-Crau</span>
+            <span>${svg('user')}Aucun paiement en ligne</span>`;
+
+  const corps = `
+<div class="phero compact">
+  <div class="wrap">
+    <p class="eyebrow on-dark">${esc(p.marque)} · Réf. ${esc(p.ref)}</p>
+    <h1>${esc(p.nom)}</h1>
+    <p>${esc(p.resume)}</p>
+  </div>
+</div>
+${ariane(fil)}
+
+<section data-fiche-ref="${esc(p.ref)}">
+  <div class="wrap">
+    <div class="grid-art">
+      <article class="prose">
+        ${noticePrix}
+        <h2>${machine ? 'Cette machine' : 'À quoi sert ce produit'}</h2>
+        <p>${esc(p.description)}</p>
+
+        <h2>${machine ? 'Pour quels établissements' : 'Machines et usages concernés'}</h2>
+        <ul class="ul-check">${p.usages.map((u) => `<li>${esc(u)}</li>`).join('')}</ul>
+
+        <h2>Caractéristiques</h2>
+        <ul>${p.caracteristiques.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+        ${p.dosage ? `<p><b>Dosage constructeur :</b> ${esc(p.dosage)}</p>` : ''}
+
+        ${
+          // Lu AVANT la commande, pas après : d'où un encadré et non une puce.
+          p.attention
+            ? `<div class="mise-en-garde">
+          <p><b>À vérifier avant de commander.</b> ${esc(p.attention)}</p>
+        </div>`
+            : ''
+        }
+
+        ${blocDocs}
+        ${blocFichesFabricant}
+
+        ${livraison}
+        ${
+          marque
+            ? `<p>${esc(p.marque)} chez ${esc(site.nom)} : gammes, points forts et services associés sur notre <a href="/marques/${marque.slug}">page ${esc(p.marque)}</a>.</p>`
+            : ''
+        }
       </article>
 
       <aside>
@@ -2353,56 +2688,52 @@ ${ariane(fil)}
         <div class="achat">
           ${vignetteProduit(p, ' grande')}
           <h2>Commander</h2>
-          <p class="achat-sub">${p.conditionnements.length > 1 ? 'Choisissez votre conditionnement' : 'Conditionnement disponible'}</p>
-          ${p.conditionnements
-            .map(
-              (cd, k) => `<div class="cond-row">
-            <span class="cl">${esc(cd.label)}${cd.aConfirmer ? ' <i title="Conditionnement à confirmer par nos équipes">*</i>' : ''}</span>
-            ${prixTexte(cd)}
-            ${boutonAjout(p, cd, k)}
-          </div>`
-            )
-            .join('\n          ')}
-          ${p.conditionnements.some((x) => x.aConfirmer) ? `<p class="achat-note">* Conditionnement confirmé par nos équipes lors de la validation de votre commande.</p>` : ''}
+          <p class="achat-sub">${machine ? 'Machine et forfait d’installation' : p.conditionnements.length > 1 ? 'Choisissez votre conditionnement' : 'Conditionnement disponible'}</p>
+          ${lignesAchat}
+          ${ligneForfait}
+          ${p.conditionnements.some((x) => x.aConfirmer) ? `<p class="achat-note">* Caractéristiques confirmées par nos équipes lors de la validation de votre commande.</p>` : ''}
           <div class="achat-plus">
-            ${
-              // Un produit commandé chez le fabricant ne peut pas afficher
-              // « en stock » : ce sont les deux lignes que le client lit avant
-              // de cliquer, elles doivent dire la vérité de CE produit.
-              p.delai
-                ? `<span>${svg('camion')}Livraison comprise dans le prix</span>
-            <span>${svg('horloge')}Commandé chez le fabricant, environ 10 jours</span>`
-                : `<span>${svg('camion')}Livraison offerte dès une unité</span>
-            <span>${svg('bidon')}En stock à Saint-Martin-de-Crau</span>`
-            }
-            <span>${svg('user')}Aucun paiement en ligne</span>
+            ${plus}
           </div>
-          <a class="btn btn-outline btn-sm" href="/produits/ma-commande" style="width:100%;justify-content:center;margin-top:1rem">Voir ma commande →</a>
+          <a class="btn btn-outline btn-sm" href="${URL_PANIER}" style="width:100%;justify-content:center;margin-top:1rem">Voir mon panier →</a>
         </div>
       </aside>
     </div>
   </div>
 </section>
 
-<section class="alt">
+${
+  memeFamille.length
+    ? `<section class="alt">
   <div class="wrap">
     <div class="sec-head center">
       <p class="eyebrow">${esc(c.nomCourt)}</p>
-      <h2>Autres références de la même famille</h2>
+      <h2>${machine ? 'Les autres machines de la collection' : 'Autres références de la même famille'}</h2>
     </div>
     <div class="grid3">
       ${memeFamille.map(carteProduit).join('\n      ')}
     </div>
+    <p class="lien-catalogue"><a class="btn btn-outline btn-sm" href="${urlCollection(c.slug)}">Toute la collection ${esc(c.nomCourt)} →</a></p>
   </div>
-</section>
+</section>`
+    : ''
+}
 
-${blocCtaFinal('Une machine à faire régler en même temps ?', "Le technicien qui vous livre peut contrôler votre doseur et vos températures dans la foulée. Parlez-nous-en à la commande.")}`;
+${
+  machine
+    ? blocCtaFinal('Un doute sur le bon modèle ?', "Dites-nous ce que vous lavez, en quelle quantité et avec quelle eau : nous vous indiquons la machine adaptée avant que vous commandiez.")
+    : blocCtaFinal('Une machine à faire régler en même temps ?', "Le technicien qui vous livre peut contrôler votre doseur et vos températures dans la foulée. Parlez-nous-en à la commande.")
+}`;
 
   return page(
     {
       titre: `${p.marque} ${p.nom} (${p.ref}) | ${site.nom}`,
-      description: `${p.resume} Livraison offerte dès une unité en Provence par ${site.nom}, stock à Saint-Martin-de-Crau.`,
-      chemin: `/produits/${c.slug}/${p.slug}`,
+      description: machine
+        ? `${p.resume} Livrée, installée et mise en service par ${site.nom} dans les Bouches-du-Rhône, le Gard et le Vaucluse.`
+        : p.surCommande
+        ? `${p.resume} Livraison offerte en Provence par ${site.nom}, distributeur ${p.marque}.`
+        : `${p.resume} Livraison offerte dès une unité en Provence par ${site.nom}, stock à Saint-Martin-de-Crau.`,
+      chemin: adresse,
       typeOg: 'product',
       schemas: [schemaAriane(fil), schemaProduit],
     },
@@ -2412,22 +2743,22 @@ ${blocCtaFinal('Une machine à faire régler en même temps ?', "Le technicien q
 }
 
 // ===========================================================================
-// PRODUITS — page « ma commande »
+// E-SHOP — panier /eshop/panier
 // ===========================================================================
 function commandePage() {
   const fil = [
     { nom: 'Accueil', url: '/' },
-    { nom: 'Produits', url: '/produits' },
-    { nom: 'Ma commande', url: '/produits/ma-commande' },
+    { nom: 'Boutique', url: ESHOP },
+    { nom: 'Mon panier', url: URL_PANIER },
   ];
   const communes = [...new Set(zones.flatMap((z) => z.communes))].sort((a, b) => a.localeCompare(b, 'fr'));
 
   const corps = `
 <div class="phero compact">
   <div class="wrap">
-    <p class="eyebrow on-dark">Commande</p>
-    <h1>Votre commande</h1>
-    <p>V\u00e9rifiez votre liste, confirmez l'adresse de livraison et envoyez. Aucun paiement n'est demand\u00e9 ici : nous vous confirmons tout par mail.</p>
+    <p class="eyebrow on-dark">Boutique</p>
+    <h1>Mon panier</h1>
+    <p>Vérifiez votre liste, confirmez l'adresse de livraison et envoyez. Aucun paiement n'est demandé ici : nous vous confirmons tout par mail.</p>
   </div>
 </div>
 ${ariane(fil)}
@@ -2437,37 +2768,38 @@ ${ariane(fil)}
     <div class="grid-art">
       <div>
         <div id="panier-vide" class="panier-vide">
-          <p><b>Votre commande est vide.</b></p>
-          <p>Parcourez le catalogue et ajoutez les produits dont vous avez besoin.</p>
-          <a class="btn btn-primary" href="/produits">Voir le catalogue</a>
+          <p><b>Votre panier est vide.</b></p>
+          <p>Parcourez la boutique et ajoutez ce dont vous avez besoin.</p>
+          <a class="btn btn-primary" href="${ESHOP}">Voir la boutique</a>
         </div>
         <div id="panier-table" hidden>
           <table class="panier">
-            <thead><tr><th>Produit</th><th class="num">Qt\u00e9</th><th class="num">Total</th><th></th></tr></thead>
+            <thead><tr><th>Article</th><th class="num">Qté</th><th class="num">Total</th><th></th></tr></thead>
             <tbody id="panier-lignes"></tbody>
           </table>
           <div class="panier-total">
-            <span>Total estim\u00e9 HT</span>
-            <b id="panier-total">\u2014</b>
+            <span>Total estimé HT</span>
+            <b id="panier-total">—</b>
           </div>
           <p class="panier-note" id="panier-note"></p>
-          <p class="panier-note"><b>Livraison offerte</b> sur l'ensemble de notre zone d'intervention, sans minimum de commande.</p>
+          <p class="panier-note"><b>Produits d'entretien : livraison offerte</b> sur l'ensemble de notre zone d'intervention, sans minimum de commande.</p>
+          <p class="panier-note" id="note-machines" hidden><b>Machines :</b> chacune est accompagnée de son forfait de livraison, d'installation et de mise en service. Il suit la quantité de la machine et ne peut pas en être séparé. Nous vérifions l'installation avec vous avant de commander la machine.</p>
         </div>
       </div>
 
       <aside>
         <form class="devis" id="form-commande" method="post" action="/api/commande" novalidate>
-          <!-- Client reconnu : coordonn\u00e9es reprises de sa fiche -->
+          <!-- Client reconnu : coordonnées reprises de sa fiche -->
           <p class="cx-client" id="cx-client" hidden></p>
 
-          <!-- Visiteur : coordonn\u00e9es \u00e0 saisir -->
+          <!-- Visiteur : coordonnées à saisir -->
           <div id="zone-identite">
-            <p class="cx-invite">D\u00e9j\u00e0 client&nbsp;? <a href="/espace/connexion?suite=%2Fproduits%2Fma-commande">Connectez-vous</a> pour ne rien ressaisir et suivre vos commandes.</p>
-            <h2>Vos coordonn\u00e9es</h2>
-            <div class="field"><label for="c-etab">\u00c9tablissement *</label><input id="c-etab" name="etablissement" autocomplete="organization" required placeholder="Restaurant Le Mas"></div>
+            <p class="cx-invite">Déjà client&nbsp;? <a href="/espace/connexion?suite=${encodeURIComponent(URL_PANIER)}">Connectez-vous</a> pour ne rien ressaisir et suivre vos commandes.</p>
+            <h2>Vos coordonnées</h2>
+            <div class="field"><label for="c-etab">Établissement *</label><input id="c-etab" name="etablissement" autocomplete="organization" required placeholder="Restaurant Le Mas"></div>
             <div class="field"><label for="c-nom">Nom du contact *</label><input id="c-nom" name="nom" autocomplete="name" required></div>
             <div class="row2">
-              <div class="field"><label for="c-tel">T\u00e9l\u00e9phone *</label><input id="c-tel" name="telephone" type="tel" autocomplete="tel" required></div>
+              <div class="field"><label for="c-tel">Téléphone *</label><input id="c-tel" name="telephone" type="tel" autocomplete="tel" required></div>
               <div class="field"><label for="c-email">E-mail *</label><input id="c-email" name="email" type="email" autocomplete="email" required></div>
             </div>
           </div>
@@ -2481,13 +2813,13 @@ ${ariane(fil)}
               <datalist id="liste-communes">${communes.map((x) => `<option value="${esc(x)}">`).join('')}</datalist>
             </div>
           </div>
-          <p class="hint"><span id="hint-fiche" hidden>Adresse reprise de votre fiche client, modifiable pour cette commande. </span>Nous livrons gratuitement les ${communes.length} communes de notre zone. <a href="/zone-intervention">Voir la zone</a>.</p>
-          <div class="field"><label for="c-message">Pr\u00e9cisions</label><textarea id="c-message" name="message" placeholder="R\u00e9f\u00e9rence de vos machines, cr\u00e9neau de livraison souhait\u00e9, num\u00e9ro de commande interne\u2026"></textarea></div>
+          <p class="hint"><span id="hint-fiche" hidden>Adresse reprise de votre fiche client, modifiable pour cette commande. </span>Nous livrons les ${communes.length} communes de notre zone. <a href="/zone-intervention">Voir la zone</a>.</p>
+          <div class="field"><label for="c-message">Précisions</label><textarea id="c-message" name="message" placeholder="Référence de vos machines, accès à l'emplacement, créneau souhaité, numéro de commande interne…"></textarea></div>
           <div class="hp" aria-hidden="true"><label for="societe_web">Ne pas remplir</label><input id="societe_web" name="societe_web" tabindex="-1" autocomplete="off"></div>
-          <label class="consent" id="c-consent"><input type="checkbox" name="consentement" required> J'accepte que mes informations soient utilis\u00e9es pour traiter cette commande. <a href="/politique-de-confidentialite">Politique de confidentialit\u00e9</a>.</label>
+          <label class="consent" id="c-consent"><input type="checkbox" name="consentement" required> J'accepte que mes informations soient utilisées pour traiter cette commande. <a href="/politique-de-confidentialite">Politique de confidentialité</a>.</label>
           <button class="btn btn-primary" type="submit" id="btn-commande" style="width:100%;justify-content:center">Envoyer ma commande</button>
           <p class="formmsg" id="commande-msg" role="status" aria-live="polite"></p>
-          <p style="font-size:.76rem;color:var(--muted);margin:.9rem 0 0;text-align:center">Aucun paiement n'est demand\u00e9. Nous vous confirmons le montant par mail avant livraison.</p>
+          <p style="font-size:.76rem;color:var(--muted);margin:.9rem 0 0;text-align:center">Aucun paiement n'est demandé. Nous vous confirmons le montant par mail avant livraison. <a href="/cgv">Conditions générales de vente</a>.</p>
         </form>
       </aside>
     </div>
@@ -2496,9 +2828,9 @@ ${ariane(fil)}
 
   return page(
     {
-      titre: `Ma commande \u2014 produits lessiviels | ${site.nom}`,
-      description: `Finalisez votre commande de produits lessiviels et d'entretien. Livraison offerte d\u00e8s un bidon sur notre zone d'intervention, sans paiement en ligne.`,
-      chemin: '/produits/ma-commande',
+      titre: `Mon panier — boutique | ${site.nom}`,
+      description: `Finalisez votre commande de matériel et de produits d'entretien professionnels, sans paiement en ligne.`,
+      chemin: URL_PANIER,
       noindex: true,
       schemas: [schemaAriane(fil)],
     },
@@ -2547,9 +2879,11 @@ for (const v of villes) await ecrire(`/zone-intervention/${v.slug}`, villePage(v
 await ecrire('/qr', pageQr(), { dansSitemap: false });
 await ecrire('/qr/panne', pagePanne(), { dansSitemap: false });
 await ecrire('/qr/audit', pageAudit(), { dansSitemap: false });
-await ecrire('/produits', boutiqueHub(), { priorite: 0.9 });
-for (const p of produits) await ecrire(`/produits/${p.categorie}/${p.slug}`, produitPage(p), { priorite: 0.7 });
-await ecrire('/produits/ma-commande', commandePage(), { priorite: 0.1, dansSitemap: false });
+await ecrire(ESHOP, eshopAccueil(), { priorite: 0.9 });
+await ecrire(URL_CATALOGUE, cataloguePage(), { priorite: 0.7 });
+for (const c of categoriesPubliques) await ecrire(urlCollection(c.slug), collectionPage(c), { priorite: 0.8 });
+for (const p of produitsPublics) await ecrire(urlProduit(p), produitPage(p), { priorite: 0.7 });
+await ecrire(URL_PANIER, commandePage(), { priorite: 0.1, dansSitemap: false });
 await ecrire('/conseils', conseilsHub(), { priorite: 0.7 });
 for (const a of articles) await ecrire(`/conseils/${a.slug}`, articlePage(a), { priorite: 0.6, majParDefaut: a.date });
 await ecrire('/a-propos', aPropos(), { priorite: 0.7 });

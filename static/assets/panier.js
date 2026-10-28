@@ -13,29 +13,66 @@
     try {
       var b = localStorage.getItem(CLE);
       var l = b ? JSON.parse(b) : [];
-      return Array.isArray(l) ? l : [];
+      return Array.isArray(l) ? synchroForfaits(l) : [];
     } catch (e) {
       return [];
     }
   }
 
   function ecrire(lignes) {
+    lignes = synchroForfaits(lignes);
     try {
       localStorage.setItem(CLE, JSON.stringify(lignes));
     } catch (e) {
       /* navigation privée ou stockage bloqué : le panier reste en mémoire de page */
     }
     majCompteur(lignes);
+    return lignes;
   }
 
+  // ---- Forfaits d'installation liés aux machines ---------------------------
+  // Une machine porte `forfait` ({ ref, nom, cond, prix }). Sa ligne de forfait
+  // porte `pour` = la clé de la ligne machine. Règles, appliquées à CHAQUE
+  // lecture et CHAQUE écriture du panier :
+  //   — le forfait existe dès que sa machine est au panier, placé juste après ;
+  //   — il a toujours la quantité de sa machine ;
+  //   — il disparaît avec elle : un forfait orphelin est supprimé.
+  // Le client ne peut donc ni le retirer, ni le commander seul. Le serveur
+  // applique la même règle de son côté, sans se fier à ce panier.
+  function synchroForfaits(lignes) {
+    var res = [];
+    lignes.forEach(function (l) {
+      if (!l || l.pour) return; // les forfaits sont recréés derrière leur machine
+      res.push(l);
+      if (l.forfait && l.forfait.ref) {
+        var f = lignes.find(function (x) { return x && x.pour === l.k; }) || {
+          k: l.k + '-forfait',
+          pour: l.k,
+          ref: l.forfait.ref,
+          nom: l.forfait.nom,
+          marque: 'SODILAME',
+          cond: l.forfait.cond,
+          prix: typeof l.forfait.prix === 'number' ? l.forfait.prix : null,
+          url: l.url,
+        };
+        f.qte = l.qte;
+        res.push(f);
+      }
+    });
+    return res;
+  }
+
+  // Le compteur de l'en-tête compte des articles, pas des lignes de service.
   function nbArticles(lignes) {
     return lignes.reduce(function (n, l) {
-      return n + l.qte;
+      return l.pour ? n : n + l.qte;
     }, 0);
   }
 
+  // 3 768,00 € : espace fine insécable entre les milliers.
   function euros(n) {
-    return n.toFixed(2).replace('.', ',') + ' €';
+    var p = n.toFixed(2).split('.');
+    return p[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f') + ',' + p[1] + '\u00a0€';
   }
 
   // ---- Compteur dans l'en-tête ---------------------------------------------
@@ -56,10 +93,19 @@
         var existante = lignes.find(function (l) {
           return l.k === d.k;
         });
+        var forfait = d.forfaitRef
+          ? {
+              ref: d.forfaitRef,
+              nom: d.forfaitNom,
+              cond: d.forfaitCond,
+              prix: d.forfaitPrix === '' || d.forfaitPrix === undefined ? null : parseFloat(d.forfaitPrix),
+            }
+          : null;
         if (existante) {
           existante.qte += 1;
+          if (forfait && !existante.forfait) existante.forfait = forfait;
         } else {
-          lignes.push({
+          var ligne = {
             k: d.k,
             ref: d.ref,
             nom: d.nom,
@@ -68,7 +114,9 @@
             prix: d.prix === '' ? null : parseFloat(d.prix),
             url: d.url,
             qte: 1,
-          });
+          };
+          if (forfait) ligne.forfait = forfait;
+          lignes.push(ligne);
         }
         ecrire(lignes);
         var texte = b.innerHTML;
@@ -88,7 +136,7 @@
   // l'administration. On les rafraîchit ici pour qu'une modification faite il y
   // a deux minutes soit déjà visible, sans attendre un redéploiement.
   function euros2(n) {
-    return n.toFixed(2).replace('.', ',') + ' \u20ac HT';
+    return euros(n) + ' HT';
   }
 
   // Une référence est HORS CATALOGUE quand la base connaît ses conditionnements
@@ -161,14 +209,7 @@
 
         masquerProduits(horsCatalogue(d.tarifs));
 
-        // Le bandeau « Tarifs en cours de mise en ligne » est calculé au build,
-        // à partir du fichier catalogue où les prix valent tous null. Or les
-        // prix réels vivent en base et sont saisis dans l'administration : le
-        // bandeau ne pouvait donc jamais disparaître de lui-même. Dès qu'un
-        // vrai prix nous arrive, on le retire.
-        if (d.tarifs.some(function (t) { return typeof t.prix === 'number'; })) {
-          document.querySelectorAll('.notice-prix').forEach(function (n) { n.remove(); });
-        }
+        majNotices(carte);
 
         boutons.forEach(function (b) {
           var t = carte[b.dataset.ref + '__' + b.dataset.cond];
@@ -193,6 +234,23 @@
           }
         });
 
+        // Forfaits : le prix affiché sous la machine, et celui que le bouton
+        // transmettra au panier. Un forfait n'est jamais « hors vente » : une
+        // machine ne part pas sans installation.
+        document.querySelectorAll('[data-forfait-de]').forEach(function (r) {
+          var t = carte[r.dataset.forfaitDe + '__Forfait'];
+          if (!t) return;
+          var cible = r.querySelector('.prix, .prix-nc');
+          if (!cible) return;
+          if (typeof t.prix === 'number') { cible.className = 'prix'; cible.innerHTML = '<b>' + euros2(t.prix) + '</b>'; }
+          else { cible.className = 'prix-nc'; cible.textContent = 'Prix sur demande'; }
+        });
+        boutons.forEach(function (b) {
+          if (!b.dataset.forfaitRef) return;
+          var t = carte[b.dataset.forfaitRef + '__' + b.dataset.forfaitCond];
+          if (t) b.dataset.forfaitPrix = typeof t.prix === 'number' ? String(t.prix) : '';
+        });
+
         // Un prix a pu changer depuis la mise au panier : on resynchronise.
         var l = lire();
         var modif = false;
@@ -207,7 +265,30 @@
       .catch(function () { /* l'affichage du build reste valable */ });
   }
 
-  // ---- Page « ma commande » -------------------------------------------------
+  // ---- Bandeau d'explication des prix ----------------------------------------
+  // Le build livre la liste des articles sans prix dans son fichier catalogue.
+  // Un article cesse d'être « sur demande » dès que l'administration lui donne
+  // un prix. Le bandeau disparaît quand il n'en reste plus aucun ; tant qu'il
+  // en reste, il passe au texte du catalogue mixte. Il ne disparaît JAMAIS
+  // simplement parce qu'un premier prix est arrivé.
+  var NOTICE_MIXTE = '<b>Tous les tarifs ne sont pas encore en ligne.</b> Les articles affich\u00e9s \u00ab\u00a0Prix sur demande\u00a0\u00bb se commandent exactement comme les autres\u00a0: nous vous confirmons le montant par retour de mail, avant toute exp\u00e9dition et avant toute facturation.';
+  function majNotices(carte) {
+    document.querySelectorAll('.notice-prix[data-sans-prix]').forEach(function (n) {
+      var liste;
+      try { liste = JSON.parse(n.dataset.sansPrix); } catch (e) { return; }
+      if (!Array.isArray(liste)) return;
+      var total = parseInt(n.dataset.total, 10) || 0;
+      var reste = liste.filter(function (cle) {
+        var t = carte[cle];
+        if (t && t.dispo === false) return false; // retiré de la vente : n'est plus affiché
+        return !(t && typeof t.prix === 'number');
+      });
+      if (!reste.length) n.remove();
+      else if (reste.length < total) n.innerHTML = NOTICE_MIXTE;
+    });
+  }
+
+  // ---- Page « panier » -------------------------------------------------------
   function rendrePanier() {
     var corps = document.getElementById('panier-lignes');
     if (!corps) return;
@@ -228,6 +309,18 @@
     corps.innerHTML = lignes
       .map(function (l, i) {
         var total = typeof l.prix === 'number' ? euros(l.prix * l.qte) : '—';
+        if (l.pour) {
+          // Ligne de forfait : ni +/−, ni suppression. Elle suit sa machine.
+          return (
+            '<tr class="ligne-forfait">' +
+            '<td><b>' + l.nom + '</b>' +
+            '<span class="pl-meta">Indissociable de la machine \u00b7 suit sa quantit\u00e9</span></td>' +
+            '<td class="num"><span class="qte-fixe">' + l.qte + '</span></td>' +
+            '<td class="num">' + total + '</td>' +
+            '<td class="num"></td>' +
+            '</tr>'
+          );
+        }
         return (
           '<tr>' +
           '<td><a href="' + l.url + '"><b>' + l.nom + '</b></a>' +
@@ -267,6 +360,9 @@
       return s + l.prix * l.qte;
     }, 0);
     document.getElementById('panier-total').textContent = connus.length ? euros(total) + ' HT' : 'à confirmer';
+
+    var nm = document.getElementById('note-machines');
+    if (nm) nm.hidden = !lignes.some(function (l) { return l.pour; });
 
     var note = document.getElementById('panier-note');
     if (connus.length < lignes.length) {
@@ -322,7 +418,7 @@
 
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      var lignes = lire();
+      var lignes = lire().filter(function (l) { return !l.pour; });
       if (!lignes.length) {
         msg.className = 'formmsg ko';
         msg.textContent = 'Votre commande est vide.';
@@ -377,7 +473,7 @@
             var v = document.getElementById('panier-vide');
             v.hidden = false;
             v.innerHTML =
-              '<p><b>Commande envoyée.</b></p><p>Nous vous confirmons par mail le montant exact et la date de passage d’un technicien. Un accusé de réception vient de vous être adressé.</p><a class="btn btn-primary" href="/produits">Retour au catalogue</a>';
+              '<p><b>Commande envoyée.</b></p><p>Nous vous confirmons par mail le montant exact et la suite de votre commande. Un accusé de réception vient de vous être adressé.</p><a class="btn btn-primary" href="/eshop">Retour à la boutique</a>';
             v.scrollIntoView({ behavior: 'smooth', block: 'center' });
           } else if (res.j && res.j.connexion) {
             // Session expirée : on renvoie vers la connexion, panier conservé.

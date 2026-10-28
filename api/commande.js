@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// POST /api/commande — enregistrement d'une commande de produits lessiviels
+// POST /api/commande — enregistrement d'une commande de la boutique (/eshop)
 //
 // Ouverte à tous : aucun compte n'est nécessaire pour commander. Le filtrage
 // se fait sur la commune de livraison — hors zone d'intervention, la commande
@@ -27,14 +27,25 @@ const COMMUNES = new Set(zones.flatMap((z) => z.communes).map(normaliser));
 const nbCommunes = new Set(zones.flatMap((z) => z.communes)).size;
 
 // Index du catalogue : référence + conditionnement → produit officiel.
+//
+// FORFAITS D'INSTALLATION. Une machine (`forfait` renseigné) entraîne toujours
+// sa ligne de forfait, à la même quantité. Le serveur ne fait AUCUNE confiance
+// au navigateur sur ce point : les lignes de forfait reçues sont ignorées, puis
+// recalculées à partir des machines. Un forfait ne peut donc être ni retiré, ni
+// commandé seul, ni pris à une autre quantité — même par une requête fabriquée.
 const CATALOGUE = new Map();
 for (const p of produits) {
   for (const c of p.conditionnements) {
     CATALOGUE.set(`${p.ref}__${c.label}`, {
       ref: p.ref, nom: p.nom, marque: p.marque, cond: c.label, prixFichier: c.prix ?? null,
+      estForfait: p.type === 'forfait',
+      forfait: p.forfait || null,
     });
   }
 }
+const FORFAITS = new Map(
+  produits.filter((p) => p.type === 'forfait').map((p) => [p.ref, { ...CATALOGUE.get(`${p.ref}__${p.conditionnements[0].label}`) }])
+);
 
 const vus = new Map();
 function tropDeRequetes(ip) {
@@ -47,7 +58,10 @@ function tropDeRequetes(ip) {
 }
 
 const nettoyer = (s = '', max = 500) => String(s ?? '').replace(/\r?\n/g, '\n').trim().slice(0, max);
-const euros = (n) => Number(n).toFixed(2).replace('.', ',') + ' €';
+const euros = (n) => {
+  const [e, d] = Number(n).toFixed(2).split('.');
+  return `${e.replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f')},${d}\u00a0€`;
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -156,17 +170,24 @@ export default async function handler(req, res) {
       refusees.push(nettoyer(l?.nom, 60) || 'référence inconnue');
       continue;
     }
+    if (officiel.estForfait) continue; // recalculé plus bas, à partir des machines
     const t = tarifs.get(cle);
     if (t && t.dispo === false) {
       refusees.push(`${officiel.nom} (${officiel.cond}) — plus disponible`);
       continue;
     }
-    lignes.push({
-      ...officiel,
-      qte: Math.min(999, Math.max(1, parseInt(l?.qte, 10) || 1)),
-      prix: t && t.prix !== null ? t.prix : officiel.prixFichier,
-    });
+    const qte = Math.min(999, Math.max(1, parseInt(l?.qte, 10) || 1));
+    lignes.push({ ...officiel, qte, prix: t && t.prix !== null ? t.prix : officiel.prixFichier });
+
+    // La machine emporte son forfait, juste derrière elle. Sa disponibilité
+    // n'est pas consultée : une machine ne part jamais sans installation.
+    const f = officiel.forfait && FORFAITS.get(officiel.forfait);
+    if (f) {
+      const tf = tarifs.get(`${f.ref}__${f.cond}`);
+      lignes.push({ ...f, qte, prix: tf && tf.prix !== null ? tf.prix : f.prixFichier });
+    }
   }
+  const avecMachine = lignes.some((l) => l.forfait);
 
   if (refusees.length) {
     return json(res, 409, {
@@ -233,7 +254,7 @@ export default async function handler(req, res) {
   await envoyer({
     to: DESTINATION,
     replyTo: email,
-    sujet: `[Commande ${reference}] ${etablissement} — ${commune}`,
+    sujet: `[Commande ${reference}]${avecMachine ? ' [MACHINE]' : ''} ${etablissement} — ${commune}`,
     html: gabarit(
       `Nouvelle commande ${reference}`,
       `<table role="presentation" style="font-size:14px;width:100%;margin-bottom:14px">
@@ -274,15 +295,19 @@ export default async function handler(req, res) {
       `<p>Bonjour${contact ? ' ' + echapper(contact) : ''},</p>
        <p>Nous avons bien reçu votre commande pour <b>${echapper(etablissement)}</b>.</p>
        ${tableau}
-       <p style="margin-top:18px">Livraison prévue, <b>sans frais de port</b>, à l'adresse suivante :<br>
+       <p style="margin-top:18px">${avecMachine ? 'Adresse de livraison et d’installation' : 'Livraison prévue, <b>sans frais de port</b>, à l’adresse suivante'} :<br>
        ${echapper(adresse)}<br>${echapper(codePostal)} ${echapper(commune)}</p>
-       <p><b>Prochaine étape :</b> nous vous confirmons par mail le montant exact et la date de passage de l'un de nos techniciens. Aucun paiement ne vous est demandé en ligne — la facturation se fait dans les conditions habituelles de votre compte.</p>
+       ${
+         avecMachine
+           ? `<p><b>Prochaine étape :</b> nous vous contactons pour vérifier avec vous l'installation (arrivée d'eau, évacuation, alimentation électrique, accès) avant de commander la machine chez le fabricant. Nous vous confirmons ensuite par mail le montant exact et le délai. Aucun paiement ne vous est demandé en ligne — la facturation se fait dans les conditions habituelles de votre compte.</p>`
+           : `<p><b>Prochaine étape :</b> nous vous confirmons par mail le montant exact et la date de passage de l'un de nos techniciens. Aucun paiement ne vous est demandé en ligne — la facturation se fait dans les conditions habituelles de votre compte.</p>`
+       }
        <p>Un ajout de dernière minute ? Appelez-nous au <b>${TEL}</b>.</p>`,
       { url: `${baseUrl(req)}/espace`, label: 'Suivre ma commande' }
     ),
     texte: `Bonjour,\n\nNous avons bien reçu votre commande ${reference}.\n\n${lignes
       .map((l) => `  ${l.qte} × ${l.nom} (${l.marque} ${l.ref}) — ${l.cond}`)
-      .join('\n')}\n\nLivraison sans frais de port : ${adresse}, ${codePostal} ${commune}\n\nNous vous confirmons le montant exact et la date de passage par mail. Aucun paiement en ligne.\n\nSODILAME — ${TEL}`,
+      .join('\n')}\n\n${avecMachine ? 'Livraison et installation' : 'Livraison sans frais de port'} : ${adresse}, ${codePostal} ${commune}\n\n${avecMachine ? "Nous vous contactons pour vérifier l'installation avant de commander la machine, puis nous vous confirmons le montant exact et le délai par mail." : 'Nous vous confirmons le montant exact et la date de passage par mail.'} Aucun paiement en ligne.\n\nSODILAME — ${TEL}`,
   }).catch(() => {});
 
   return json(res, 200, { ok: true, reference });

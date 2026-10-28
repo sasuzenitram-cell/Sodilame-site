@@ -3,7 +3,7 @@
 //
 // Renvoie l'état de connexion et, le cas échéant, les coordonnées du client
 // pour pré-remplir le formulaire de commande. Consommé par la page statique
-// /produits/ma-commande, qui reste ainsi entièrement en cache.
+// /eshop/panier, qui reste ainsi entièrement en cache.
 // ---------------------------------------------------------------------------
 import { q1, initSchema, baseDisponible } from '../lib/db.mjs';
 import { lireSession } from '../lib/auth.mjs';
