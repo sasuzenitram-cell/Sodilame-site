@@ -367,6 +367,24 @@ console.log('\n═══ Sélection Miele Professional ═══');
   verifier('fiches Miele : lien fabricant, GTIN, et aucune promesse de stock', !fautes.length, fautes.slice(0, 6).join(' · '));
 }
 
+console.log('\n═══ En-tête de la boutique ═══');
+{
+  const fs = await import('node:fs');
+  const pagesBoutique = ['public/eshop/index.html', 'public/eshop/catalogue/index.html', 'public/eshop/panier/index.html', fichier(produits[0])];
+  const sansTete = pagesBoutique.filter((f) => {
+    const h = fs.readFileSync(f, 'utf8');
+    return !(h.includes('class="shop-nav"') && h.includes('action="/eshop/catalogue"') && h.includes('href="/"'));
+  });
+  verifier('chaque page boutique a l’en-tête e-shop (rayons, recherche, retour au site)', !sansTete.length, sansTete.join(', '));
+  const accueilBoutique = fs.readFileSync('public/eshop/index.html', 'utf8');
+  const nav = accueilBoutique.slice(accueilBoutique.indexOf('class="shop-nav"'), accueilBoutique.indexOf('</nav>', accueilBoutique.indexOf('class="shop-nav"')));
+  verifier('les rayons mènent à toutes les collections publiques',
+    categoriesPubliques.every((c) => nav.includes(`href="${urlCollection(c.slug)}"`)));
+  const vitrine = ['public/index.html', 'public/contact/index.html', 'public/marques/index.html'].map((f) => fs.readFileSync(f, 'utf8'));
+  verifier('le site vitrine garde son en-tête (pas de rayons e-shop)', vitrine.every((h) => !h.includes('class="shop-nav"') && h.includes('id="burger"')));
+  verifier('la recherche du catalogue est branchée', fs.readFileSync('public/eshop/catalogue/index.html', 'utf8').includes('id="recherche"'));
+}
+
 console.log('\n═══ Bandeau des prix ═══');
 {
   const fs = await import('node:fs');

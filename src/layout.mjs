@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { site, navPrincipale, secteurs, etapes, formules } from '../data/site.mjs';
 import { sujets } from '../data/formulaire.mjs';
 import { marquesPied } from '../data/marques.mjs';
+import { categoriesPubliques, ESHOP, URL_PANIER, URL_CATALOGUE } from '../data/produits.mjs';
 
 // ---------------------------------------------------------------------------
 // Empreinte des fichiers statiques (anti-cache)
@@ -67,6 +68,8 @@ export const icones = {
   outils: '<path d="M14.6 6.2a3.9 3.9 0 0 0 5.1 5.1l-2.1 2.1-5.1-5.1z"/><path d="m12.5 8.3-7.6 7.6a2.2 2.2 0 0 0 3.1 3.1l7.6-7.6"/><path d="m4 4 3.4 3.4"/>',
   sac: '<path d="M7 7h10l1 11.5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 6 18.5z"/><path d="M7 7V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2"/><path d="M9.5 4.5h5"/>',
   doc: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/>',
+  loupe: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+  retour: '<path d="M19 12H5"/><path d="m11 18-6-6 6-6"/>',
 };
 export const svg = (nom, cls = '') =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ''} aria-hidden="true">${icones[nom] || ''}</svg>`;
@@ -147,6 +150,70 @@ function entete(chemin) {
     </div>
     <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
   </div>
+</header>
+<main id="contenu">`;
+}
+
+// ---------------------------------------------------------------------------
+// En-tête de la BOUTIQUE (/eshop/…)
+//
+// Le site vitrine et la boutique n'ont pas le même visiteur au même moment :
+// sur la vitrine on se renseigne, dans la boutique on cherche un produit et on
+// commande. L'en-tête de la boutique est donc celui d'un e-shop : recherche au
+// centre, compte et panier à droite, rayons en dessous — et un retour visible
+// vers le site SODILAME. Il porte le vert de la boutique (body.boutique), la
+// vitrine garde son bleu.
+// ---------------------------------------------------------------------------
+function enteteBoutique(chemin) {
+  const materiel = categoriesPubliques.filter((c) => c.univers === 'materiel');
+  const entretien = categoriesPubliques.filter((c) => c.univers === 'entretien');
+  const actif = (u) => chemin === u || chemin.startsWith(u + '/');
+  const lien = (c) => {
+    const u = `${ESHOP}/${c.slug}`;
+    return `<a href="${u}"${actif(u) ? ' aria-current="page"' : ''}>${c.nomCourt}</a>`;
+  };
+  const entretienActif = entretien.some((c) => actif(`${ESHOP}/${c.slug}`));
+  return `
+<div class="topbar tb-shop">
+  <div class="wrap">
+    <div class="tb-l">
+      <span>${svg('camion')}Livraison et installation par nos techniciens · 13 · 30 · 84</span>
+      <span class="hide-s">Aucun paiement en ligne</span>
+    </div>
+    <div class="tb-r">
+      <a href="tel:${site.telephoneE164}">${svg('tel')}${site.telephone}</a>
+      <a href="/">${svg('retour')}Site ${site.nom}</a>
+    </div>
+  </div>
+</div>
+<header class="site shop">
+  <div class="wrap hd-shop">
+    <a class="brand" href="${ESHOP}" aria-label="Boutique ${site.nom} — accueil de la boutique">
+      <img src="/assets/mark.png" srcset="/assets/mark.png 1x, /assets/mark@2x.png 2x" width="34" height="48" alt="Logo ${site.nom}">
+      <span><span class="bn">${site.nom}</span><span class="bs">Boutique pro</span></span>
+    </a>
+    <form class="shop-search" action="${URL_CATALOGUE}" method="get" role="search">
+      <label class="visuel-masque" for="q-shop">Rechercher dans la boutique</label>
+      <input id="q-shop" name="q" type="search" placeholder="Rechercher : lave-linge 9 kg, PWM 909, lessive…" autocomplete="off" enterkeyhint="search">
+      <button type="submit" aria-label="Lancer la recherche">${svg('loupe')}</button>
+    </form>
+    <div class="shop-actions">
+      <a class="sa" href="/espace">${svg('user')}<span>Mon compte</span></a>
+      <a class="sa sa-panier" href="${URL_PANIER}" id="panier-lien" aria-label="Voir mon panier">${svg('panier')}<span>Panier</span><span class="pc" id="panier-compte" hidden>0</span></a>
+    </div>
+  </div>
+  <nav class="shop-nav" aria-label="Rayons de la boutique">
+    <div class="wrap">
+      ${materiel.map(lien).join('\n      ')}
+      <div class="sn-groupe">
+        <a href="${ESHOP}#rayon-entretien"${entretienActif ? ' aria-current="page"' : ''}>Produits d'entretien<span class="sn-fl" aria-hidden="true">▾</span></a>
+        <div class="sn-drop">
+          ${entretien.map(lien).join('\n          ')}
+        </div>
+      </div>
+      <a class="sn-tout" href="${URL_CATALOGUE}"${actif(URL_CATALOGUE) ? ' aria-current="page"' : ''}>Tout le catalogue</a>
+    </div>
+  </nav>
 </header>
 <main id="contenu">`;
 }
@@ -466,8 +533,9 @@ export function blocContact({ titre = 'Parlons de votre cuisine', texte = "Proje
 export function page(meta, corps, nav) {
   // Les pages boutique basculent sur la déclinaison verte du thème :
   // le visiteur voit immédiatement qu'il change d'univers.
-  const theme = meta.theme ?? ((meta.chemin === '/eshop' || meta.chemin?.startsWith('/eshop/')) ? 'boutique' : '');
-  return head({ ...meta, theme }) + entete(meta.chemin) + corps + pied(nav.services, nav.villes, nav.produits);
+  const theme = meta.theme ?? ((meta.chemin === ESHOP || meta.chemin?.startsWith(ESHOP + '/')) ? 'boutique' : '');
+  const enBoutique = meta.chemin === ESHOP || meta.chemin?.startsWith(ESHOP + '/');
+  return head({ ...meta, theme }) + (enBoutique ? enteteBoutique(meta.chemin) : entete(meta.chemin)) + corps + pied(nav.services, nav.villes, nav.produits);
 }
 
 // ---------------------------------------------------------------------------

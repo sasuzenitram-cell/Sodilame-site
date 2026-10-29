@@ -28,7 +28,15 @@ export const SCRIPT_FILTRES = `
   var reinit  = document.getElementById('reinit');
   var conseils = Array.prototype.slice.call(document.querySelectorAll('[data-conseil]'));
   var AXES = ['famille','marque','machine'];
-  var etat = { famille:'', marque:'', machine:'' };
+  var etat = { famille:'', marque:'', machine:'', q:'' };
+  // Recherche plein texte : le champ du catalogue et celui de l'en-tête de la
+  // boutique (qui envoie ?q= vers cette page) partagent la même valeur.
+  var champ = document.getElementById('recherche');
+  var champTete = document.getElementById('q-shop');
+  function normaliser(t){
+    return String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+  cartes.forEach(function(c){ c._texte = ' ' + normaliser((c.dataset.texte || '') + ' ' + c.textContent) + ' '; });
 
   function lireUrl(){
     var q = new URLSearchParams(location.search);
@@ -38,11 +46,15 @@ export const SCRIPT_FILTRES = `
       // un paramètre inventé ne doit pas vider le catalogue.
       if (v && boutons.some(function(b){ return b.dataset.filtre === a && b.dataset.valeur === v; })) etat[a] = v;
     });
+    etat.q = (q.get('q') || '').trim().slice(0, 80);
+    if (champ) champ.value = etat.q;
+    if (champTete) champTete.value = etat.q;
   }
 
   function ecrireUrl(){
     var q = new URLSearchParams();
     AXES.forEach(function(a){ if (etat[a]) q.set(a, etat[a]); });
+    if (etat.q) q.set('q', etat.q);
     var s = q.toString();
     // Sans filtre, aucune ancre : sinon le simple chargement de /eshop/catalogue
     // réécrivait l’URL en /eshop/catalogue#catalogue et sautait par-dessus le hero.
@@ -62,6 +74,12 @@ export const SCRIPT_FILTRES = `
     if (etat.famille && c.dataset.famille !== etat.famille) return false;
     if (etat.marque  && c.dataset.marque  !== etat.marque)  return false;
     if (etat.machine && (' ' + c.dataset.machines + ' ').indexOf(' ' + etat.machine + ' ') === -1) return false;
+    if (etat.q) {
+      // Chaque mot cherché doit apparaître : « lave linge 9 » trouve le
+      // PWM 909 ; « lessive 20 l » trouve les bidons de 20 litres.
+      var mots = normaliser(etat.q).split(' ');
+      for (var i = 0; i < mots.length; i++) if (mots[i] && c._texte.indexOf(' ' + mots[i]) === -1) return false; // début de mot : « 10 » ne trouve pas « 1108 »
+    }
     return true;
   }
 
@@ -91,7 +109,7 @@ export const SCRIPT_FILTRES = `
       : n === total ? total + ' références'
       : n + (n > 1 ? ' références sur ' : ' référence sur ') + total;
     vide.hidden = n > 0;
-    reinit.hidden = !(etat.famille || etat.marque || etat.machine);
+    reinit.hidden = !(etat.famille || etat.marque || etat.machine || etat.q);
     ecrireUrl();
   }
 
@@ -122,10 +140,30 @@ export const SCRIPT_FILTRES = `
   });
 
   reinit.addEventListener('click', function(){
-    etat = { famille:'', marque:'', machine:'' };
+    etat = { famille:'', marque:'', machine:'', q:'' };
+    if (champ) champ.value = '';
+    if (champTete) champTete.value = '';
     appliquer();
     recentrer();
   });
+
+  if (champ) {
+    champ.addEventListener('input', function(){
+      etat.q = champ.value.trim().slice(0, 80);
+      if (champTete) champTete.value = etat.q;
+      appliquer();
+    });
+  }
+  // Sur cette page, la recherche de l'en-tête filtre sur place, sans recharger.
+  if (champTete && champ) {
+    champTete.form.addEventListener('submit', function(e){
+      e.preventDefault();
+      etat.q = champTete.value.trim().slice(0, 80);
+      champ.value = etat.q;
+      appliquer();
+      recentrer();
+    });
+  }
 
   // panier.js apprend de /api/catalogue quels produits ne sont plus en vente,
   // après ce script. Il a donc besoin de nous redemander un passage.

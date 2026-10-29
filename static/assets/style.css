@@ -563,6 +563,16 @@ table.panier a{color:var(--navy)}
 .collec-liens svg{width:22px;height:22px;flex:none;stroke:var(--gold);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .collec-liens span{min-width:0;overflow-wrap:anywhere}
 
+/* Logos de marque fournis par les fabricants (data/marques.mjs, champ logo) */
+.logo-marque{display:block;height:auto;max-width:100%}
+.marques-boutique .logo-marque{width:96px;margin-bottom:.45rem;border-radius:3px}
+.logo-carte{width:120px;margin-bottom:14px;border-radius:3px}
+.logo-fiche{width:150px;margin-bottom:14px;border-radius:3px}
+.vign.vide{position:relative}
+/* `.vign img` étire les photos produit à 100 % : le logo doit y échapper. */
+.vign.vide img.logo-vign{position:absolute;top:7%;left:7%;width:30%;min-width:64px;max-width:130px;
+  height:auto;padding:0;object-fit:fill;border-radius:3px}
+
 /* Forfait d'installation : sous la machine sur la fiche, et dans le panier */
 .cond-row.forfait-row{margin-top:.5rem;background:#fff;border-style:dashed}
 .cond-row.forfait-row .cl{font-weight:500;font-size:.85rem}
@@ -781,3 +791,76 @@ body.boutique .prose .mise-en-garde p{color:#7A3A1C}
 .prose ol.sommaire-cgv{columns:2;column-gap:2.4rem;padding-left:1.3rem}
 .prose ol.sommaire-cgv li{break-inside:avoid;margin-bottom:.35rem}
 @media (max-width:700px){.prose ol.sommaire-cgv{columns:1}}
+
+/* ===========================================================================
+   EN-TÊTE DE LA BOUTIQUE (/eshop/…) — celui d'un e-shop : recherche au
+   centre, compte et panier à droite, rayons en dessous, retour vers le site.
+   Les couleurs viennent de body.boutique : vert de la boutique.
+   =========================================================================== */
+.visuel-masque{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.tb-shop .wrap{min-height:36px}
+.tb-shop svg{width:16px;height:16px;vertical-align:-3px;margin-right:.45rem}
+.tb-shop .tb-r{display:flex;gap:1.4rem;align-items:center}
+.tb-shop .tb-r a{display:inline-flex;align-items:center}
+
+header.site.shop{background:#FBFDFA}
+.hd-shop{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1.6rem;min-height:74px}
+.shop-search{display:flex;align-items:stretch;max-width:640px;width:100%;justify-self:center;
+  border:1.5px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;transition:border-color .15s}
+.shop-search:focus-within{border-color:var(--navy-l)}
+.shop-search input{flex:1;min-width:0;border:0;padding:.72rem 1rem;font:inherit;font-size:.95rem;color:var(--ink);background:transparent;outline:none}
+.shop-search button{border:0;background:var(--navy);color:#fff;padding:0 1.05rem;cursor:pointer;display:flex;align-items:center}
+.shop-search button:hover{background:var(--navy-l)}
+.shop-search button svg{width:20px;height:20px}
+.shop-actions{display:flex;gap:.4rem;align-items:center}
+.shop-actions .sa{position:relative;display:flex;flex-direction:column;align-items:center;gap:.15rem;
+  padding:.35rem .6rem;border-radius:9px;color:var(--navy);text-decoration:none;font-size:.74rem;font-weight:600}
+.shop-actions .sa:hover{background:var(--cream-d)}
+.shop-actions .sa svg{width:22px;height:22px}
+.shop-actions .pc{position:absolute;top:0;right:.25rem;min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  background:var(--gold);color:#1B2430;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.shop-actions .pc[hidden]{display:none}
+
+.shop-nav{background:var(--navy);}
+.shop-nav .wrap{display:flex;align-items:stretch;gap:.2rem}
+.shop-nav a{display:flex;align-items:center;padding:.72rem .85rem;color:#fff;text-decoration:none;
+  font-family:Montserrat,sans-serif;font-weight:600;font-size:.86rem;white-space:nowrap;border-bottom:3px solid transparent}
+.shop-nav a:hover{background:var(--navy-l)}
+.shop-nav a[aria-current]{border-bottom-color:var(--gold)}
+.shop-nav .sn-tout{margin-left:auto;color:#F3D7A6}
+.shop-nav .sn-fl{margin-left:.35rem;font-size:.7rem;opacity:.8}
+.sn-groupe{position:relative;display:flex}
+.sn-drop{display:none;position:absolute;top:100%;left:0;z-index:70;min-width:250px;background:#fff;
+  border:1px solid var(--line);border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:.4rem 0}
+.sn-drop a{color:var(--navy);padding:.6rem 1.1rem;border:0;font-size:.85rem}
+.sn-drop a:hover,.sn-drop a[aria-current]{background:var(--cream-d)}
+.sn-groupe:hover .sn-drop,.sn-groupe:focus-within .sn-drop{display:block}
+
+/* La page d'accueil de la boutique est atteinte par l'ancre du rayon : le
+   titre ne doit pas passer sous l'en-tête collant. */
+.univers-bloc{scroll-margin-top:150px}
+
+@media(max-width:1000px){
+  .hd-shop{grid-template-columns:auto auto;gap:.6rem 1rem;padding-top:.6rem;padding-bottom:.7rem}
+  .shop-search{grid-column:1/-1;grid-row:2;max-width:none}
+  .shop-actions{justify-self:end}
+  /* Les rayons défilent horizontalement : la liste reste entière sur une ligne. */
+  .shop-nav .wrap{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .shop-nav .wrap::-webkit-scrollbar{display:none}
+  .sn-drop{display:none!important}
+  .shop-nav .sn-tout{margin-left:0}
+}
+@media(max-width:640px){
+  /* Une seule ligne sur mobile : le téléphone et le retour au site. */
+  .tb-shop .tb-l{display:none}
+  .tb-shop .wrap{justify-content:space-between}
+  .tb-shop .tb-r{width:100%;justify-content:space-between}
+  .shop-actions .sa span:not(.pc){display:none}
+  .shop-actions .sa{padding:.45rem}
+  .shop-nav a{padding:.65rem .7rem;font-size:.82rem}
+}
+.frecherche{display:flex;align-items:center;gap:.8rem;margin-bottom:.9rem;flex-wrap:wrap}
+.frecherche label{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.frecherche input{flex:1;min-width:220px;border:1.5px solid var(--line);border-radius:9px;padding:.62rem .9rem;font:inherit;font-size:.93rem;background:#fff}
+.frecherche input:focus{outline:none;border-color:var(--navy-l)}

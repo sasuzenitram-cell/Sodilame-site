@@ -1525,6 +1525,7 @@ function marquesHub() {
       ${liste
         .map(
           (m) => `<a class="card" href="/marques/${m.slug}">
+        ${logoMarque(m, 'logo-carte')}
         <h3>${esc(m.nom)}</h3>
         <p>${esc(m.resume)}</p>
         <p style="margin-top:.8rem;font-size:.84rem;color:var(--navy)"><b>${esc(m.pays)}</b>${m.depuis ? ` · depuis ${m.depuis}` : ''}</p>
@@ -1652,6 +1653,7 @@ ${ariane(fil)}
 
       <aside>
         <div class="card" style="margin-bottom:20px">
+          ${logoMarque(m, 'logo-fiche')}
           <h2 style="font-size:1.05rem">${esc(m.nom)} en bref</h2>
           ${identite
             .map(
@@ -2029,6 +2031,12 @@ const prixMini = (p) => {
 /** La page marque d'une marque du catalogue, si elle existe. */
 const pageMarque = (nom) => marques.find((m) => m.nom === nom);
 
+/** Logo officiel d'une marque, quand le fabricant nous l'a remis (data/marques.mjs). */
+const logoMarque = (m, cls = '') =>
+  m?.logo
+    ? `<img class="logo-marque${cls ? ' ' + cls : ''}" src="/assets/marques/${m.logo.fichier}" width="${m.logo.largeur}" height="${m.logo.hauteur}" alt="${esc(m.logo.alt)}" loading="lazy" decoding="async">`
+    : '';
+
 function boutonAjout(p, c, k) {
   const prix = typeof c.prix === 'number' ? c.prix : '';
   // Une machine emporte son forfait : panier.js lit ces attributs pour créer la
@@ -2057,7 +2065,8 @@ function vignetteProduit(p, taille = '') {
     : p.caracteristiques.some((c) => /liquide/i.test(c))
       ? 'bidon'
       : 'seau';
-  return `<span class="vign vide${taille}" aria-hidden="true">${svg(icone)}<span class="vr">${esc(p.ref)}</span></span>`;
+  const lm = logoMarque(pageMarque(p.marque), 'logo-vign');
+  return `<span class="vign vide${taille}"${lm ? '' : ' aria-hidden="true"'}>${lm}${svg(icone)}<span class="vr">${esc(p.ref)}</span></span>`;
 }
 
 function carteProduit(p) {
@@ -2075,7 +2084,7 @@ function carteProduit(p) {
       ? `<span class="cond">${p.conditionnements.length} conditionnements</span>`
       : `<span class="cond">${esc(c0.label)}</span>`;
   return `<a class="card prod" href="${urlProduit(p)}"
-        data-produit data-ref="${esc(p.ref)}" data-famille="${esc(p.categorie)}" data-marque="${esc(p.marque)}" data-machines="${esc((p.machines || []).join(' '))}">
+        data-produit data-ref="${esc(p.ref)}" data-famille="${esc(p.categorie)}" data-marque="${esc(p.marque)}" data-machines="${esc((p.machines || []).join(' '))}" data-texte="${esc([categorieDuProduit(p)?.nom, ...p.conditionnements.map((c) => c.label)].join(' '))}">
         ${vignetteProduit(p)}
         <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">${esc(p.ref)}</span></span>
         <h3>${esc(p.nom)}</h3>
@@ -2235,7 +2244,7 @@ ${ariane(fil)}
       .map((u) => {
         const cols = collectionsDe(u.slug);
         if (!cols.length) return '';
-        return `<div class="univers-bloc">
+        return `<div class="univers-bloc" id="rayon-${u.slug}">
       <div class="sec-head">
         <p class="eyebrow">${esc(u.nom)}</p>
         <h2>${esc(u.accroche)}</h2>
@@ -2263,7 +2272,7 @@ ${blocForfait()}
       ${marquesBoutique
         .map(
           (m) =>
-            `<a href="${m.page ? `/marques/${m.page.slug}` : `${URL_CATALOGUE}?marque=${encodeURIComponent(m.nom)}#catalogue`}"><b>${esc(m.nom)}</b><span>${pluriel(m.n, 'référence')}</span></a>`
+            `<a href="${m.page ? `/marques/${m.page.slug}` : `${URL_CATALOGUE}?marque=${encodeURIComponent(m.nom)}#catalogue`}">${logoMarque(m.page)}<b>${esc(m.nom)}</b><span>${pluriel(m.n, 'référence')}</span></a>`
         )
         .join('\n      ')}
     </div>
@@ -2415,6 +2424,10 @@ ${ariane(fil)}
   <div class="wrap">
     ${noticePrix}
     <div class="filtres" id="barre-filtres" hidden>
+      <div class="frecherche">
+        <label for="recherche">Rechercher</label>
+        <input id="recherche" type="search" placeholder="Référence, modèle, usage… ex. PWM 909, sèche-linge 10 kg, rinçage" autocomplete="off">
+      </div>
       ${groupeFiltres('Collection', 'famille', categoriesPubliques.map((c) => ({ slug: c.slug, nom: c.nomCourt, n: nbCollection(c.slug) })), esc)}
       ${groupeFiltres('Machine', 'machine', machinesUtiles.map((m) => ({ slug: m.slug, nom: m.nom, n: nbMachine(m.slug) })), esc)}
       ${groupeFiltres('Marque', 'marque', marquesCatalogue.map((m) => ({ slug: m, nom: m, n: nbMarque(m) })), esc)}

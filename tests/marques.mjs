@@ -165,14 +165,19 @@ console.log('\n═══ Ce qui engage SODILAME ═══');
     manquants.map((m) => m.slug).join(', '));
 }
 
-// Aucun logo de marque : le droit de citer un nom n'emporte pas celui de
-// reproduire une marque figurative.
+// Logos de marque : seulement ceux que le fabricant nous a remis (champ
+// `logo` de data/marques.mjs). Le droit de citer un nom n'emporte pas celui de
+// reproduire une marque figurative : aucune autre page ne doit en afficher.
 {
-  const avecLogo = marques.filter((m) => {
+  const fs = await import('node:fs');
+  const fautifs = marques.filter((m) => {
     const html = lire(`public/marques/${m.slug}/index.html`);
-    return new RegExp(`<img[^>]+${m.slug}`, 'i').test(html) || /logos?\//.test(html);
+    const images = [...html.matchAll(/src="\/assets\/marques\/([^"]+)"/g)].map((x) => x[1]);
+    if (!m.logo) return images.length > 0 || new RegExp(`<img[^>]+${m.slug}`, 'i').test(html);
+    return !images.includes(m.logo.fichier) || !fs.existsSync(`static/assets/marques/${m.logo.fichier}`);
   });
-  verifier('aucune page n’affiche de logo de fabricant', !avecLogo.length, avecLogo.map((m) => m.slug).join(', '));
+  verifier('logos : uniquement ceux fournis par le fabricant, et le fichier existe', !fautifs.length, fautifs.map((m) => m.slug).join(', '));
+  verifier('logo Miele affiché sur sa page marque', marques.some((m) => m.slug === 'miele-professional' && m.logo));
 }
 
 // L'ajout de « Marques » a porté le menu principal à cinq entrées, et

@@ -18,9 +18,14 @@
 //        du champ `aRetenir` viennent tous de la documentation constructeur et
 //        ont été recoupés ; le jour où on voudra parler de pannes réelles, la
 //        source sera le journal d'intervention SODILAME, pas une supposition.
-//     2. Aucun logo de marque. Le droit de citer un nom pour dire ce qu'on
-//        vend n'emporte pas le droit de reproduire une marque figurative. Les
-//        pages n'affichent donc que du texte et les pictogrammes du site.
+//     2. Aucun logo de marque, SAUF celui que le fabricant nous a remis en tant
+//        que distributeur (champ `logo`). Le droit de citer un nom pour dire ce
+//        qu'on vend n'emporte pas le droit de reproduire une marque figurative :
+//        un logo trouvé sur Internet ne s'ajoute pas ici.
+//        — Miele : logo transmis par la direction avec le courrier Miele
+//          « Display Excellence » aux revendeurs, mis en ligne le 28/10/2026.
+//          À remplacer par la dernière version officielle « Miele Professional »
+//          dès réception du kit revendeur.
 //     3. Aucune phrase reprise d'un site de fabricant ou de concurrent. Tout
 //        le texte ci-dessous est rédigé pour SODILAME.
 //
@@ -381,6 +386,7 @@ export const marques = [
   {
     slug: 'miele-professional',
     nom: 'Miele Professional',
+    logo: { fichier: 'miele.png', largeur: 600, hauteur: 230, alt: 'Logo Miele' },
     univers: 'laverie',
     agree: true,
     pays: 'Allemagne',
