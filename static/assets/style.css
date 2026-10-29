@@ -864,3 +864,24 @@ header.site.shop{background:#FBFDFA}
 .frecherche label{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .frecherche input{flex:1;min-width:220px;border:1.5px solid var(--line);border-radius:9px;padding:.62rem .9rem;font:inherit;font-size:.93rem;background:#fff}
 .frecherche input:focus{outline:none;border-color:var(--navy-l)}
+
+/* Réalisations SODILAME : avant / après / détail, à hauteur égale.
+   Une photo 4:3 et une photo 3:4 ont la même hauteur quand la seconde est
+   0,5625 fois moins large : d'où les fractions de la grille. */
+.realisation{display:grid;grid-template-columns:1fr 1fr .5625fr;gap:14px;margin-top:8px}
+.realisation figure{margin:0;position:relative;border-radius:12px;overflow:hidden;background:var(--cream-d)}
+.realisation img{display:block;width:100%;height:auto}
+.realisation figcaption{position:absolute;left:12px;top:12px;background:rgba(18,28,40,.78);color:#fff;
+  font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.3rem .65rem;border-radius:6px}
+@media(max-width:800px){
+  .realisation{grid-template-columns:1fr 1fr}
+  .realisation figure.portrait{display:none}
+}
+@media(max-width:560px){
+  .realisation{grid-template-columns:1fr}
+}
+
+/* Rayons de la boutique */
+.rayon-tete{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.rayon-tete .more{font-weight:600;white-space:nowrap}
+.sn-drop .sn-tout-rayon{border-top:1px solid var(--line);margin-top:.3rem;padding-top:.7rem;font-weight:700}

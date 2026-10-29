@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import { site, navPrincipale, secteurs, etapes, formules } from '../data/site.mjs';
 import { sujets } from '../data/formulaire.mjs';
 import { marquesPied } from '../data/marques.mjs';
-import { categoriesPubliques, ESHOP, URL_PANIER, URL_CATALOGUE } from '../data/produits.mjs';
+import { ESHOP, URL_PANIER, URL_CATALOGUE, rayonsBoutique, collectionsDuRayon, urlRayon, rayonDuChemin } from '../data/produits.mjs';
 
 // ---------------------------------------------------------------------------
 // Empreinte des fichiers statiques (anti-cache)
@@ -165,14 +165,23 @@ function entete(chemin) {
 // vitrine garde son bleu.
 // ---------------------------------------------------------------------------
 function enteteBoutique(chemin) {
-  const materiel = categoriesPubliques.filter((c) => c.univers === 'materiel');
-  const entretien = categoriesPubliques.filter((c) => c.univers === 'entretien');
+  // Premier niveau : les rayons. Second niveau : leurs collections, dans un
+  // menu déroulant (sur ordinateur) ; sur mobile, la page du rayon les liste.
+  const rayonActif = rayonDuChemin(chemin);
   const actif = (u) => chemin === u || chemin.startsWith(u + '/');
-  const lien = (c) => {
-    const u = `${ESHOP}/${c.slug}`;
-    return `<a href="${u}"${actif(u) ? ' aria-current="page"' : ''}>${c.nomCourt}</a>`;
+  const rayon = (r) => {
+    const cols = collectionsDuRayon(r.slug);
+    const courant = rayonActif?.slug === r.slug ? ' aria-current="page"' : '';
+    const lienRayon = `<a href="${urlRayon(r.slug)}"${courant}>${r.nom}${cols.length ? '<span class="sn-fl" aria-hidden="true">▾</span>' : ''}</a>`;
+    if (!cols.length) return lienRayon;
+    return `<div class="sn-groupe">
+        ${lienRayon}
+        <div class="sn-drop">
+          ${cols.map((c) => `<a href="${ESHOP}/${c.slug}"${actif(`${ESHOP}/${c.slug}`) ? ' aria-current="page"' : ''}>${c.nomCourt}</a>`).join('\n          ')}
+          <a class="sn-tout-rayon" href="${urlRayon(r.slug)}">Tout le rayon ${r.nom} →</a>
+        </div>
+      </div>`;
   };
-  const entretienActif = entretien.some((c) => actif(`${ESHOP}/${c.slug}`));
   return `
 <div class="topbar tb-shop">
   <div class="wrap">
@@ -204,13 +213,7 @@ function enteteBoutique(chemin) {
   </div>
   <nav class="shop-nav" aria-label="Rayons de la boutique">
     <div class="wrap">
-      ${materiel.map(lien).join('\n      ')}
-      <div class="sn-groupe">
-        <a href="${ESHOP}#rayon-entretien"${entretienActif ? ' aria-current="page"' : ''}>Produits d'entretien<span class="sn-fl" aria-hidden="true">▾</span></a>
-        <div class="sn-drop">
-          ${entretien.map(lien).join('\n          ')}
-        </div>
-      </div>
+      ${rayonsBoutique.map(rayon).join('\n      ')}
       <a class="sn-tout" href="${URL_CATALOGUE}"${actif(URL_CATALOGUE) ? ' aria-current="page"' : ''}>Tout le catalogue</a>
     </div>
   </nav>

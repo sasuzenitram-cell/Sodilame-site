@@ -11,11 +11,12 @@ import { zones, zoneDeLaVille, totalCommunes } from './data/zones.mjs';
 import { articles } from './data/articles.mjs';
 import { cgv } from './data/cgv.mjs';
 import { offres, offresActives, postes, emailRecrutement } from './data/recrutement.mjs';
+import { realisationsDeMarque, realisationsDeCollection } from './data/realisations.mjs';
 import { marques, universMarques, marquesDeLUnivers, marquesPied, totalMarques, faqDe } from './data/marques.mjs';
 import {
   produits, produitsPublics, categoriesPubliques, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
   machinesCatalogue, marquesCatalogue, ficheSodilame, forfaitDe, etapesForfait,
-  ESHOP, URL_PANIER, URL_CATALOGUE, urlCollection, urlProduit, universBoutique, collectionsDe,
+  ESHOP, URL_PANIER, URL_CATALOGUE, urlCollection, urlProduit, rayonsBoutique, collectionsDuRayon, urlRayon, rayonDe,
 } from './data/produits.mjs';
 import { pageQr, pagePanne, pageAudit } from './src/qr.mjs';
 import { SCRIPT_FILTRES, groupeFiltres } from './src/catalogue.mjs';
@@ -1692,6 +1693,8 @@ ${ariane(fil)}
   </div>
 </section>
 
+${blocRealisations(realisationsDeMarque(m.slug))}
+
 <section class="alt">
   <div class="wrap">
     <p class="eyebrow">Autres marques</p>
@@ -2013,6 +2016,34 @@ function page404() {
 // ===========================================================================
 const estMachine = (p) => p.type === 'machine';
 
+/** Réalisations SODILAME en photos (data/realisations.mjs). */
+function blocRealisations(liste, { alt = false } = {}) {
+  if (!liste.length) return '';
+  return liste
+    .map(
+      (r) => `<section${alt ? ' class="alt"' : ''}>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Une installation récente · ${esc(r.mois)}${r.lieu ? ` · ${esc(r.lieu)}` : ''}</p>
+      <h2>${esc(r.titre)}</h2>
+      <p class="lead">${esc(r.texte)}</p>
+    </div>
+    <div class="realisation">
+      ${r.photos
+        .map(
+          (ph) => `<figure class="${ph.hauteur > ph.largeur ? 'portrait' : 'paysage'}">
+        <img src="/assets/realisations/${ph.fichier}" width="${ph.largeur}" height="${ph.hauteur}" alt="${esc(ph.alt)}" loading="lazy" decoding="async">
+        <figcaption>${esc(ph.etiquette)}</figcaption>
+      </figure>`
+        )
+        .join('\n      ')}
+    </div>
+  </div>
+</section>`
+    )
+    .join('\n');
+}
+
 // 3 768,00 € : espace fine insécable entre les milliers, virgule décimale.
 const euros = (n) => {
   const [e, d] = n.toFixed(2).split('.');
@@ -2222,6 +2253,8 @@ const faqBoutique = [
 function eshopAccueil() {
   const fil = [{ nom: 'Accueil', url: '/' }, { nom: 'Boutique', url: ESHOP }];
   const marquesBoutique = marquesCatalogue.map((nom) => ({ nom, page: pageMarque(nom), n: produitsPublics.filter((p) => p.marque === nom).length }));
+  const rayonsEnLigne = rayonsBoutique.filter((r) => collectionsDuRayon(r.slug).length);
+  const rayonsADevis = rayonsBoutique.filter((r) => !collectionsDuRayon(r.slug).length);
 
   const corps = `
 <div class="phero">
@@ -2230,31 +2263,45 @@ function eshopAccueil() {
     <h1>Équipez et entretenez votre cuisine, nous livrons et installons</h1>
     <p>Machines livrées, installées et mises en service par nos techniciens ; produits d'entretien livrés sans frais de port. Pour les professionnels des Bouches-du-Rhône, du Gard et du Vaucluse — <b>aucun paiement en ligne</b>, chaque commande vous est confirmée par mail.</p>
     <div class="btn-row">
-      <a class="btn btn-primary" href="#collections">Voir les collections</a>
+      <a class="btn btn-primary" href="#rayons">Voir les rayons</a>
       <a class="btn btn-ghost" href="${URL_CATALOGUE}">Tout le catalogue</a>
     </div>
   </div>
 </div>
 ${ariane(fil)}
 
-<section id="collections">
+<section id="rayons">
   <div class="wrap">
     ${noticePrix}
-    ${universBoutique
-      .map((u) => {
-        const cols = collectionsDe(u.slug);
-        if (!cols.length) return '';
-        return `<div class="univers-bloc" id="rayon-${u.slug}">
-      <div class="sec-head">
-        <p class="eyebrow">${esc(u.nom)}</p>
-        <h2>${esc(u.accroche)}</h2>
+    ${rayonsEnLigne
+      .map(
+        (r) => `<div class="univers-bloc" id="rayon-${r.slug}">
+      <div class="sec-head rayon-tete">
+        <div>
+          <p class="eyebrow">${esc(r.nom)}</p>
+          <h2>${esc(r.accroche)}</h2>
+        </div>
+        <a class="more" href="${urlRayon(r.slug)}">Tout le rayon ${esc(r.nom)} →</a>
       </div>
       <div class="grid3">
-      ${cols.map(carteCollection).join('\n      ')}
+      ${collectionsDuRayon(r.slug).map(carteCollection).join('\n      ')}
       </div>
-    </div>`;
-      })
+    </div>`
+      )
       .join('\n    ')}
+    ${
+      rayonsADevis.length
+        ? `<div class="univers-bloc" id="rayons-a-venir">
+      <div class="sec-head">
+        <p class="eyebrow">Bientôt en ligne</p>
+        <h2>Ces rayons arrivent : nous vous les chiffrons dès aujourd'hui</h2>
+      </div>
+      <div class="collec-liens">
+        ${rayonsADevis.map((r) => `<a href="${urlRayon(r.slug)}">${svg(r.icone)}<span>${esc(r.nom)} — sur devis</span></a>`).join('\n        ')}
+      </div>
+    </div>`
+        : ''
+    }
     <p class="lien-catalogue"><a class="btn btn-outline" href="${URL_CATALOGUE}">Parcourir les ${totalProduits} références, avec filtres →</a></p>
   </div>
 </section>
@@ -2311,13 +2358,120 @@ ${blocCtaFinal('Un doute sur une machine ou une référence ?', "Appelez-nous ou
 }
 
 // ===========================================================================
-// E-SHOP — une collection /eshop/<famille>
+// E-SHOP — un rayon /eshop/<rayon> (Froid, Cuisson, Fours, Laverie…)
 // ===========================================================================
-function collectionPage(c) {
-  const u = universBoutique.find((x) => x.slug === c.univers);
+function rayonPage(r) {
+  const cols = collectionsDuRayon(r.slug);
+  const liste = cols.flatMap((c) => produitsDeCategorie(c.slug));
   const fil = [
     { nom: 'Accueil', url: '/' },
     { nom: 'Boutique', url: ESHOP },
+    { nom: r.nom, url: urlRayon(r.slug) },
+  ];
+  const marquesDuRayon = r.marques.map((s) => marques.find((m) => m.slug === s)).filter(Boolean);
+  const service = r.service ? services.find((x) => x.slug === r.service) : null;
+  const autres = rayonsBoutique.filter((x) => x.slug !== r.slug);
+
+  const contenu = cols.length
+    ? `<section>
+  <div class="wrap">
+    ${noticePrix}
+    <div class="sec-head"><p class="eyebrow">Rayon ${esc(r.nom)}</p><h2>Les catégories</h2></div>
+    <div class="grid3">
+      ${cols.map(carteCollection).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head"><p class="eyebrow">${liste.length} références</p><h2>Tout le rayon ${esc(r.nom)}</h2></div>
+    <div class="grid3" id="catalogue">
+      ${liste.map(carteProduit).join('\n      ')}
+    </div>
+  </div>
+</section>`
+    : `<section>
+  <div class="wrap">
+    <div class="grid-art">
+      <div class="prose">
+        <h2>Ce rayon arrive en ligne</h2>
+        <p>Nous mettons ce rayon en ligne progressivement. En attendant, nous vendons, installons et entretenons déjà ce matériel : décrivez-nous votre besoin, nous vous adressons un devis.</p>
+        ${r.aVenir.length ? `<h3>Ce que nous vous proposons</h3><ul class="ul-check">${r.aVenir.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+        ${service ? `<p>Tout savoir sur notre service : <a href="/services/${service.slug}"><b>${esc(service.nom)}</b></a>.</p>` : ''}
+      </div>
+      <aside>
+        <div class="card">
+          <h3 style="font-size:1rem">Un devis sur ce rayon</h3>
+          <p>Machine, dimensions, emplacement : nous vous rappelons pour chiffrer, installation comprise.</p>
+          <a class="btn btn-primary btn-sm" href="/contact?sujet=materiel" style="width:100%;justify-content:center;margin-top:1rem">Demander un devis</a>
+          <a class="btn btn-outline btn-sm" href="tel:${site.telephoneE164}" style="width:100%;justify-content:center;margin-top:.6rem">${site.telephone}</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>`;
+
+  const corps = `
+<div class="phero compact">
+  <div class="wrap">
+    <p class="eyebrow on-dark">Boutique · Rayon</p>
+    <h1>${esc(r.nom)}</h1>
+    <p>${esc(r.accroche)}</p>
+  </div>
+</div>
+${ariane(fil)}
+
+${contenu}
+
+${
+  marquesDuRayon.length
+    ? `<section${cols.length ? '' : ' class="alt"'}>
+  <div class="wrap">
+    <div class="sec-head"><p class="eyebrow">Marques du rayon</p><h2>Les marques que nous installons</h2></div>
+    <div class="marques-boutique">
+      ${marquesDuRayon.map((m) => `<a href="/marques/${m.slug}">${logoMarque(m)}<b>${esc(m.nom)}</b><span>${esc(m.pays)}</span></a>`).join('\n      ')}
+    </div>
+  </div>
+</section>`
+    : ''
+}
+
+<section${cols.length ? ' class="alt"' : ''}>
+  <div class="wrap">
+    <div class="sec-head center"><p class="eyebrow">Boutique</p><h2>Les autres rayons</h2></div>
+    <div class="collec-liens">
+      ${autres.map((x) => `<a href="${urlRayon(x.slug)}">${svg(x.icone)}<span>${esc(x.nom)}</span></a>`).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+${blocCtaFinal('Un projet d’équipement ?', 'Dites-nous ce que vous produisez et dans quel local : nous vous indiquons le matériel adapté, installation comprise.')}`;
+
+  return page(
+    {
+      titre: `${r.nom} professionnel — boutique ${site.nom}`,
+      description: `${r.accroche} Bouches-du-Rhône, Gard et Vaucluse.`,
+      chemin: urlRayon(r.slug),
+      // Un rayon sans produit en ligne n'est qu'un renvoi vers le devis :
+      // utile au visiteur, sans intérêt pour un moteur de recherche.
+      noindex: !cols.length,
+      schemas: [schemaAriane(fil)],
+    },
+    corps,
+    nav
+  );
+}
+
+// ===========================================================================
+// E-SHOP — une collection /eshop/<famille>
+// ===========================================================================
+function collectionPage(c) {
+  const r = rayonDe(c);
+  const fil = [
+    { nom: 'Accueil', url: '/' },
+    { nom: 'Boutique', url: ESHOP },
+    ...(r ? [{ nom: r.nom, url: urlRayon(r.slug) }] : []),
     { nom: c.nomCourt, url: urlCollection(c.slug) },
   ];
   const liste = produitsDeCategorie(c.slug);
@@ -2327,7 +2481,7 @@ function collectionPage(c) {
   const corps = `
 <div class="phero compact">
   <div class="wrap">
-    <p class="eyebrow on-dark">${esc(u ? u.nom : 'Boutique')}</p>
+    <p class="eyebrow on-dark">${esc(r ? `Rayon ${r.nom}` : 'Boutique')}</p>
     <h1>${esc(c.nom)}</h1>
     <p>${esc(c.description)}</p>
   </div>
@@ -2348,6 +2502,8 @@ ${ariane(fil)}
     </p>
   </div>
 </section>
+
+${blocRealisations(realisationsDeCollection(c.slug), { alt: true })}
 
 ${materiel ? blocForfait() : blocLivraison()}
 
@@ -2499,6 +2655,7 @@ function produitPage(p) {
   const fil = [
     { nom: 'Accueil', url: '/' },
     { nom: 'Boutique', url: ESHOP },
+    ...(rayonDe(c) ? [{ nom: rayonDe(c).nom, url: urlRayon(rayonDe(c).slug) }] : []),
     { nom: c.nomCourt, url: urlCollection(c.slug) },
     { nom: p.nom, url: adresse },
   ];
@@ -2894,6 +3051,10 @@ await ecrire('/qr/panne', pagePanne(), { dansSitemap: false });
 await ecrire('/qr/audit', pageAudit(), { dansSitemap: false });
 await ecrire(ESHOP, eshopAccueil(), { priorite: 0.9 });
 await ecrire(URL_CATALOGUE, cataloguePage(), { priorite: 0.7 });
+for (const r of rayonsBoutique) {
+  const enLigne = collectionsDuRayon(r.slug).length > 0;
+  await ecrire(urlRayon(r.slug), rayonPage(r), { priorite: 0.8, dansSitemap: enLigne });
+}
 for (const c of categoriesPubliques) await ecrire(urlCollection(c.slug), collectionPage(c), { priorite: 0.8 });
 for (const p of produitsPublics) await ecrire(urlProduit(p), produitPage(p), { priorite: 0.7 });
 await ecrire(URL_PANIER, commandePage(), { priorite: 0.1, dansSitemap: false });

@@ -57,6 +57,7 @@ export const categoriesProduits = [
   {
     slug: 'detergents-lave-vaisselle',
     univers: 'entretien',
+    rayon: 'consommables',
     nom: 'Détergents lave-vaisselle et lave-verres',
     nomCourt: 'Détergents',
     icone: 'laverie',
@@ -71,6 +72,7 @@ export const categoriesProduits = [
   {
     slug: 'liquides-de-rincage',
     univers: 'entretien',
+    rayon: 'consommables',
     nom: 'Liquides de rinçage',
     nomCourt: 'Rinçage',
     icone: 'goutte',
@@ -85,6 +87,7 @@ export const categoriesProduits = [
   {
     slug: 'entretien-machine-laverie',
     univers: 'entretien',
+    rayon: 'consommables',
     nom: 'Entretien des lave-vaisselle et lave-verres',
     nomCourt: 'Entretien machine',
     icone: 'seau',
@@ -102,6 +105,7 @@ export const categoriesProduits = [
     // lui, couvre désormais les deux marques de fours du catalogue.
     slug: 'entretien-four-rational',
     univers: 'entretien',
+    rayon: 'consommables',
     nom: 'Entretien des fours mixtes',
     nomCourt: 'Entretien four',
     icone: 'cuisson',
@@ -116,6 +120,7 @@ export const categoriesProduits = [
   {
     slug: 'granules-lave-batterie',
     univers: 'entretien',
+    rayon: 'consommables',
     nom: 'Granulés de lavage pour lave-batterie',
     nomCourt: 'Granulés',
     icone: 'bidon',
@@ -130,6 +135,7 @@ export const categoriesProduits = [
   {
     slug: 'traitement-eau',
     univers: 'entretien',
+    rayon: 'consommables',
     nom: "Sel et traitement de l'eau",
     nomCourt: 'Traitement eau',
     icone: 'sac',
@@ -146,6 +152,7 @@ export const categoriesProduits = [
   {
     slug: 'lessives-blanchisserie',
     univers: 'entretien',
+    rayon: 'consommables',
     nom: 'Lessives et produits de blanchisserie',
     nomCourt: 'Lessives',
     icone: 'bidon',
@@ -164,6 +171,7 @@ export const categoriesProduits = [
   {
     slug: 'lave-linge-professionnels',
     univers: 'materiel',
+    rayon: 'buanderie',
     nom: 'Lave-linge professionnels',
     nomCourt: 'Lave-linge',
     icone: 'buanderie',
@@ -178,6 +186,7 @@ export const categoriesProduits = [
   {
     slug: 'seche-linge-professionnels',
     univers: 'materiel',
+    rayon: 'buanderie',
     nom: 'Sèche-linge professionnels',
     nomCourt: 'Sèche-linge',
     icone: 'buanderie',
@@ -192,6 +201,7 @@ export const categoriesProduits = [
   {
     slug: 'repassage-finition',
     univers: 'materiel',
+    rayon: 'buanderie',
     nom: 'Repassage et finition du linge',
     nomCourt: 'Repassage',
     icone: 'buanderie',
@@ -206,6 +216,7 @@ export const categoriesProduits = [
   {
     slug: 'lave-vaisselle-professionnel',
     univers: 'materiel',
+    rayon: 'laverie',
     nom: 'Lave-vaisselle professionnels',
     nomCourt: 'Lave-vaisselle',
     icone: 'laverie',
@@ -220,6 +231,7 @@ export const categoriesProduits = [
   {
     slug: 'accessoires-blanchisserie',
     univers: 'materiel',
+    rayon: 'buanderie',
     nom: 'Accessoires de blanchisserie',
     nomCourt: 'Accessoires linge',
     icone: 'outils',
@@ -234,6 +246,7 @@ export const categoriesProduits = [
   {
     slug: 'paniers-lave-vaisselle',
     univers: 'materiel',
+    rayon: 'laverie',
     nom: 'Paniers pour lave-vaisselle',
     nomCourt: 'Paniers',
     icone: 'laverie',
@@ -1067,30 +1080,38 @@ export const produits = [
 //    montant HT), ou dans l'administration, où les forfaits apparaissent dans
 //    leur propre rubrique. `null` affiche « prix sur demande ».
 // ---------------------------------------------------------------------------
+// Grille de la direction, 29/10/2026 (prix HT) :
+//   lave-linge et sèche-linge jusqu'à 10 kg ........ 350 €
+//   lave-linge et sèche-linge de 11 à 25 kg ........ 550 €
+//   calandres (repasseuses à cylindre) ............. 850 €
+//   lave-vaisselle .................................. à fixer (prix sur demande)
+// Les machines de 10 kg (sèche-linge PDR 510 et PDR 910) sont rangées à 350 € :
+// « en dessous de 10 kg » / « entre 11 et 25 », 10 kg tombe dans la première
+// tranche. À confirmer par la direction.
 const PRIX_FORFAITS = {
-  'PWM 906': null,
-  'PWM 507': null,
-  'PWM 508': null,
-  'PWM 908': null,
-  'PWM 506 MOPSTAR': null,
-  'PWM 509': null,
-  'PWM 909': null,
-  'PWM 511': null,
-  'PWM 912': null,
-  'PWM 514': null,
-  'PWM 916': null,
-  'PWM 520': null,
-  'PWM 1108': null,
-  'PDR 508': null,
-  'PDR 908': null,
-  'PDR 510': null,
-  'PDR 910': null,
-  'PDR 514': null,
-  'PDR 518': null,
-  'PDR 522': null,
-  'PDR 1108': null,
-  'HM 16-83': null,
-  'PRI 210': null,
+  'PWM 906': 350,
+  'PWM 507': 350,
+  'PWM 508': 350,
+  'PWM 908': 350,
+  'PWM 506 MOPSTAR': 350,
+  'PWM 509': 350,
+  'PWM 909': 350,
+  'PWM 1108': 350,
+  'PWM 511': 550,
+  'PWM 912': 550,
+  'PWM 514': 550,
+  'PWM 916': 550,
+  'PWM 520': 550,
+  'PDR 508': 350,
+  'PDR 908': 350,
+  'PDR 510': 350,
+  'PDR 910': 350,
+  'PDR 1108': 350,
+  'PDR 514': 550,
+  'PDR 518': 550,
+  'PDR 522': 550,
+  'HM 16-83': 850,
+  'PRI 210': 850,
   'PTD 702': null,
   'PTD 703': null,
   'PFD 101': null,
@@ -1218,6 +1239,90 @@ export const universBoutique = [
   },
 ];
 export const collectionsDe = (u) => categoriesPubliques.filter((c) => c.univers === u);
+
+// ---------------------------------------------------------------------------
+// RAYONS — premier niveau du menu de la boutique (décision du 29/10/2026)
+//
+//   Froid · Cuisson · Fours · Laverie · Buanderie · Extraction · Consommables
+//
+// Chaque collection appartient à un rayon (champ `rayon`) : ce sont les
+// sous-catégories. Un rayon sans collection en ligne a quand même sa page
+// (/eshop/<rayon>) : elle présente les marques que nous installons et renvoie
+// vers le devis. Elle reste hors index tant qu'aucun produit n'y est vendu.
+// ---------------------------------------------------------------------------
+export const rayonsBoutique = [
+  {
+    slug: 'froid',
+    nom: 'Froid',
+    icone: 'froid',
+    service: 'froid-professionnel',
+    marques: ['foster', 'infrico', 'atosa'],
+    aVenir: ['Armoires réfrigérées', 'Tables réfrigérées', 'Cellules de refroidissement rapide', 'Chambres froides'],
+    accroche: 'Armoires, tables et cellules de refroidissement, installées et entretenues par nos frigoristes.',
+  },
+  {
+    slug: 'cuisson',
+    nom: 'Cuisson',
+    icone: 'cuisson',
+    service: 'materiel-cuisson-professionnel',
+    marques: ['angelo-po', 'capic', 'ambassade-de-bourgogne', 'mkn'],
+    aVenir: ['Fourneaux et pianos', 'Friteuses', 'Planchas et grillades', 'Sauteuses et marmites'],
+    accroche: 'Fourneaux, pianos, friteuses et sauteuses, raccordés au gaz ou à l’électricité par nos techniciens.',
+  },
+  {
+    slug: 'fours',
+    nom: 'Fours',
+    icone: 'cuisson',
+    service: 'materiel-cuisson-professionnel',
+    marques: ['rational', 'unox', 'mkn'],
+    aVenir: ['Fours mixtes', 'Fours à convection'],
+    accroche: 'Fours mixtes et fours à convection, installés, réglés et entretenus par nos techniciens.',
+  },
+  {
+    slug: 'laverie',
+    nom: 'Laverie',
+    icone: 'laverie',
+    service: 'laverie-restauration',
+    marques: ['winterhalter', 'comenda', 'miele-professional'],
+    aVenir: [],
+    accroche: 'Lave-vaisselle professionnels et paniers, livrés, installés et réglés sur votre eau.',
+  },
+  {
+    slug: 'buanderie',
+    nom: 'Buanderie',
+    icone: 'buanderie',
+    service: 'buanderie-professionnelle',
+    marques: ['miele-professional', 'girbau', 'danube'],
+    aVenir: [],
+    accroche: 'Lave-linge, sèche-linge et repasseuses professionnels, livrés, installés et mis en service.',
+  },
+  {
+    slug: 'extraction',
+    nom: 'Extraction',
+    icone: 'extraction',
+    service: 'extraction-ventilation-cuisine',
+    marques: ['vim', 'saftair'],
+    aVenir: ['Hottes professionnelles', 'Caissons d’extraction', 'Compensation d’air'],
+    accroche: 'Hottes, caissons et compensation d’air, dimensionnés et posés par nos techniciens.',
+  },
+  {
+    slug: 'consommables',
+    nom: 'Consommables',
+    icone: 'bidon',
+    service: null,
+    marques: [],
+    aVenir: [],
+    accroche: 'Détergents, rinçage, lessives et produits d’entretien, livrés sans frais de port par nos techniciens.',
+  },
+];
+export const urlRayon = (slug) => `${ESHOP}/${slug}`;
+export const collectionsDuRayon = (slug) => categoriesPubliques.filter((c) => c.rayon === slug);
+export const rayonDe = (c) => rayonsBoutique.find((r) => r.slug === c?.rayon);
+/** Le rayon d'une adresse /eshop/… (rayon, collection ou fiche produit), pour le menu. */
+export const rayonDuChemin = (chemin = '') => {
+  const s = chemin.split('/')[2];
+  return rayonsBoutique.find((r) => r.slug === s) || rayonDe(categoriesPubliques.find((c) => c.slug === s));
+};
 
 export const produitsNav = categoriesPubliques.map((c) => ({
   nom: c.nomCourt,

@@ -240,8 +240,26 @@ console.log('\n═══ Arborescence de la boutique /eshop ═══');
   verifier('/eshop lie chaque collection publique',
     categoriesPubliques.every((c) => accueil.includes(`href="${urlCollection(c.slug)}"`)));
   verifier('/eshop lie le catalogue complet', accueil.includes('href="/eshop/catalogue"'));
-  verifier('/eshop présente les deux rayons (matériel, entretien)',
-    accueil.includes('Matériel professionnel') && accueil.includes("Produits lessiviels et d'entretien"));
+  const { rayonsBoutique, collectionsDuRayon, urlRayon } = await import('../data/produits.mjs');
+  const { marques } = await import('../data/marques.mjs');
+  verifier('7 rayons : Froid, Cuisson, Fours, Laverie, Buanderie, Extraction, Consommables',
+    rayonsBoutique.map((r) => r.nom).join(',') === 'Froid,Cuisson,Fours,Laverie,Buanderie,Extraction,Consommables');
+  verifier('chaque collection publique appartient à un rayon',
+    categoriesPubliques.every((c) => rayonsBoutique.some((r) => r.slug === c.rayon)),
+    categoriesPubliques.filter((c) => !rayonsBoutique.some((r) => r.slug === c.rayon)).map((c) => c.slug).join(', '));
+  verifier('aucun rayon ne porte le nom d’une collection, ni « catalogue » ni « panier »',
+    rayonsBoutique.every((r) => !slugsFamilles.has(r.slug) && !['catalogue', 'panier'].includes(r.slug)));
+  verifier('les marques citées par les rayons existent',
+    rayonsBoutique.every((r) => r.marques.every((m) => marques.some((x) => x.slug === m))));
+  verifier('/eshop lie chaque rayon', rayonsBoutique.every((r) => accueil.includes(`href="${urlRayon(r.slug)}"`)));
+  const rayonsVides = rayonsBoutique.filter((r) => !collectionsDuRayon(r.slug).length);
+  verifier(`${rayonsVides.length} rayons sans produit en ligne : pages présentes, hors index`,
+    rayonsVides.every((r) => /noindex/.test(fs.readFileSync(`public${urlRayon(r.slug)}/index.html`, 'utf8'))));
+  verifier('les rayons en ligne listent leurs catégories',
+    rayonsBoutique.filter((r) => collectionsDuRayon(r.slug).length).every((r) => {
+      const h = fs.readFileSync(`public${urlRayon(r.slug)}/index.html`, 'utf8');
+      return collectionsDuRayon(r.slug).every((c) => h.includes(`href="${urlCollection(c.slug)}"`)) && !/noindex/.test(h);
+    }));
 
   for (const c of categoriesPubliques) {
     const h = lire(`public${urlCollection(c.slug)}/index.html`);
@@ -383,6 +401,31 @@ console.log('\n═══ En-tête de la boutique ═══');
   const vitrine = ['public/index.html', 'public/contact/index.html', 'public/marques/index.html'].map((f) => fs.readFileSync(f, 'utf8'));
   verifier('le site vitrine garde son en-tête (pas de rayons e-shop)', vitrine.every((h) => !h.includes('class="shop-nav"') && h.includes('id="burger"')));
   verifier('la recherche du catalogue est branchée', fs.readFileSync('public/eshop/catalogue/index.html', 'utf8').includes('id="recherche"'));
+}
+
+console.log('\n═══ Réalisations en photos ═══');
+{
+  const fs = await import('node:fs');
+  const { realisations } = await import('../data/realisations.mjs');
+  const photos = realisations.flatMap((r) => r.photos);
+  verifier(`${photos.length} photos de réalisation, toutes présentes`, photos.every((ph) => fs.existsSync(`static/assets/realisations/${ph.fichier}`)));
+  // Une photo d'iPhone porte la position GPS du chantier, donc du client.
+  // On cherche les segments EXIF (APP1 « Exif ») dans les JPEG publiés.
+  const avecExif = photos.filter((ph) => fs.readFileSync(`static/assets/realisations/${ph.fichier}`).includes(Buffer.from('Exif\0\0')));
+  verifier('aucune photo publiée ne contient de métadonnées EXIF (GPS)', !avecExif.length, avecExif.map((ph) => ph.fichier).join(', '));
+  verifier('chaque photo a un texte alternatif', photos.every((ph) => ph.alt && ph.alt.length > 20));
+  verifier('aucun client nommé sans accord (client et lieu null par défaut)', realisations.every((r) => r.client === null || typeof r.client === 'string'));
+}
+
+console.log('\n═══ Forfaits : grille de la direction ═══');
+{
+  const forfaits = tousProduits.filter((p) => p.type === 'forfait');
+  const prixDe = (ref) => forfaits.find((f) => f.pour === ref)?.conditionnements[0].prix;
+  verifier('lave-linge et sèche-linge jusqu’à 10 kg : 350 €', ['PWM 507', 'PWM 909', 'PWM 1108', 'PDR 508', 'PDR 910'].every((r) => prixDe(r) === 350));
+  verifier('lave-linge et sèche-linge de 11 à 25 kg : 550 €', ['PWM 511', 'PWM 520', 'PDR 514', 'PDR 522'].every((r) => prixDe(r) === 550));
+  verifier('calandres : 850 €', ['HM 16-83', 'PRI 210'].every((r) => prixDe(r) === 850));
+  verifier('chaque machine de blanchisserie a un forfait chiffré',
+    produits.filter((p) => p.type === 'machine' && /linge|repassage/.test(p.categorie)).every((m) => typeof prixDe(m.ref) === 'number'));
 }
 
 console.log('\n═══ Bandeau des prix ═══');
