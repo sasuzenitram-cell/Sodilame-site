@@ -414,7 +414,11 @@ console.log('\n═══ Réalisations en photos ═══');
   const avecExif = photos.filter((ph) => fs.readFileSync(`static/assets/realisations/${ph.fichier}`).includes(Buffer.from('Exif\0\0')));
   verifier('aucune photo publiée ne contient de métadonnées EXIF (GPS)', !avecExif.length, avecExif.map((ph) => ph.fichier).join(', '));
   verifier('chaque photo a un texte alternatif', photos.every((ph) => ph.alt && ph.alt.length > 20));
-  verifier('aucun client nommé sans accord (client et lieu null par défaut)', realisations.every((r) => r.client === null || typeof r.client === 'string'));
+  // Règle de la direction : on reste vague, jamais de nom d'établissement.
+  verifier('clients désignés de façon générique (« un domaine », « un hôtel »…)',
+    realisations.every((r) => r.client === null || /^(un|une|des) /i.test(r.client)), realisations.map((r) => r.client).join(', '));
+  verifier('les produits cités par une réalisation existent en boutique',
+    realisations.every((r) => (r.produits || []).every((ref) => produits.some((p) => p.ref === ref))));
 }
 
 console.log('\n═══ Forfaits : grille de la direction ═══');

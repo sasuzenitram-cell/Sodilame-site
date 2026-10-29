@@ -11,7 +11,7 @@ import { zones, zoneDeLaVille, totalCommunes } from './data/zones.mjs';
 import { articles } from './data/articles.mjs';
 import { cgv } from './data/cgv.mjs';
 import { offres, offresActives, postes, emailRecrutement } from './data/recrutement.mjs';
-import { realisationsDeMarque, realisationsDeCollection } from './data/realisations.mjs';
+import { realisationsDeMarque, realisationsDeCollection, realisationsDuProduit } from './data/realisations.mjs';
 import { marques, universMarques, marquesDeLUnivers, marquesPied, totalMarques, faqDe } from './data/marques.mjs';
 import {
   produits, produitsPublics, categoriesPubliques, produitsDeCategorie, categorieDuProduit, produitsNav, totalProduits,
@@ -2017,8 +2017,9 @@ function page404() {
 const estMachine = (p) => p.type === 'machine';
 
 /** Réalisations SODILAME en photos (data/realisations.mjs). */
-function blocRealisations(liste, { alt = false } = {}) {
+function blocRealisations(liste, { alt = false, sansLienVers = [] } = {}) {
   if (!liste.length) return '';
+  const avecLien = new Set(sansLienVers);
   return liste
     .map(
       (r) => `<section${alt ? ' class="alt"' : ''}>
@@ -2027,6 +2028,11 @@ function blocRealisations(liste, { alt = false } = {}) {
       <p class="eyebrow">Une installation récente · ${esc(r.mois)}${r.lieu ? ` · ${esc(r.lieu)}` : ''}</p>
       <h2>${esc(r.titre)}</h2>
       <p class="lead">${esc(r.texte)}</p>
+      ${(r.produits || [])
+        .map((ref) => produitsPublics.find((x) => x.ref === ref))
+        .filter((x) => x && !avecLien.has(x.ref))
+        .map((x) => `<a class="more" href="${urlProduit(x)}">Voir le ${esc(x.ref)} dans la boutique →</a>`)
+        .join(' ')}
     </div>
     <div class="realisation">
       ${r.photos
@@ -2871,6 +2877,8 @@ ${ariane(fil)}
     </div>
   </div>
 </section>
+
+${blocRealisations(realisationsDuProduit(p.ref), { sansLienVers: [p.ref] })}
 
 ${
   memeFamille.length
