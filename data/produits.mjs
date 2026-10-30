@@ -1151,6 +1151,11 @@ export const produits = [
 //   lave-linge et sèche-linge de 11 à 25 kg ........ 550 €
 //   calandres (repasseuses à cylindre) ............. 850 €
 //   lave-vaisselle .................................. à fixer (prix sur demande)
+// Grille de la direction, 30/10/2026 (prix HT), RATIONAL :
+//   fours mixtes 6 et 10 niveaux (1/1 et 2/1) ...... 550 €
+//   fours mixtes 20 niveaux ......................... 850 €
+//   sauteuses multifonctions iVario ................. 750 €
+// L'iCombi Pro XS (6-2/3) est un four 6 niveaux : rangé à 550 €.
 // Les machines de 10 kg (sèche-linge PDR 510 et PDR 910) sont rangées à 350 € :
 // « en dessous de 10 kg » / « entre 11 et 25 », 10 kg tombe dans la première
 // tranche. À confirmer par la direction.
@@ -1183,21 +1188,20 @@ const PRIX_FORFAITS = {
   'PFD 101': null,
   'PFD 404': null,
   'PFD 407': null,
-  // RATIONAL : grille à transmettre par la direction (30/10/2026). En
-  // attendant, le forfait s'affiche « sur devis » et se chiffre à la commande.
-  'iCombi Pro XS 6-2/3': null,
-  'iCombi Pro 6-1/1': null,
-  'iCombi Pro 10-1/1': null,
-  'iCombi Pro 6-2/1': null,
-  'iCombi Pro 10-2/1': null,
-  'iCombi Pro 20-1/1': null,
-  'iCombi Classic 6-1/1': null,
-  'iCombi Classic 10-1/1': null,
-  'iCombi Classic 6-2/1': null,
-  'iCombi Classic 10-2/1': null,
-  'iCombi Classic 20-1/1': null,
-  'iVario Pro 2-S': null,
-  'iVario Pro L': null,
+  // RATIONAL : grille de la direction du 30/10/2026.
+  'iCombi Pro XS 6-2/3': 550,
+  'iCombi Pro 6-1/1': 550,
+  'iCombi Pro 10-1/1': 550,
+  'iCombi Pro 6-2/1': 550,
+  'iCombi Pro 10-2/1': 550,
+  'iCombi Pro 20-1/1': 850,
+  'iCombi Classic 6-1/1': 550,
+  'iCombi Classic 10-1/1': 550,
+  'iCombi Classic 6-2/1': 550,
+  'iCombi Classic 10-2/1': 550,
+  'iCombi Classic 20-1/1': 850,
+  'iVario Pro 2-S': 750,
+  'iVario Pro L': 750,
 };
 
 const LIBELLE_FORFAIT = 'Forfait';

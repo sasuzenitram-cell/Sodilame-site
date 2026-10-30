@@ -441,6 +441,10 @@ console.log('\n═══ Sélection RATIONAL ═══');
   verifier('iVario Pro L : une fiche technique par variante, sans doublon',
     (l.match(/href="[^"]+fiche-technique-rational\.pdf"/g) || []).length === 2 && l.includes('sur soubassement'));
   verifier('chaque machine RATIONAL a son forfait', machines.every((m) => forfaitDe(m)));
+  // Grille de la direction du 30/10/2026 : 6 et 10 niveaux 550 €, 20 niveaux 850 €, iVario 750 €.
+  const attendu = (m) => (/^iVario/.test(m.ref) ? 750 : /20-/.test(m.ref) ? 850 : 550);
+  const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== attendu(m));
+  verifier('forfaits RATIONAL conformes à la grille (550 / 850 / 750 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
 }
 
 console.log('\n═══ En-tête de la boutique ═══');
