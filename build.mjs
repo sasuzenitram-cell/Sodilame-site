@@ -2149,15 +2149,17 @@ function boutonAjout(p, c, k) {
 // dont nous n'avons pas les droits — les visuels Miele arriveront avec le kit
 // revendeur officiel.
 function vignetteProduit(p, taille = '') {
+  // Le logo de la marque (quand le fabricant nous l'a remis) se pose en
+  // pastille en haut à droite, sur la photo comme sur la vignette de secours.
+  const lm = logoMarque(pageMarque(p.marque), 'logo-vign');
   if (p.photo) {
-    return `<span class="vign${taille}"><img src="/assets/produits/${p.photo}.jpg" width="800" height="800" alt="${esc(p.marque)} ${esc(p.nom)} — référence ${esc(p.ref)}" loading="lazy" decoding="async"></span>`;
+    return `<span class="vign${taille}"><img src="/assets/produits/${p.photo}.jpg" width="800" height="800" alt="${esc(p.marque)} ${esc(p.nom)} — référence ${esc(p.ref)}" loading="lazy" decoding="async">${lm}</span>`;
   }
   const icone = estMachine(p)
     ? categorieDuProduit(p)?.icone || 'installation'
     : p.caracteristiques.some((c) => /liquide/i.test(c))
       ? 'bidon'
       : 'seau';
-  const lm = logoMarque(pageMarque(p.marque), 'logo-vign');
   return `<span class="vign vide${taille}"${lm ? '' : ' aria-hidden="true"'}>${lm}${svg(icone)}<span class="vr">${esc(p.ref)}</span></span>`;
 }
 

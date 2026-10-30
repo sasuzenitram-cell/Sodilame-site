@@ -570,8 +570,9 @@ table.panier a{color:var(--navy)}
 .logo-fiche{width:150px;margin-bottom:14px;border-radius:3px}
 .vign.vide{position:relative}
 /* `.vign img` étire les photos produit à 100 % : le logo doit y échapper. */
-.vign.vide img.logo-vign{position:absolute;top:7%;left:7%;width:30%;min-width:64px;max-width:130px;
-  height:auto;padding:0;object-fit:fill;border-radius:3px}
+.vign{position:relative}
+.vign img.logo-vign{position:absolute;top:6%;right:6%;left:auto;width:24%;min-width:52px;max-width:110px;
+  height:auto;padding:0;object-fit:fill;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 
 /* Forfait d'installation : sous la machine sur la fiche, et dans le panier */
 .cond-row.forfait-row{margin-top:.5rem;background:#fff;border-style:dashed}
