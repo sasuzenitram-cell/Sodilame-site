@@ -53,6 +53,7 @@
 
 import { produitsMiele } from './miele.mjs';
 import { produitsRational } from './rational.mjs';
+import { produitsFoster } from './foster.mjs';
 
 export const categoriesProduits = [
   {
@@ -319,6 +320,82 @@ export const categoriesProduits = [
       "Les paniers font de l'iVario une marmite à pâtes ou une friteuse ; le soubassement le met à la bonne hauteur de travail.",
     conseil:
       "Chaque accessoire existe pour la taille 2-S ou pour les tailles L et XL. Donnez-nous votre modèle : nous vérifions avant de commander.",
+  },
+
+  {
+    slug: 'armoires-refrigerees',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Armoires réfrigérées',
+    nomCourt: 'Armoires',
+    icone: 'froid',
+    titreSeo: 'Armoires réfrigérées professionnelles Foster EcoPro G3 — vente et installation',
+    description:
+      "Armoires réfrigérées positives, négatives et bi-température Foster EcoPro G3, 1 et 2 portes GN 2/1, livrées, installées et mises en service par nos frigoristes dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Une armoire réfrigérée se choisit d'abord sur la chaleur du local où elle va tourner. Une arrière-cuisine provençale dépasse 35 °C en été : une armoire donnée pour 30 °C d'ambiance y perd sa température, et ce sont les marchandises qui en paient le prix. Les EcoPro G3 à porte pleine sont données pour 40 °C (classe climatique 5).",
+    conseil:
+      "Chaque armoire est vendue avec son forfait de livraison, d'installation et de mise en service. Nous vérifions avant la commande le passage des portes jusqu'à l'emplacement, la prise électrique et l'air disponible autour de l'appareil.",
+  },
+  {
+    slug: 'armoires-a-chariots',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Armoires à chariots',
+    nomCourt: 'Armoires à chariots',
+    icone: 'froid',
+    titreSeo: 'Armoires réfrigérées à chariots GN Foster Evologi pour la restauration collective',
+    description:
+      "Armoires réfrigérées à chariots Foster Evologi, pour 1 ou 2 chariots GN 1/1 ou GN 2/1, en accès simple ou traversantes : cuisines centrales, restauration scolaire, EHPAD. Installées par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "En restauration collective, chaque transvasement est une manipulation de plus et une minute de perdue. L'armoire à chariots reçoit directement le chariot qui sort du four ou de la cellule : la production passe au froid sans être touchée, et la version traversante sépare le côté production du côté distribution.",
+    conseil:
+      "Les dimensions de vos chariots, le passage jusqu'à l'emplacement, la planéité du sol et l'alimentation se vérifient au relevé, avant la commande. Chaque armoire est vendue avec son forfait de livraison, d'installation et de mise en service.",
+  },
+  {
+    slug: 'tables-refrigerees',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Tables réfrigérées et meubles bas',
+    nomCourt: 'Tables réfrigérées',
+    icone: 'froid',
+    titreSeo: 'Tables réfrigérées, saladettes et meubles bas Foster — vente et installation',
+    description:
+      "Tables réfrigérées positives et négatives Foster EcoPro G3, saladettes FPS et meubles bas compacts pour bars et offices, livrés, installés et mis en service dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Le meuble bas réfrigéré met la mise en place sous la main du cuisinier : c'est autant d'allers-retours à la réserve en moins pendant le service. La table GN 1/1 équipe le poste de travail, la saladette le poste pizza ou salades, et le meuble compact le bar ou l'office.",
+    conseil:
+      "Un meuble bas aspire et rejette son air par l'avant : jamais devant un fourneau, une friteuse ou un lave-vaisselle. Nous vérifions l'emplacement avant la livraison, et chaque meuble est vendu avec son forfait d'installation.",
+  },
+  {
+    slug: 'cellules-refroidissement',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Cellules de refroidissement rapide',
+    nomCourt: 'Cellules',
+    icone: 'froid',
+    titreSeo: 'Cellules de refroidissement rapide et de surgélation Foster Evologi',
+    description:
+      "Cellules de refroidissement rapide et de surgélation Foster Evologi, de 6 à 12 niveaux GN 1/1 ou 600 x 400, de 15 à 60 kg par cycle. Installées par nos frigoristes dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Cuisiner à l'avance n'est permis qu'à une condition : faire passer les préparations de +63 °C à +10 °C en moins de deux heures. Laissées à refroidir à l'air libre, elles traversent lentement la zone où les bactéries se multiplient. La cellule de refroidissement rapide fait ce travail en 90 minutes, et la cellule mixte surgèle aussi.",
+    conseil:
+      "La cellule se choisit sur la quantité à refroidir en une fois, pas sur la production de la journée. Comptez ce que contient votre four plein : c'est ce que la cellule doit absorber à chaque cycle. Chaque cellule est vendue avec son forfait d'installation.",
+  },
+  {
+    slug: 'accessoires-froid',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Accessoires pour le froid',
+    nomCourt: 'Accessoires froid',
+    icone: 'outils',
+    titreSeo: 'Grilles et glissières d’origine Foster pour armoires et tables réfrigérées',
+    description:
+      "Grilles et glissières d'origine Foster pour armoires et tables réfrigérées EcoPro G3 et meubles bas compacts. Livrées sur notre zone d'intervention.",
+    intro:
+      "Une grille de plus, c'est un niveau de rangement de plus ; une glissière remplacée, c'est une grille qui ne tombe plus quand on tire le bac.",
+    conseil:
+      "Grilles et glissières sont propres à chaque gamme. Donnez-nous la référence de votre appareil, ou une photo de sa plaque signalétique : nous vérifions la compatibilité avant de commander chez Foster.",
   },
 
   // =========================================================================
@@ -1123,6 +1200,10 @@ export const produits = [
   // RATIONAL — fiches, versions et prix dans data/rational.mjs
   // =========================================================================
   ...produitsRational,
+  // =========================================================================
+  // FOSTER — fiches, versions et prix dans data/foster.mjs
+  // =========================================================================
+  ...produitsFoster,
 ];
 
 // ---------------------------------------------------------------------------
@@ -1202,6 +1283,34 @@ const PRIX_FORFAITS = {
   'iCombi Classic 20-1/1': 850,
   'iVario Pro 2-S': 750,
   'iVario Pro L': 750,
+  // FOSTER : grille de la direction du 30/10/2026 (prix HT) — armoire 1 porte
+  // 150 €, armoire 2 portes 250 €, table réfrigérée 150 €, cellule 150 €.
+  // Armoires à chariots : 1 chariot = 1 porte, 2 chariots = 2 portes.
+  // Armoire bi-température EP700HL : une seule armoire de 70 cm, 150 €.
+  // Meubles bas compacts et saladettes : rangés avec les tables, 150 €.
+  EP700H: 150,
+  EP700L: 150,
+  EP700HL: 150,
+  EP1440H: 250,
+  EP1440L: 250,
+  EGR1H: 150,
+  EGRL1H: 150,
+  EGR2H: 250,
+  EGRL2H: 250,
+  'EP1/2H': 150,
+  'EP1/3H': 150,
+  'EP1/4H': 150,
+  'EP1/2L': 150,
+  'EP1/3L': 150,
+  FPS2HR: 150,
+  FPS3HR: 150,
+  'HR150 / LR150': 150,
+  'HR200 / LR200': 150,
+  'HR360 / LR360': 150,
+  'ED15/6': 150,
+  'ED25/6': 150,
+  'ED45/12': 150,
+  'ED60/12': 150,
 };
 
 const LIBELLE_FORFAIT = 'Forfait';
@@ -1268,6 +1377,9 @@ export const machinesCatalogue = [
   { slug: 'seche-linge', nom: 'Sèche-linge', icone: 'buanderie' },
   { slug: 'repasseuse', nom: 'Repasseuse', icone: 'buanderie' },
   { slug: 'sauteuse', nom: 'Sauteuse multifonction', icone: 'cuisson' },
+  { slug: 'armoire-refrigeree', nom: 'Armoire réfrigérée', icone: 'froid' },
+  { slug: 'table-refrigeree', nom: 'Table réfrigérée', icone: 'froid' },
+  { slug: 'cellule-refroidissement', nom: 'Cellule de refroidissement', icone: 'froid' },
 ];
 
 export const marquesCatalogue = [...new Set(produitsPublics.map((p) => p.marque))].sort();
@@ -1343,7 +1455,7 @@ export const rayonsBoutique = [
     icone: 'froid',
     service: 'froid-professionnel',
     marques: ['foster', 'infrico', 'atosa'],
-    aVenir: ['Armoires réfrigérées', 'Tables réfrigérées', 'Cellules de refroidissement rapide', 'Chambres froides'],
+    aVenir: ['Chambres froides', 'Vitrines réfrigérées', 'Machines à glaçons'],
     accroche: 'Armoires, tables et cellules de refroidissement, installées et entretenues par nos frigoristes.',
   },
   {

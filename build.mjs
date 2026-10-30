@@ -2805,13 +2805,27 @@ function produitPage(p) {
       cd.ficheMiele
         ? { href: cd.ficheMiele, titre: `Fiche produit ${cd.refMiele || p.ref}`, source: `site ${p.marque}`, externe: true }
         : cd.ficheFabricant
-          ? { href: cd.ficheFabricant, titre: cd.ficheTitre || `Fiche technique ${p.ref}`, source: `document d'origine ${p.creditVisuel || p.marque}` }
+          ? /^https?:\/\//.test(cd.ficheFabricant)
+            ? { href: cd.ficheFabricant, titre: cd.ficheTitre || `Fiche technique ${p.ref}`, source: `site ${p.creditVisuel || p.marque}`, externe: true }
+            : { href: cd.ficheFabricant, titre: cd.ficheTitre || `Fiche technique ${p.ref}`, source: `document d'origine ${p.creditVisuel || p.marque}` }
           : null
+    )
+    // Étiquette énergie européenne (armoires et meubles bas réfrigérés) : celle
+    // que publie le fabricant, une par version.
+    .concat(
+      p.conditionnements
+        .filter((cd) => cd.etiquetteEnergie)
+        .map((cd) => ({
+          href: cd.etiquetteEnergie,
+          titre: `Étiquette énergie ${cd.refFabricant || p.ref}`,
+          source: `site ${p.creditVisuel || p.marque}`,
+          externe: true,
+        }))
     )
     .filter((f, i, t) => f && t.findIndex((x) => x?.href === f.href) === i);
   const blocFichesFabricant = fichesFabricant.length
     ? `<h2>Fiche technique ${esc(p.marque)}</h2>
-        <p>Dimensions, raccordements et caractéristiques complètes${fichesFabricant.length > 1 ? ', version par version' : ''}, sur le document officiel du fabricant.</p>
+        <p>Dimensions, raccordements et caractéristiques complètes${fichesFabricant.length > 1 ? ', version par version' : ''}, sur le document officiel du fabricant${p.conditionnements.some((cd) => cd.etiquetteEnergie) ? ', avec l’étiquette énergie de chaque version' : ''}.</p>
         <ul class="fiches-pdf">
           ${fichesFabricant
             .map((f) => `<li><a href="${esc(f.href)}" target="_blank" rel="noopener${f.externe ? ' nofollow' : ''}">${esc(f.titre)}</a> <span>PDF — ${esc(f.source)}</span></li>`)

@@ -29,6 +29,11 @@
 //        — RATIONAL : logo du portail revendeur RATIONAL (Toolbox), auquel
 //          SODILAME accède en tant que distributeur ; repris le 30/10/2026 sur
 //          décision de la direction.
+//        — Foster : pas de portail revendeur. Logo vectoriel du site public
+//          Foster (fosterrefrigerator.com), repris le 30/10/2026 avec les
+//          visuels produit, sur décision de la direction et sous sa
+//          responsabilité. À remplacer par le logo remis par Foster s'il en
+//          fournit un.
 //     3. Aucune phrase reprise d'un site de fabricant ou de concurrent. Tout
 //        le texte ci-dessous est rédigé pour SODILAME.
 //
@@ -282,6 +287,7 @@ export const marques = [
   {
     slug: 'foster',
     nom: 'Foster',
+    logo: { fichier: 'foster.png', largeur: 600, hauteur: 289, alt: 'Logo Foster' },
     univers: 'froid',
     agree: true,
     pays: 'Royaume-Uni',
@@ -304,6 +310,10 @@ export const marques = [
     ],
     clients: ['Restauration commerciale', 'Restauration collective', 'Hôtellerie', 'Établissements de santé'],
     services: ['froid-professionnel', 'installation-mise-en-service', 'depannage-sav-cuisine-professionnelle'],
+    boutique: 'armoires-refrigerees',
+    boutiqueTitre: 'Armoires, tables et cellules en boutique',
+    boutiqueTexte: 'Armoires EcoPro G3, armoires à chariots, tables réfrigérées, saladettes et cellules de refroidissement au prix public Foster, avec la pose',
+    boutiqueUrl: '/eshop/catalogue?marque=Foster#catalogue',
   },
   {
     slug: 'atosa',

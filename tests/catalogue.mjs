@@ -447,6 +447,59 @@ console.log('\n═══ Sélection RATIONAL ═══');
   verifier('forfaits RATIONAL conformes à la grille (550 / 850 / 750 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
 }
 
+console.log('\n═══ Sélection Foster ═══');
+{
+  const fs = await import('node:fs');
+  const { refsFosterManquantes, produitsFoster } = await import('../data/foster.mjs');
+  const { tarifFoster } = await import('../data/foster-tarif.mjs');
+  const { visuelsFoster } = await import('../data/foster-visuels.mjs');
+
+  verifier('toutes les références Foster sont au tarif généré', !refsFosterManquantes.length, refsFosterManquantes.join(', '));
+  const champs = new Set(Object.values(tarifFoster).flatMap((t) => Object.keys(t)));
+  verifier('le tarif Foster généré ne contient que prix public et libellé', [...champs].every((c) => ['prix', 'libelle'].includes(c)), [...champs].join(', '));
+  const brut = fs.readFileSync('data/foster-tarif.mjs', 'utf8').split('\n').filter((l) => !l.startsWith('//')).join('\n');
+  verifier('aucune trace de prix de revient dans le tarif Foster', !/cost|revient|achat|-50|remise|éco-participation/i.test(brut));
+
+  const conds = produitsFoster.flatMap((p) => p.conditionnements.map((c) => ({ p, c })));
+  verifier(`${conds.length} versions Foster, toutes avec un prix public`, conds.every(({ c }) => typeof c.prix === 'number' && c.prix > 0));
+  verifier('chaque libellé commence par la référence Foster et tient dans 80 caractères',
+    conds.every(({ c }) => c.label.startsWith(c.refFabricant + ' · ') && c.label.length <= 80));
+  verifier('aucun libellé de version en double dans une fiche',
+    produitsFoster.every((p) => new Set(p.conditionnements.map((c) => c.label)).size === p.conditionnements.length));
+  verifier('ni gamme Xtra ni version sans groupe dans la sélection (décision du 30/10/2026)',
+    !Object.values(tarifFoster).some((t) => /^XR\d|SANS GROUPE|-SG\b/.test(t.libelle)));
+
+  const machines = produitsFoster.filter((p) => p.type === 'machine');
+  verifier(`${machines.length} machines Foster, chacune avec sa photo`,
+    machines.length >= 23 && machines.every((p) => p.photo && fs.existsSync(`static/assets/produits/${p.photo}.jpg`)),
+    machines.filter((p) => !p.photo).map((p) => p.ref).join(', '));
+  verifier('photos Foster sans métadonnées EXIF',
+    Object.values(visuelsFoster).filter((v) => v.photo).every((v) => !fs.readFileSync(`static/assets/produits/${v.photo}.jpg`).includes('Exif')));
+  const liens = conds.flatMap(({ c }) => [c.ficheFabricant, c.etiquetteEnergie]).filter(Boolean);
+  verifier('documents Foster : uniquement des liens vers fosterrefrigerator.com',
+    liens.length > 40 && liens.every((u) => /^https:\/\/www\.fosterrefrigerator\.com\/Files\/Product%20assets\/[^\s"<>]+\.pdf$/.test(u)));
+  verifier('chaque machine Foster a un document du fabricant', machines.every((p) => p.conditionnements.every((c) => c.ficheFabricant)));
+  // Étiquette énergie : obligatoire pour les armoires et meubles bas de stockage.
+  const g3 = conds.filter(({ c }) => /^4[13]-/.test(c.refFabricant));
+  verifier(`étiquette énergie sur les ${g3.length} versions EcoPro G3`, g3.length === 24 && g3.every(({ c }) => c.etiquetteEnergie));
+
+  const fautes = [];
+  for (const p of produitsFoster) {
+    const h = fs.readFileSync(fichier(p), 'utf8');
+    if (p.photo && !h.includes('© Foster')) fautes.push(`${p.ref} : crédit absent`);
+    if (p.type === 'machine' && !h.includes('fosterrefrigerator.com/Files/')) fautes.push(`${p.ref} : document absent`);
+    if (p.conditionnements.some((c) => c.etiquetteEnergie) && !h.includes('Étiquette énergie')) fautes.push(`${p.ref} : étiquette absente`);
+    if (p.type !== 'machine' && h.includes('En stock à Saint-Martin-de-Crau')) fautes.push(`${p.ref} : annonce un stock`);
+    if (p.type !== 'machine' && h.includes('lors de sa prochaine tournée')) fautes.push(`${p.ref} : promet la tournée`);
+  }
+  verifier('fiches Foster : crédit, documents, étiquette, et aucune promesse de stock', !fautes.length, fautes.slice(0, 6).join(' · '));
+  verifier('chaque machine Foster a son forfait', machines.every((m) => forfaitDe(m)));
+  // Grille de la direction du 30/10/2026 : armoire 1 porte 150 €, 2 portes 250 €, table 150 €, cellule 150 €.
+  const deuxPortes = ['EP1440H', 'EP1440L', 'EGR2H', 'EGRL2H'];
+  const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== (deuxPortes.includes(m.ref) ? 250 : 150));
+  verifier('forfaits Foster conformes à la grille (150 / 250 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
+}
+
 console.log('\n═══ En-tête de la boutique ═══');
 {
   const fs = await import('node:fs');
