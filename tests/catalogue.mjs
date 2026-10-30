@@ -494,10 +494,11 @@ console.log('\n═══ Sélection Foster ═══');
   }
   verifier('fiches Foster : crédit, documents, étiquette, et aucune promesse de stock', !fautes.length, fautes.slice(0, 6).join(' · '));
   verifier('chaque machine Foster a son forfait', machines.every((m) => forfaitDe(m)));
-  // Grille de la direction du 30/10/2026 : armoire 1 porte 150 €, 2 portes 250 €, table 150 €, cellule 150 €.
-  const deuxPortes = ['EP1440H', 'EP1440L', 'EGR2H', 'EGRL2H'];
-  const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== (deuxPortes.includes(m.ref) ? 250 : 150));
-  verifier('forfaits Foster conformes à la grille (150 / 250 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
+  // Grille de la direction du 30/10/2026 : armoire 1 porte 150 €, 2 portes 250 €, table 150 €, cellule 150 €,
+  // armoire à chariots 750 €.
+  const attendu = (m) => (m.categorie === 'armoires-a-chariots' ? 750 : ['EP1440H', 'EP1440L'].includes(m.ref) ? 250 : 150);
+  const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== attendu(m));
+  verifier('forfaits Foster conformes à la grille (150 / 250 / 750 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
 }
 
 console.log('\n═══ En-tête de la boutique ═══');

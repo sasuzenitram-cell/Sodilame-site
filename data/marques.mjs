@@ -399,29 +399,35 @@ export const marques = [
     boutique: 'granules-lave-batterie',
     boutiqueTexte: 'Granulés de lavage pour lave-batterie',
   },
+
+  // =========================================================================
+  // BLANCHISSERIE
+  // =========================================================================
   {
     slug: 'miele-professional',
     nom: 'Miele Professional',
     logo: { fichier: 'miele.png', largeur: 600, hauteur: 230, alt: 'Logo Miele' },
-    univers: 'laverie',
+    // Classée en blanchisserie (direction, 30/10/2026) : c'est là que Miele
+    // pèse le plus dans nos ventes. La laverie reste citée dans ses familles.
+    univers: 'blanchisserie',
     agree: true,
     pays: 'Allemagne',
     depuis: 1899,
     lieu: 'Gütersloh, Rhénanie-du-Nord-Westphalie',
     site: 'https://www.miele-professional.fr/',
-    resume: 'Lavage à eau neuve, buanderie et laveurs-désinfecteurs.',
+    resume: 'Buanderie professionnelle, lavage de vaisselle à eau neuve et laveurs-désinfecteurs.',
     accroche:
-      "Miele Professional est la seule marque de notre catalogue à proposer à la fois le lavage de vaisselle à eau renouvelée, la buanderie et les laveurs-désinfecteurs médicaux.",
-    familles: ['Lave-vaisselle à eau neuve', 'Lave-verres et machines à capot', 'Lave-linge et sèche-linge', 'Laveurs-désinfecteurs'],
-    gammes: ['ProfiLine PFD 101', 'MasterLine PFD 400 à 407', 'PTD 701 / 703 / 901', 'Benchmark PWM / PDR', 'SmartBiz'],
+      "La buanderie des hôtels, des campings et des EHPAD qui ne veulent pas s'arrêter — et la seule marque de notre catalogue à proposer aussi le lavage de vaisselle à eau renouvelée et les laveurs-désinfecteurs médicaux.",
+    familles: ['Lave-linge et sèche-linge', 'Repasseuses et calandres', 'Lave-vaisselle à eau neuve', 'Lave-verres et machines à capot', 'Laveurs-désinfecteurs'],
+    gammes: ['Benchmark PWM / PDR', 'Performance et Performance Plus', 'SmartBiz', 'ProfiLine PFD 101', 'MasterLine PFD 400 à 407', 'PTD 701 / 703 / 901'],
     description: [
-      "Chez Miele, deux principes de lavage cohabitent, et c'est la première chose à comprendre avant de choisir. Les machines PFD travaillent à eau renouvelée à chaque cycle, sans bain permanent : c'est ce qu'on installe en crèche, en EHPAD et en milieu de soins. Les PTD sont des machines à surchauffeur classiques, faites pour le débit du bar et du restaurant.",
-      "La buanderie Benchmark couvre les petites laveries d'hôtel, de camping et d'EHPAD.",
+      "La buanderie est le premier métier de Miele chez nous : lave-linge et sèche-linge de 6 à 20 kg, des gammes SmartBiz et Performance jusqu'à la Benchmark, et repasseuses à cylindre. Ce sont les machines des petites et moyennes laveries d'hôtel, de camping, de gîte et d'EHPAD, qui tournent toute la journée.",
+      "Côté vaisselle, deux principes de lavage cohabitent, et c'est la première chose à comprendre avant de choisir. Les machines PFD travaillent à eau renouvelée à chaque cycle, sans bain permanent : c'est ce qu'on installe en crèche, en EHPAD et en milieu de soins. Les PTD sont des machines à surchauffeur classiques, faites pour le débit du bar et du restaurant.",
     ],
     aRetenir: [
+      "Miele s'engage sur la <b>disponibilité des pièces 15 ans après l'arrêt d'une série</b>. Sur un parc de buanderie amorti sur quinze ans, c'est un critère d'achat à part entière.",
       "<b>PFD ou PTD, ce ne sont pas deux gammes, ce sont deux technologies.</b> Se tromper, c'est installer une machine à bain là où le cahier des charges demandait de l'eau neuve — et l'erreur ne se rattrape pas au réglage.",
       "Le modèle le plus haut de la série PFD propose un programme de <b>désinfection thermique à 93 °C</b>, revendiqué virucide : c'est ce qui le fait retenir en établissement de santé.",
-      "Miele s'engage sur la <b>disponibilité des pièces 15 ans après l'arrêt d'une série</b>. Sur un parc de buanderie amorti sur quinze ans, c'est un critère d'achat à part entière.",
     ],
     clients: ['Crèches, EHPAD et établissements de santé', 'Bars et restaurants', 'Hôtels et campings', 'Cabinets dentaires et laboratoires'],
     services: ['laverie-restauration', 'buanderie-professionnelle', 'contrat-entretien-cuisine-professionnelle'],
@@ -433,10 +439,6 @@ export const marques = [
     boutiqueTexte: 'Lave-linge, sèche-linge, repasseuses et lave-vaisselle Miele Professional au prix public, livrés, installés et mis en service par nos techniciens — avec les accessoires et les produits ProCare',
     boutiqueUrl: '/eshop/catalogue?marque=Miele+Professional#catalogue',
   },
-
-  // =========================================================================
-  // BLANCHISSERIE
-  // =========================================================================
   {
     slug: 'girbau',
     nom: 'Girbau',

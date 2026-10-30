@@ -1285,7 +1285,8 @@ const PRIX_FORFAITS = {
   'iVario Pro L': 750,
   // FOSTER : grille de la direction du 30/10/2026 (prix HT) — armoire 1 porte
   // 150 €, armoire 2 portes 250 €, table réfrigérée 150 €, cellule 150 €.
-  // Armoires à chariots : 1 chariot = 1 porte, 2 chariots = 2 portes.
+  // Armoires à chariots : 750 € quelle que soit la taille (direction,
+  // 30/10/2026 : « c'est compliqué à faire » — pose de niveau, passage, sol).
   // Armoire bi-température EP700HL : une seule armoire de 70 cm, 150 €.
   // Meubles bas compacts et saladettes : rangés avec les tables, 150 €.
   EP700H: 150,
@@ -1293,10 +1294,10 @@ const PRIX_FORFAITS = {
   EP700HL: 150,
   EP1440H: 250,
   EP1440L: 250,
-  EGR1H: 150,
-  EGRL1H: 150,
-  EGR2H: 250,
-  EGRL2H: 250,
+  EGR1H: 750,
+  EGRL1H: 750,
+  EGR2H: 750,
+  EGRL2H: 750,
   'EP1/2H': 150,
   'EP1/3H': 150,
   'EP1/4H': 150,
