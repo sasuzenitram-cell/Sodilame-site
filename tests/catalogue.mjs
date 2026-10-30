@@ -383,6 +383,14 @@ console.log('\n═══ Sélection Miele Professional ═══');
     if (p.type !== 'machine' && h.includes('lors de sa prochaine tournée')) fautes.push(`${p.ref} : promet la tournée`);
   }
   verifier('fiches Miele : lien fabricant, GTIN, et aucune promesse de stock', !fautes.length, fautes.slice(0, 6).join(' · '));
+  verifier('chaque fiche Miele a sa photo', produitsMiele.every((p) => p.photo && fs.existsSync(`static/assets/produits/${p.photo}.jpg`)),
+    produitsMiele.filter((p) => !p.photo).map((p) => p.ref).join(', '));
+  const avec3d = produitsMiele.filter((p) => p.vue3d);
+  verifier(`${avec3d.length} vues 3D, toutes lues chez Miele (media.miele.com)`,
+    avec3d.length > 0 && avec3d.every((p) => /^https:\/\/media\.miele\.com\/.+\.glb$/.test(p.vue3d.glb)));
+  verifier('le lecteur 3D est servi depuis nos fichiers', fs.existsSync('static/assets/vendor/model-viewer-4.0.0.min.js'));
+  const f3d = fs.readFileSync(fichier(avec3d[0]), 'utf8');
+  verifier('la fiche avec vue 3D porte le bouton et le crédit Miele', f3d.includes('vue3d-btn') && f3d.includes('© Miele'));
 }
 
 console.log('\n═══ En-tête de la boutique ═══');

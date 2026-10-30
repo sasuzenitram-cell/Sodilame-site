@@ -885,3 +885,14 @@ header.site.shop{background:#FBFDFA}
 .rayon-tete{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .rayon-tete .more{font-weight:600;white-space:nowrap}
 .sn-drop .sn-tout-rayon{border-top:1px solid var(--line);margin-top:.3rem;padding-top:.7rem;font-weight:700}
+
+/* Vue 3D des fiches produit (model-viewer, chargé au clic) */
+.vue3d{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.2rem}
+.vue3d .vign.grande{margin-bottom:0}
+.vue3d .vign[hidden]{display:none}
+.vue3d-modele{display:block;width:100%;aspect-ratio:1/1;border-radius:10px;background:#fff;border:1px solid var(--line);--poster-color:transparent}
+.vue3d-modele[hidden]{display:none}
+.vue3d-btn{justify-content:center;width:100%}
+.vue3d-btn svg{width:18px;height:18px}
+.credit-visuel{font-size:.7rem;color:var(--muted);margin:-.6rem 0 1rem;text-align:right}
+.vue3d + .credit-visuel{margin-top:-.6rem}

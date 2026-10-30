@@ -30,6 +30,9 @@
 // à la commande chez Miele.
 // ---------------------------------------------------------------------------
 import { tarifMiele } from './miele-tarif.mjs';
+// Photos et vues 3D reprises du site Miele Professional : décision de la
+// direction du 30/10/2026, sous sa responsabilité (voir miele-visuels.mjs).
+import { visuelsMiele } from './miele-visuels.mjs';
 
 const MARQUE = 'Miele Professional';
 
@@ -894,7 +897,8 @@ export const produitsMiele = fiches.map((f) => {
   const t0 = tarifMiele[versions[0].ref] || {};
   return {
     marque: MARQUE,
-    photo: null,
+    photo: visuelsMiele[f.slug]?.photo ?? null,
+    ...(visuelsMiele[f.slug]?.glb ? { vue3d: { glb: visuelsMiele[f.slug].glb, usdz: visuelsMiele[f.slug].usdz || null } } : {}),
     usages: [],
     // Accessoires et consommables : commandés chez Miele, pas en stock chez
     // nous. La fiche ne doit donc promettre ni stock ni tournée.

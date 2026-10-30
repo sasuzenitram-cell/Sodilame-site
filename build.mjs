@@ -2016,6 +2016,61 @@ function page404() {
 // ===========================================================================
 const estMachine = (p) => p.type === 'machine';
 
+/**
+ * Visuel de la fiche : la photo, et, quand le fabricant en publie une, la vue
+ * 3D. Le modèle 3D (plusieurs Mo) n'est chargé qu'au clic : la page reste
+ * légère pour qui ne s'en sert pas. Le lecteur <model-viewer> (Google,
+ * Apache-2.0) est servi depuis nos fichiers ; le modèle, lui, est lu chez Miele.
+ */
+function blocVisuel(p) {
+  const v = p.vue3d;
+  const credit = p.photo && p.marque === 'Miele Professional' ? `<p class="credit-visuel">Visuel${v ? ' et modèle 3D' : ''} © Miele</p>` : '';
+  if (!v) return vignetteProduit(p, ' grande') + credit;
+  return `<div class="vue3d" data-glb="${esc(v.glb)}"${v.usdz ? ` data-usdz="${esc(v.usdz)}"` : ''} data-alt="${esc(`${p.marque} ${p.nom} — vue 3D`)}">
+            ${vignetteProduit(p, ' grande')}
+            <button type="button" class="btn btn-outline btn-sm vue3d-btn" aria-pressed="false">${svg('installation')}<span>Voir en 3D</span></button>
+          </div>
+          ${credit}
+          <script>${SCRIPT_VUE3D}</script>`;
+}
+
+const SCRIPT_VUE3D = `(function(){
+  var bloc = document.currentScript.parentNode.querySelector('.vue3d');
+  if (!bloc) return;
+  var btn = bloc.querySelector('.vue3d-btn'), photo = bloc.querySelector('.vign'), mv = null, charge = null;
+  function libelle(t){ btn.querySelector('span').textContent = t; }
+  btn.addEventListener('click', function(){
+    if (mv) {                      // retour à la photo
+      var vers3d = mv.hidden;
+      mv.hidden = !vers3d; photo.hidden = vers3d;
+      btn.setAttribute('aria-pressed', vers3d ? 'true' : 'false');
+      libelle(vers3d ? 'Revenir à la photo' : 'Voir en 3D');
+      return;
+    }
+    if (charge) return;
+    libelle('Chargement de la vue 3D…'); btn.disabled = true;
+    charge = import('/assets/vendor/model-viewer-4.0.0.min.js').then(function(){
+      mv = document.createElement('model-viewer');
+      mv.setAttribute('src', bloc.dataset.glb);
+      if (bloc.dataset.usdz) mv.setAttribute('ios-src', bloc.dataset.usdz);
+      mv.setAttribute('alt', bloc.dataset.alt);
+      ['camera-controls','auto-rotate','ar'].forEach(function(a){ mv.setAttribute(a, ''); });
+      mv.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
+      mv.setAttribute('shadow-intensity', '1');
+      mv.setAttribute('touch-action', 'pan-y');
+      mv.className = 'vue3d-modele';
+      mv.addEventListener('load', function(){ libelle('Revenir à la photo'); btn.disabled = false; });
+      mv.addEventListener('error', function(){
+        mv.remove(); mv = null; charge = null; photo.hidden = false;
+        libelle('Vue 3D indisponible'); btn.disabled = true;
+      });
+      photo.hidden = true;
+      bloc.insertBefore(mv, btn);
+      btn.setAttribute('aria-pressed', 'true');
+    }).catch(function(){ charge = null; libelle('Vue 3D indisponible'); });
+  });
+})();`;
+
 /** Réalisations SODILAME en photos (data/realisations.mjs). */
 function blocRealisations(liste, { alt = false, sansLienVers = [] } = {}) {
   if (!liste.length) return '';
@@ -2862,7 +2917,7 @@ ${ariane(fil)}
       <aside>
         ${retraitVente(p)}
         <div class="achat">
-          ${vignetteProduit(p, ' grande')}
+          ${blocVisuel(p)}
           <h2>Commander</h2>
           <p class="achat-sub">${machine ? 'Machine et forfait d’installation' : p.conditionnements.length > 1 ? 'Choisissez votre conditionnement' : 'Conditionnement disponible'}</p>
           ${lignesAchat}
