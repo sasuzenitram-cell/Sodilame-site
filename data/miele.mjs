@@ -897,6 +897,7 @@ export const produitsMiele = fiches.map((f) => {
   const t0 = tarifMiele[versions[0].ref] || {};
   return {
     marque: MARQUE,
+    creditVisuel: 'Miele',
     photo: visuelsMiele[f.slug]?.photo ?? null,
     ...(visuelsMiele[f.slug]?.glb ? { vue3d: { glb: visuelsMiele[f.slug].glb, usdz: visuelsMiele[f.slug].usdz || null } } : {}),
     usages: [],

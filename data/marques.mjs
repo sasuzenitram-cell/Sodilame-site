@@ -26,6 +26,9 @@
 //          « Display Excellence » aux revendeurs, mis en ligne le 28/10/2026.
 //          À remplacer par la dernière version officielle « Miele Professional »
 //          dès réception du kit revendeur.
+//        — RATIONAL : logo du portail revendeur RATIONAL (Toolbox), auquel
+//          SODILAME accède en tant que distributeur ; repris le 30/10/2026 sur
+//          décision de la direction.
 //     3. Aucune phrase reprise d'un site de fabricant ou de concurrent. Tout
 //        le texte ci-dessous est rédigé pour SODILAME.
 //
@@ -85,6 +88,7 @@ export const marques = [
   {
     slug: 'rational',
     nom: 'RATIONAL',
+    logo: { fichier: 'rational.png', largeur: 600, hauteur: 166, alt: 'Logo RATIONAL' },
     univers: 'cuisson',
     agree: true,
     pays: 'Allemagne',
@@ -107,8 +111,10 @@ export const marques = [
     ],
     clients: ['Restaurants et brasseries', 'Hôtels', 'Cuisines centrales et collectivités', 'Boulangeries-traiteurs'],
     services: ['materiel-cuisson-professionnel', 'installation-mise-en-service', 'depannage-sav-cuisine-professionnelle'],
-    boutique: 'entretien-four-rational',
-    boutiqueTexte: 'Pastilles et cartouches d’entretien RATIONAL, livrées sur notre zone',
+    boutique: 'fours-mixtes',
+    boutiqueTitre: 'Fours, accessoires et entretien en boutique',
+    boutiqueTexte: 'iCombi Pro, iCombi Classic, iVario Pro et leurs accessoires au prix public RATIONAL, avec la pose ; pastilles et cartouches d’entretien livrées sur notre zone',
+    boutiqueUrl: '/eshop/catalogue?marque=Rational#catalogue',
   },
   {
     slug: 'unox',

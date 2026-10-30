@@ -393,6 +393,56 @@ console.log('\n═══ Sélection Miele Professional ═══');
   verifier('la fiche avec vue 3D porte le bouton et le crédit Miele', f3d.includes('vue3d-btn') && f3d.includes('© Miele'));
 }
 
+console.log('\n═══ Sélection RATIONAL ═══');
+{
+  const fs = await import('node:fs');
+  const { refsRationalManquantes, produitsRational } = await import('../data/rational.mjs');
+  const { tarifRational } = await import('../data/rational-tarif.mjs');
+  const { photosRational, fichesRational } = await import('../data/rational-visuels.mjs');
+
+  verifier('toutes les références RATIONAL sont au tarif généré', !refsRationalManquantes.length, refsRationalManquantes.join(', '));
+  // Prix public et libellé, rien d'autre : un champ de plus, c'est peut-être
+  // le prix d'achat qui fuit sur le site.
+  const champs = new Set(Object.values(tarifRational).flatMap((t) => Object.keys(t)));
+  verifier('le tarif RATIONAL généré ne contient que prix public et libellé', [...champs].every((c) => ['prix', 'libelle'].includes(c)), [...champs].join(', '));
+  const brut = fs.readFileSync('data/rational-tarif.mjs', 'utf8').split('\n').filter((l) => !l.startsWith('//')).join('\n');
+  verifier('aucune trace de prix de revient dans le tarif RATIONAL', !/cost|revient|achat|-39|remise/i.test(brut));
+
+  const conds = produitsRational.flatMap((p) => p.conditionnements.map((c) => ({ p, c })));
+  verifier(`${conds.length} versions RATIONAL, toutes avec un prix public`, conds.every(({ c }) => typeof c.prix === 'number' && c.prix > 0));
+  verifier('chaque libellé commence par la référence RATIONAL et tient dans 80 caractères',
+    conds.every(({ c }) => c.label.startsWith(c.refFabricant + ' · ') && c.label.length <= 80));
+  verifier('aucun libellé de version en double dans une fiche',
+    produitsRational.every((p) => new Set(p.conditionnements.map((c) => c.label)).size === p.conditionnements.length));
+  verifier('ni gaz naturel L ni 20-2/1 dans la sélection (décision du 30/10/2026)',
+    !Object.values(tarifRational).some((t) => /GAZ NATUREL L\b|20-2\/1 VERSION/.test(t.libelle)));
+
+  const machines = produitsRational.filter((p) => p.type === 'machine');
+  verifier(`${machines.length} machines RATIONAL, chacune avec sa fiche technique d'origine`,
+    machines.length >= 13 && machines.every((p) => p.conditionnements.every((c) => c.ficheFabricant && fs.existsSync(`static${c.ficheFabricant}`))));
+  verifier('les fiches techniques RATIONAL sont des PDF',
+    Object.values(fichesRational).every((f) => fs.readFileSync(`static/assets/fiches/${f}`).subarray(0, 5).toString() === '%PDF-'));
+  verifier('chaque fiche RATIONAL a sa photo', produitsRational.every((p) => p.photo && fs.existsSync(`static/assets/produits/${p.photo}.jpg`)),
+    produitsRational.filter((p) => !p.photo).map((p) => p.ref).join(', '));
+  // Photos sans métadonnées : pas de segment EXIF.
+  verifier('photos RATIONAL sans métadonnées EXIF',
+    Object.values(photosRational).every((f) => !fs.readFileSync(`static/assets/produits/${f}.jpg`).includes('Exif')));
+
+  const fautes = [];
+  for (const p of produitsRational) {
+    const h = fs.readFileSync(fichier(p), 'utf8');
+    if (!h.includes('© RATIONAL')) fautes.push(`${p.ref} : crédit absent`);
+    if (p.type === 'machine' && !h.includes('/assets/fiches/rational/')) fautes.push(`${p.ref} : fiche technique absente`);
+    if (p.type !== 'machine' && h.includes('En stock à Saint-Martin-de-Crau')) fautes.push(`${p.ref} : annonce un stock`);
+    if (p.type !== 'machine' && h.includes('lors de sa prochaine tournée')) fautes.push(`${p.ref} : promet la tournée`);
+  }
+  verifier('fiches RATIONAL : crédit, fiche technique, et aucune promesse de stock', !fautes.length, fautes.slice(0, 6).join(' · '));
+  const l = fs.readFileSync(fichier(produitsRational.find((p) => p.ref === 'iVario Pro L')), 'utf8');
+  verifier('iVario Pro L : une fiche technique par variante, sans doublon',
+    (l.match(/href="[^"]+fiche-technique-rational\.pdf"/g) || []).length === 2 && l.includes('sur soubassement'));
+  verifier('chaque machine RATIONAL a son forfait', machines.every((m) => forfaitDe(m)));
+}
+
 console.log('\n═══ En-tête de la boutique ═══');
 {
   const fs = await import('node:fs');

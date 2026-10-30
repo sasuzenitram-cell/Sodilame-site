@@ -52,6 +52,7 @@
 // ---------------------------------------------------------------------------
 
 import { produitsMiele } from './miele.mjs';
+import { produitsRational } from './rational.mjs';
 
 export const categoriesProduits = [
   {
@@ -257,6 +258,67 @@ export const categoriesProduits = [
       "Un panier de plus, c'est un panier qui se charge pendant que l'autre lave : au coup de feu, c'est souvent ce qui manque le plus à la plonge.",
     conseil:
       "Les paniers se choisissent au format de la machine. Ceux-ci sont au format 500 x 500 mm ; pour une autre machine, donnez-nous sa référence avant de commander.",
+  },
+
+  {
+    slug: 'fours-mixtes',
+    univers: 'materiel',
+    rayon: 'fours',
+    nom: 'Fours mixtes',
+    nomCourt: 'Fours mixtes',
+    icone: 'cuisson',
+    titreSeo: 'Fours mixtes RATIONAL iCombi Pro et iCombi Classic — vente et installation',
+    description:
+      "Fours mixtes RATIONAL iCombi Pro et iCombi Classic, électriques ou gaz, de 6 à 20 niveaux, livrés, installés et mis en service par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Un four mixte se choisit sur le service le plus chargé, pas sur la moyenne : combien de niveaux faut-il enfourner en même temps quand toute la brigade attend ? Le format suit ensuite les plats — GN 1/1 pour la plupart des cuisines, GN 2/1 pour les grosses pièces et les grandes quantités. Reste à choisir entre l'iCombi Pro, qui conduit ses cuissons à partir du résultat demandé, et l'iCombi Classic, que l'on règle soi-même.",
+    conseil:
+      "Chaque four est vendu avec son forfait de livraison, d'installation et de mise en service. L'alimentation électrique ou gaz, l'arrivée d'eau, l'évacuation et le traitement de l'eau se vérifient avant la commande : sur nos eaux dures, c'est de lui que dépend la durée de vie du générateur de vapeur.",
+  },
+  {
+    slug: 'accessoires-fours-mixtes',
+    univers: 'materiel',
+    rayon: 'fours',
+    nom: 'Accessoires pour fours mixtes',
+    nomCourt: 'Accessoires four',
+    icone: 'outils',
+    titreSeo: 'Accessoires RATIONAL pour fours mixtes iCombi — soubassements, hottes, plaques GN',
+    description:
+      "Soubassements, kits de superposition Combi-Duo, hottes UltraVent, plaques, grilles et bacs GN d'origine RATIONAL pour fours iCombi. Livrés et posés avec votre four.",
+    intro:
+      "Un four mixte vaut ce que valent ses accessoires : la bonne plaque fait la différence entre une frite molle et une frite croustillante, et un soubassement à glissières range ce que l'on cherche au coup de feu.",
+    conseil:
+      "Les accessoires dépendent du format du four. Donnez-nous son modèle, ou une photo de sa plaque signalétique : nous vérifions la compatibilité avant de commander chez RATIONAL.",
+  },
+  {
+    slug: 'sauteuses-multifonctions',
+    univers: 'materiel',
+    rayon: 'cuisson',
+    nom: 'Sauteuses multifonctions',
+    nomCourt: 'Sauteuses',
+    icone: 'cuisson',
+    titreSeo: 'Sauteuses multifonctions RATIONAL iVario Pro — vente et installation',
+    description:
+      "Sauteuses multifonctions RATIONAL iVario Pro 2-S et L, avec ou sans cuisson sous pression, livrées, installées et mises en service par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Une sauteuse multifonction saisit, fait bouillir, frit et confit dans la même cuve. Elle remplace plusieurs appareils du fourneau, et c'est souvent la solution quand une cuisine manque de feux sans pouvoir s'agrandir.",
+    conseil:
+      "Chaque machine est vendue avec son forfait de livraison, d'installation et de mise en service. Le raccordement triphasé, l'arrivée d'eau et l'évacuation se vérifient au relevé, avant la commande.",
+  },
+  {
+    slug: 'accessoires-ivario',
+    univers: 'materiel',
+    rayon: 'cuisson',
+    nom: 'Accessoires iVario',
+    nomCourt: 'Accessoires iVario',
+    icone: 'outils',
+    titreSeo: 'Accessoires RATIONAL pour iVario Pro — soubassements et paniers',
+    description:
+      "Soubassements et paniers de pochage et de friture d'origine RATIONAL pour sauteuses multifonctions iVario Pro. Livrés et posés avec votre machine.",
+    intro:
+      "Les paniers font de l'iVario une marmite à pâtes ou une friteuse ; le soubassement le met à la bonne hauteur de travail.",
+    conseil:
+      "Chaque accessoire existe pour la taille 2-S ou pour les tailles L et XL. Donnez-nous votre modèle : nous vérifions avant de commander.",
   },
 
   // =========================================================================
@@ -1057,6 +1119,10 @@ export const produits = [
   // MIELE PROFESSIONAL — fiches, versions et prix dans data/miele.mjs
   // =========================================================================
   ...produitsMiele,
+  // =========================================================================
+  // RATIONAL — fiches, versions et prix dans data/rational.mjs
+  // =========================================================================
+  ...produitsRational,
 ];
 
 // ---------------------------------------------------------------------------
@@ -1117,6 +1183,21 @@ const PRIX_FORFAITS = {
   'PFD 101': null,
   'PFD 404': null,
   'PFD 407': null,
+  // RATIONAL : grille à transmettre par la direction (30/10/2026). En
+  // attendant, le forfait s'affiche « sur devis » et se chiffre à la commande.
+  'iCombi Pro XS 6-2/3': null,
+  'iCombi Pro 6-1/1': null,
+  'iCombi Pro 10-1/1': null,
+  'iCombi Pro 6-2/1': null,
+  'iCombi Pro 10-2/1': null,
+  'iCombi Pro 20-1/1': null,
+  'iCombi Classic 6-1/1': null,
+  'iCombi Classic 10-1/1': null,
+  'iCombi Classic 6-2/1': null,
+  'iCombi Classic 10-2/1': null,
+  'iCombi Classic 20-1/1': null,
+  'iVario Pro 2-S': null,
+  'iVario Pro L': null,
 };
 
 const LIBELLE_FORFAIT = 'Forfait';
@@ -1182,6 +1263,7 @@ export const machinesCatalogue = [
   { slug: 'lave-linge', nom: 'Lave-linge', icone: 'buanderie' },
   { slug: 'seche-linge', nom: 'Sèche-linge', icone: 'buanderie' },
   { slug: 'repasseuse', nom: 'Repasseuse', icone: 'buanderie' },
+  { slug: 'sauteuse', nom: 'Sauteuse multifonction', icone: 'cuisson' },
 ];
 
 export const marquesCatalogue = [...new Set(produitsPublics.map((p) => p.marque))].sort();
@@ -1266,7 +1348,7 @@ export const rayonsBoutique = [
     icone: 'cuisson',
     service: 'materiel-cuisson-professionnel',
     marques: ['angelo-po', 'capic', 'ambassade-de-bourgogne', 'mkn'],
-    aVenir: ['Fourneaux et pianos', 'Friteuses', 'Planchas et grillades', 'Sauteuses et marmites'],
+    aVenir: ['Fourneaux et pianos', 'Friteuses', 'Planchas et grillades', 'Marmites'],
     accroche: 'Fourneaux, pianos, friteuses et sauteuses, raccordés au gaz ou à l’électricité par nos techniciens.',
   },
   {
@@ -1275,7 +1357,7 @@ export const rayonsBoutique = [
     icone: 'cuisson',
     service: 'materiel-cuisson-professionnel',
     marques: ['rational', 'unox', 'mkn'],
-    aVenir: ['Fours mixtes', 'Fours à convection'],
+    aVenir: ['Fours à convection'],
     accroche: 'Fours mixtes et fours à convection, installés, réglés et entretenus par nos techniciens.',
   },
   {

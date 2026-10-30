@@ -2024,7 +2024,7 @@ const estMachine = (p) => p.type === 'machine';
  */
 function blocVisuel(p) {
   const v = p.vue3d;
-  const credit = p.photo && p.marque === 'Miele Professional' ? `<p class="credit-visuel">Visuel${v ? ' et modèle 3D' : ''} © Miele</p>` : '';
+  const credit = p.photo && p.creditVisuel ? `<p class="credit-visuel">Visuel${v ? ' et modèle 3D' : ''} © ${esc(p.creditVisuel)}</p>` : '';
   if (!v) return vignetteProduit(p, ' grande') + credit;
   return `<div class="vue3d" data-glb="${esc(v.glb)}"${v.usdz ? ` data-usdz="${esc(v.usdz)}"` : ''} data-alt="${esc(`${p.marque} ${p.nom} — vue 3D`)}">
             ${vignetteProduit(p, ' grande')}
@@ -2121,7 +2121,7 @@ const prixMini = (p) => {
 };
 
 /** La page marque d'une marque du catalogue, si elle existe. */
-const pageMarque = (nom) => marques.find((m) => m.nom === nom);
+const pageMarque = (nom) => marques.find((m) => m.nom.toLowerCase() === String(nom).toLowerCase());
 
 /** Logo officiel d'une marque, quand le fabricant nous l'a remis (data/marques.mjs). */
 const logoMarque = (m, cls = '') =>
@@ -2797,15 +2797,24 @@ function produitPage(p) {
         </ul>`
     : '';
 
-  // Fiches produit du fabricant, une par version : un LIEN vers le document
-  // hébergé par Miele, jamais une copie.
-  const fichesFabricant = p.conditionnements.filter((cd) => cd.ficheMiele);
+  // Fiches produit du fabricant. Miele : un LIEN vers le document hébergé par
+  // Miele, une par version. RATIONAL : le PDF d'origine du portail revendeur,
+  // servi par nous, souvent commun à toutes les versions — d'où le dédoublonnage.
+  const fichesFabricant = p.conditionnements
+    .map((cd) =>
+      cd.ficheMiele
+        ? { href: cd.ficheMiele, titre: `Fiche produit ${cd.refMiele || p.ref}`, source: `site ${p.marque}`, externe: true }
+        : cd.ficheFabricant
+          ? { href: cd.ficheFabricant, titre: cd.ficheTitre || `Fiche technique ${p.ref}`, source: `document d'origine ${p.creditVisuel || p.marque}` }
+          : null
+    )
+    .filter((f, i, t) => f && t.findIndex((x) => x?.href === f.href) === i);
   const blocFichesFabricant = fichesFabricant.length
-    ? `<h2>Fiche produit ${esc(p.marque)}</h2>
+    ? `<h2>Fiche technique ${esc(p.marque)}</h2>
         <p>Dimensions, raccordements et caractéristiques complètes${fichesFabricant.length > 1 ? ', version par version' : ''}, sur le document officiel du fabricant.</p>
         <ul class="fiches-pdf">
           ${fichesFabricant
-            .map((cd) => `<li><a href="${esc(cd.ficheMiele)}" target="_blank" rel="noopener nofollow">Fiche produit ${esc(cd.refMiele || p.ref)}</a> <span>PDF — site ${esc(p.marque)}</span></li>`)
+            .map((f) => `<li><a href="${esc(f.href)}" target="_blank" rel="noopener${f.externe ? ' nofollow' : ''}">${esc(f.titre)}</a> <span>PDF — ${esc(f.source)}</span></li>`)
             .join('\n          ')}
         </ul>`
     : '';
