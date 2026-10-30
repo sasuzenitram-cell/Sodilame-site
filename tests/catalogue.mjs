@@ -501,6 +501,55 @@ console.log('\n═══ Sélection Foster ═══');
   verifier('forfaits Foster conformes à la grille (150 / 250 / 750 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
 }
 
+console.log('\n═══ Sélection Infrico ═══');
+{
+  const fs = await import('node:fs');
+  const { refsInfricoManquantes, produitsInfrico } = await import('../data/infrico.mjs');
+  const { tarifInfrico } = await import('../data/infrico-tarif.mjs');
+  const { photosInfrico } = await import('../data/infrico-visuels.mjs');
+
+  verifier('toutes les références Infrico sont au tarif généré', !refsInfricoManquantes.length, refsInfricoManquantes.join(', '));
+  const champs = new Set(Object.values(tarifInfrico).flatMap((t) => Object.keys(t)));
+  verifier('le tarif Infrico généré ne contient que prix public et libellé', [...champs].every((c) => ['prix', 'libelle'].includes(c)), [...champs].join(', '));
+  const brut = fs.readFileSync('data/infrico-tarif.mjs', 'utf8').split('\n').filter((l) => !l.startsWith('//')).join('\n');
+  verifier('aucune trace de prix de revient dans le tarif Infrico', !/cost|revient|achat|-50|remise/i.test(brut));
+
+  const conds = produitsInfrico.flatMap((p) => p.conditionnements.map((c) => ({ p, c })));
+  verifier(`${conds.length} versions Infrico, toutes avec un prix public`, conds.every(({ c }) => typeof c.prix === 'number' && c.prix > 0));
+  verifier('chaque libellé commence par la référence Infrico et tient dans 80 caractères',
+    conds.every(({ c }) => c.label.startsWith(c.refFabricant + ' · ') && c.label.length <= 80));
+  verifier('aucun libellé de version en double dans une fiche',
+    produitsInfrico.every((p) => new Set(p.conditionnements.map((c) => c.label)).size === p.conditionnements.length));
+  // Décision du 30/10/2026 : pas de machines à glaçons Infrico (Codigel, Hoshizaki ou Scotsman à venir), pas d'iLine.
+  verifier('ni machine à glaçons ni gamme iLine Infrico dans la sélection',
+    !conds.some(({ c }) => /^(FH|IM\d|IAG|IABT)/.test(c.refFabricant) && !/^HF/.test(c.refFabricant)));
+  verifier('aucun libellé du tarif (traduit de l’espagnol) affiché sur les fiches',
+    produitsInfrico.every((p) => !/REFRIGERACI|CONGELACI|ARMARIO|MESA |BAJA TEMP/i.test(JSON.stringify([p.nom, p.resume, p.description, p.caracteristiques, p.conditionnements.map((c) => c.label)]))));
+
+  verifier(`${produitsInfrico.length} fiches Infrico, chacune avec sa photo`,
+    produitsInfrico.length >= 60 && produitsInfrico.every((p) => p.photo && fs.existsSync(`static/assets/produits/${p.photo}.jpg`)),
+    produitsInfrico.filter((p) => !p.photo).map((p) => p.ref).join(', '));
+  verifier('photos Infrico sans métadonnées EXIF',
+    Object.values(photosInfrico).every((f) => !fs.readFileSync(`static/assets/produits/${f}.jpg`).includes('Exif')));
+  const liens = conds.map(({ c }) => c.ficheFabricant).filter(Boolean);
+  verifier('documents Infrico : uniquement des liens vers infricodocuments.com',
+    liens.length > 150 && liens.every((u) => /^https:\/\/infricodocuments\.com\/[\w./%()-]+\.pdf$/.test(u)));
+
+  const fautes = [];
+  for (const p of produitsInfrico) {
+    const h = fs.readFileSync(fichier(p), 'utf8');
+    if (!h.includes('© Infrico')) fautes.push(`${p.ref} : crédit absent`);
+    if (p.conditionnements.some((c) => c.ficheFabricant) && !h.includes('infricodocuments.com')) fautes.push(`${p.ref} : document absent`);
+  }
+  verifier('fiches Infrico : crédit et documents', !fautes.length, fautes.slice(0, 6).join(' · '));
+  const machines = produitsInfrico.filter((p) => p.type === 'machine');
+  verifier('chaque machine Infrico a son forfait', machines.every((m) => forfaitDe(m)));
+  // Grille de la direction du 30/10/2026 : 2 portes 250 €, le reste 150 €.
+  const deux = ['AGB 1302', 'AGB 1402', 'AGN 602', 'AN 902 PAST', 'AGB 1402 PAST', 'AEX 1000', 'NEC1002RV', 'NEC1002FV'];
+  const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== (deux.includes(m.ref) ? 250 : 150));
+  verifier('forfaits Infrico conformes à la grille (150 / 250 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
+}
+
 console.log('\n═══ En-tête de la boutique ═══');
 {
   const fs = await import('node:fs');

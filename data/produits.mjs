@@ -54,6 +54,7 @@
 import { produitsMiele } from './miele.mjs';
 import { produitsRational } from './rational.mjs';
 import { produitsFoster } from './foster.mjs';
+import { produitsInfrico } from './infrico.mjs';
 
 export const categoriesProduits = [
   {
@@ -329,11 +330,11 @@ export const categoriesProduits = [
     nom: 'Armoires réfrigérées',
     nomCourt: 'Armoires',
     icone: 'froid',
-    titreSeo: 'Armoires réfrigérées professionnelles Foster EcoPro G3 — vente et installation',
+    titreSeo: 'Armoires réfrigérées professionnelles Foster et Infrico — vente et installation',
     description:
-      "Armoires réfrigérées positives, négatives et bi-température Foster EcoPro G3, 1 et 2 portes GN 2/1, livrées, installées et mises en service par nos frigoristes dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+      "Armoires réfrigérées positives, négatives et bi-température Foster et Infrico : GN 2/1, GN 1/1 étroites, pâtisserie 600 x 400, vitrées et de maturation, livrées, installées et mises en service par nos frigoristes dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
     intro:
-      "Une armoire réfrigérée se choisit d'abord sur la chaleur du local où elle va tourner. Une arrière-cuisine provençale dépasse 35 °C en été : une armoire donnée pour 30 °C d'ambiance y perd sa température, et ce sont les marchandises qui en paient le prix. Les EcoPro G3 à porte pleine sont données pour 40 °C (classe climatique 5).",
+      "Une armoire réfrigérée se choisit d'abord sur la chaleur du local où elle va tourner. Une arrière-cuisine provençale dépasse 35 °C en été : une armoire donnée pour 30 °C d'ambiance y perd sa température, et ce sont les marchandises qui en paient le prix. Les EcoPro G3 Foster et les AGB Infrico à porte pleine sont données pour 40 °C (classe climatique 5).",
     conseil:
       "Chaque armoire est vendue avec son forfait de livraison, d'installation et de mise en service. Nous vérifions avant la commande le passage des portes jusqu'à l'emplacement, la prise électrique et l'air disponible autour de l'appareil.",
   },
@@ -359,9 +360,9 @@ export const categoriesProduits = [
     nom: 'Tables réfrigérées et meubles bas',
     nomCourt: 'Tables réfrigérées',
     icone: 'froid',
-    titreSeo: 'Tables réfrigérées, saladettes et meubles bas Foster — vente et installation',
+    titreSeo: 'Tables réfrigérées, saladettes et tables à pizza Foster et Infrico — vente et installation',
     description:
-      "Tables réfrigérées positives et négatives Foster EcoPro G3, saladettes FPS et meubles bas compacts pour bars et offices, livrés, installés et mis en service dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+      "Tables réfrigérées positives et négatives Foster et Infrico, tables basses, tables pâtissières, saladettes, tables à pizza et meubles bas compacts, livrés, installés et mis en service dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
     intro:
       "Le meuble bas réfrigéré met la mise en place sous la main du cuisinier : c'est autant d'allers-retours à la réserve en moins pendant le service. La table GN 1/1 équipe le poste de travail, la saladette le poste pizza ou salades, et le meuble compact le bar ou l'office.",
     conseil:
@@ -374,9 +375,9 @@ export const categoriesProduits = [
     nom: 'Cellules de refroidissement rapide',
     nomCourt: 'Cellules',
     icone: 'froid',
-    titreSeo: 'Cellules de refroidissement rapide et de surgélation Foster Evologi',
+    titreSeo: 'Cellules de refroidissement rapide et de surgélation Foster et Infrico',
     description:
-      "Cellules de refroidissement rapide et de surgélation Foster Evologi, de 6 à 12 niveaux GN 1/1 ou 600 x 400, de 15 à 60 kg par cycle. Installées par nos frigoristes dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+      "Cellules de refroidissement rapide et de surgélation Foster Evologi et Infrico ABT, de 3 à 14 niveaux GN 1/1 ou 600 x 400. Installées par nos frigoristes dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
     intro:
       "Cuisiner à l'avance n'est permis qu'à une condition : faire passer les préparations de +63 °C à +10 °C en moins de deux heures. Laissées à refroidir à l'air libre, elles traversent lentement la zone où les bactéries se multiplient. La cellule de refroidissement rapide fait ce travail en 90 minutes, et la cellule mixte surgèle aussi.",
     conseil:
@@ -396,6 +397,82 @@ export const categoriesProduits = [
       "Une grille de plus, c'est un niveau de rangement de plus ; une glissière remplacée, c'est une grille qui ne tombe plus quand on tire le bac.",
     conseil:
       "Grilles et glissières sont propres à chaque gamme. Donnez-nous la référence de votre appareil, ou une photo de sa plaque signalétique : nous vérifions la compatibilité avant de commander chez Foster.",
+  },
+
+  {
+    slug: 'arrieres-bars',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Arrière-bars et mobilier de bar',
+    nomCourt: 'Arrière-bars',
+    icone: 'froid',
+    titreSeo: 'Arrière-bars réfrigérés, refroidisseurs de bouteilles et mobilier de bar Infrico',
+    description:
+      "Refroidisseurs de bouteilles, arrière-bars vitrés, stations cocktail, meubles machine à café et comptoirs réfrigérés Infrico, installés par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Derrière un bar, tout se joue en quelques secondes : la bouteille doit être fraîche, à portée de main, et le meuble ne doit pas gêner le passage. Bac à bouteilles ouvert par le dessus ou arrière-bar à portes vitrées : le choix dépend de la façon dont on sert, et la longueur suit celle du comptoir.",
+    conseil:
+      "Un arrière-bar enfermé sous un comptoir sans ventilation refroidit mal et s'use vite. Nous vérifions l'emplacement, la circulation d'air et l'électricité avant la livraison ; chaque meuble est vendu avec son forfait d'installation.",
+  },
+  {
+    slug: 'vitrines-refrigerees',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Vitrines à boissons et de comptoir',
+    nomCourt: 'Vitrines',
+    icone: 'froid',
+    titreSeo: 'Vitrines réfrigérées à boissons, vitrines à tapas et vitrines de comptoir Infrico',
+    description:
+      "Vitrines réfrigérées à boissons positives et négatives, vitrines à tapas, vitrines de comptoir et vitrines à ingrédients pizza Infrico, livrées et installées dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Une vitrine vend : ce que le client voit, il le commande. Vitrine à boissons pour le libre-service, vitrine à tapas sur le comptoir, vitrine à ingrédients sur le poste pizza — chacune a son emplacement et sa température.",
+    conseil:
+      "Une vitrine est réglée pour la salle : évitez le plein soleil, la porte d'entrée et les sources de chaleur. Nous vérifions l'emplacement avant la livraison, et chaque vitrine est vendue avec son forfait d'installation.",
+  },
+  {
+    slug: 'vitrines-patisserie-glaces',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Vitrines pâtisserie, glaces et congélateurs',
+    nomCourt: 'Pâtisserie et glaces',
+    icone: 'froid',
+    titreSeo: 'Vitrines pâtissières, vitrines à glaces et congélateurs Infrico',
+    description:
+      "Vitrines pâtissières Niza et Lyon, vitrines libre-service, vitrines à glaces, congélateurs coffres et conservateurs à glaces Infrico, livrés et installés dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "En pâtisserie comme chez le glacier, la vitrine est à la fois l'outil de vente et l'outil de conservation. Elle doit mettre en valeur sans dessécher, et tenir sa température quand la boutique se remplit et que la porte reste ouverte.",
+    conseil:
+      "Sur la côte, l'été, une vitrine à glaces travaille à la limite : choisissez une classe climatique adaptée à la terrasse ou à la boutique. Nous vous conseillons avant la commande.",
+  },
+  {
+    slug: 'caves-a-vin',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Caves à vin',
+    nomCourt: 'Caves à vin',
+    icone: 'froid',
+    titreSeo: 'Caves à vin professionnelles Infrico pour restaurants et bars à vin',
+    description:
+      "Caves à vin professionnelles Infrico, de 141 à 400 litres : sous comptoir, multizones, deux zones indépendantes ou en façade bois, livrées et installées dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Un vin servi trop chaud ou trop froid se goûte mal, et le client le remarque. La cave à vin professionnelle garde chaque bouteille à sa température de service, et la porte vitrée en fait un argument de vente en salle.",
+    conseil:
+      "Les caves à vin sont souvent données pour une ambiance de 25 °C : une salle exposée plein sud ou un bar sans climatisation les met en difficulté. Nous vérifions l'emplacement avant la livraison.",
+  },
+  {
+    slug: 'buffets',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Buffets libre-service',
+    nomCourt: 'Buffets',
+    icone: 'froid',
+    titreSeo: 'Buffets mobiles BasicBuffet Infrico : cuve froide, plaque froide, bain-marie',
+    description:
+      "Modules de buffet mobiles BasicBuffet d'Infrico — cuve réfrigérée, plaque réfrigérée, bain-marie et neutre, de 2 à 4 bacs GN — pour les petits-déjeuners d'hôtel, campings et restaurants à buffet.",
+    intro:
+      "Le buffet du petit-déjeuner se compose module par module : du froid pour les produits laitiers et la charcuterie, du chaud pour les œufs et les viennoiseries, du neutre pour le pain et la vaisselle. Les modules BasicBuffet sont sur roulettes : la ligne se range après le service.",
+    conseil:
+      "Écrans de protection, plateaux et décorations s'ajoutent en option. Envoyez-nous votre configuration : nous chiffrons la ligne complète avant la commande.",
   },
 
   // =========================================================================
@@ -1204,6 +1281,10 @@ export const produits = [
   // FOSTER — fiches, versions et prix dans data/foster.mjs
   // =========================================================================
   ...produitsFoster,
+  // =========================================================================
+  // INFRICO — fiches, versions et prix dans data/infrico.mjs
+  // =========================================================================
+  ...produitsInfrico,
 ];
 
 // ---------------------------------------------------------------------------
@@ -1312,6 +1393,74 @@ const PRIX_FORFAITS = {
   'ED25/6': 150,
   'ED45/12': 150,
   'ED60/12': 150,
+  // INFRICO : grille de la direction du 30/10/2026 — armoire ou vitrine
+  // 2 portes 250 €, tout le reste 150 € (armoire 1 porte, table, vitrine,
+  // arrière-bar, cave, cellule, congélateur, module de buffet).
+  'EB': 150,
+  'EBC': 150,
+  'EFP': 150,
+  'ERV': 150,
+  'BST R': 150,
+  'MCAF': 150,
+  'FMPP CR': 150,
+  'NEC501RV': 150,
+  'NEC401FS / NEC501FV': 150,
+  'VET': 150,
+  'VEB': 150,
+  'VIP 1/4': 150,
+  'VIP 1/3': 150,
+  'EVV 50 B': 150,
+  'EWC 80': 150,
+  'EVV 90 B': 150,
+  'EWC 116 DT': 150,
+  'EVV 70': 150,
+  'EVV 100': 150,
+  'AGB 651': 150,
+  'AGB 701': 150,
+  'AGN 301': 150,
+  'AN 401 PAST': 150,
+  'AGB 701 PAST': 150,
+  'AGB 901': 150,
+  'AEX 500': 150,
+  'AMC': 150,
+  'BMGN 1470': 150,
+  'BMGN 1960': 150,
+  'BMGN 2450': 150,
+  'BMPP 1500': 150,
+  'BMPP 2000': 150,
+  'BMPP 2500': 150,
+  'MSG': 150,
+  'MSG BT': 150,
+  'MR': 150,
+  'ME 1000 EN': 150,
+  'ME 1003 EN': 150,
+  'BMGN EN': 150,
+  'ME PIZZA': 150,
+  'MP': 150,
+  'ABT3 1S': 150,
+  'ABT5 1L': 150,
+  'ABT7 1L': 150,
+  'ABT10 1L': 150,
+  'ABT14 1L': 150,
+  'VNZ': 150,
+  'VLY': 150,
+  'VBR': 150,
+  'VBZ': 150,
+  'VAR': 150,
+  'HF': 150,
+  'HF TC': 150,
+  'MBUB CF': 150,
+  'MBUB PF': 150,
+  'MBUB BM': 150,
+  'MBUB NE': 150,
+  'AGB 1302': 250,
+  'AGB 1402': 250,
+  'AGN 602': 250,
+  'AN 902 PAST': 250,
+  'AGB 1402 PAST': 250,
+  'AEX 1000': 250,
+  'NEC1002RV': 250,
+  'NEC1002FV': 250,
 };
 
 const LIBELLE_FORFAIT = 'Forfait';
@@ -1381,6 +1530,10 @@ export const machinesCatalogue = [
   { slug: 'armoire-refrigeree', nom: 'Armoire réfrigérée', icone: 'froid' },
   { slug: 'table-refrigeree', nom: 'Table réfrigérée', icone: 'froid' },
   { slug: 'cellule-refroidissement', nom: 'Cellule de refroidissement', icone: 'froid' },
+  { slug: 'arriere-bar', nom: 'Arrière-bar', icone: 'froid' },
+  { slug: 'vitrine-refrigeree', nom: 'Vitrine réfrigérée', icone: 'froid' },
+  { slug: 'cave-a-vin', nom: 'Cave à vin', icone: 'froid' },
+  { slug: 'buffet', nom: 'Buffet', icone: 'froid' },
 ];
 
 export const marquesCatalogue = [...new Set(produitsPublics.map((p) => p.marque))].sort();
@@ -1456,7 +1609,7 @@ export const rayonsBoutique = [
     icone: 'froid',
     service: 'froid-professionnel',
     marques: ['foster', 'infrico', 'atosa'],
-    aVenir: ['Chambres froides', 'Vitrines réfrigérées', 'Machines à glaçons'],
+    aVenir: ['Chambres froides', 'Machines à glaçons'],
     accroche: 'Armoires, tables et cellules de refroidissement, installées et entretenues par nos frigoristes.',
   },
   {

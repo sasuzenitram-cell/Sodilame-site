@@ -29,6 +29,9 @@
 //        — RATIONAL : logo du portail revendeur RATIONAL (Toolbox), auquel
 //          SODILAME accède en tant que distributeur ; repris le 30/10/2026 sur
 //          décision de la direction.
+//        — Infrico : pas de portail revendeur. Logo du site public Infrico
+//          (infrico.fr), repris le 30/10/2026 avec les visuels produit, sur
+//          décision de la direction et sous sa responsabilité.
 //        — Foster : pas de portail revendeur. Logo vectoriel du site public
 //          Foster (fosterrefrigerator.com), repris le 30/10/2026 avec les
 //          visuels produit, sur décision de la direction et sous sa
@@ -261,6 +264,7 @@ export const marques = [
   {
     slug: 'infrico',
     nom: 'Infrico',
+    logo: { fichier: 'infrico.png', largeur: 600, hauteur: 115, alt: 'Logo Infrico' },
     univers: 'froid',
     agree: true,
     pays: 'Espagne',
@@ -283,6 +287,10 @@ export const marques = [
     ],
     clients: ['Restaurants et bars', 'Boulangeries et pâtisseries', 'Boucheries', 'Pharmacies et laboratoires', 'EHPAD'],
     services: ['froid-professionnel', 'installation-mise-en-service', 'contrat-entretien-cuisine-professionnelle'],
+    boutique: 'arrieres-bars',
+    boutiqueTitre: 'Infrico en boutique',
+    boutiqueTexte: 'Arrière-bars, vitrines, caves à vin, armoires, tables, saladettes, cellules, vitrines pâtissières et buffets au prix public Infrico, avec la pose',
+    boutiqueUrl: '/eshop/catalogue?marque=Infrico#catalogue',
   },
   {
     slug: 'foster',
