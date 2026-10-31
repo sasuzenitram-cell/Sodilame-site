@@ -227,7 +227,13 @@
           }
           if (typeof t.prix === 'number') {
             b.dataset.prix = String(t.prix);
-            if (cible) { cible.className = 'prix'; cible.innerHTML = '<b>' + euros2(t.prix) + '</b>'; }
+            if (cible) {
+              // L'éco-participation affichée sous le prix (CODIGEL) ne vient pas
+              // de l'administration : on la garde telle que le build l'a écrite.
+              var eco = cible.querySelector('.eco-part');
+              cible.className = 'prix'; cible.innerHTML = '<b>' + euros2(t.prix) + '</b>';
+              if (eco) cible.appendChild(eco);
+            }
           } else {
             b.dataset.prix = '';
             if (cible) { cible.className = 'prix-nc'; cible.textContent = 'Prix sur demande'; }

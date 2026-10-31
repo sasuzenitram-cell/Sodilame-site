@@ -37,6 +37,11 @@
 //          visuels produit, sur décision de la direction et sous sa
 //          responsabilité. À remplacer par le logo remis par Foster s'il en
 //          fournit un.
+//        — ITV : pas de portail revendeur (achat via CODIGEL). Logo du site
+//          public ITV (itv.es), dont le texte blanc a été passé en gris foncé
+//          pour rester lisible sur fond clair ; repris le 30/10/2026 avec les
+//          visuels produit, sur décision de la direction et sous sa
+//          responsabilité.
 //     3. Aucune phrase reprise d'un site de fabricant ou de concurrent. Tout
 //        le texte ci-dessous est rédigé pour SODILAME.
 //
@@ -322,6 +327,39 @@ export const marques = [
     boutiqueTitre: 'Armoires, tables et cellules en boutique',
     boutiqueTexte: 'Armoires EcoPro G3, armoires à chariots, tables réfrigérées, saladettes et cellules de refroidissement au prix public Foster, avec la pose',
     boutiqueUrl: '/eshop/catalogue?marque=Foster#catalogue',
+  },
+  {
+    slug: 'itv',
+    nom: 'ITV',
+    logo: { fichier: 'itv.png', largeur: 600, hauteur: 199, alt: 'Logo ITV Ice Makers' },
+    univers: 'froid',
+    // Acheté via CODIGEL, distributeur d'ITV : agrément direct à confirmer
+    // par la direction avant de passer ce champ à true.
+    agree: false,
+    pays: 'Espagne',
+    depuis: 1981,
+    lieu: 'Ribarroja del Turia, Valence',
+    site: 'https://itv.es/',
+    resume: 'Des machines à glaçons, et rien d’autre, depuis plus de quarante ans.',
+    accroche:
+      "Un fabricant qui ne fait que de la glace : glaçons pleins, gros glaçons de 40 g, cubes, glaçons creux pour les eaux calcaires et glace en grains.",
+    familles: ['Machines à glaçons à réserve intégrée', 'Machines à glace en grains et en paillettes', 'Têtes de production et réserves', 'Broyeurs et filtres'],
+    gammes: ['STELLA', 'GALA', 'DELTA-MAX', 'ELEGANCE', 'QUASAR', 'SPIKA', 'ICE QUEEN'],
+    description: [
+      "ITV — Industria Técnica Valenciana — est une entreprise familiale espagnole, fondée en 1981 près de Valence, qui conçoit et fabrique exclusivement des machines à glace. Elle est aujourd'hui dirigée par la deuxième génération.",
+      "Sa gamme couvre tous les types de glace dont un bar ou une cuisine peut avoir besoin, du petit modèle sous comptoir à la machine de 150 kg par jour. Nous la commandons chez CODIGEL, son distributeur en France.",
+    ],
+    aRetenir: [
+      "Trois principes de fabrication, trois comportements face au calcaire : l'<b>injection</b> (STELLA, GALA, DELTA-MAX, ELEGANCE) donne un glaçon plein et dur ; les <b>palettes</b> (QUASAR) tolèrent les eaux les plus dures ; l'<b>évaporateur vertical</b> (SPIKA) produit beaucoup pour son encombrement.",
+      "Les modèles « DP » ont une <b>pompe de vidange intégrée</b> : c'est la version à choisir quand l'évacuation est plus haute que la machine.",
+      "Fluide <b>R290</b> sur toute la gamme refroidie par air : hors règlement F-Gas, donc pas de contrôle d'étanchéité périodique à ce titre.",
+    ],
+    clients: ['Bars et cafés', 'Restaurants', 'Hôtels et campings', 'Poissonneries et traiteurs'],
+    services: ['froid-professionnel', 'installation-mise-en-service', 'contrat-entretien-cuisine-professionnelle'],
+    boutique: 'machines-a-glacons',
+    boutiqueTitre: 'Les machines à glaçons ITV en boutique',
+    boutiqueTexte: 'STELLA, GALA, DELTA-MAX, ELEGANCE, QUASAR, SPIKA et ICE QUEEN au prix public, avec la pose, les filtres et les consommables',
+    boutiqueUrl: '/eshop/machines-a-glacons',
   },
   {
     slug: 'atosa',
@@ -796,6 +834,24 @@ export const faqMarques = {
     },
   ],
 
+  itv: [
+    {
+      q: 'Quelle machine à glaçons choisir pour mon bar ?',
+      r: `<p>Partez du glaçon que vous voulez servir. Un glaçon <b>plein</b> (GALA, 22 g) fait le service courant ; un <b>gros glaçon de 40 g</b> (DELTA-MAX) fond lentement et convient aux cocktails et aux spiritueux ; un <b>cube</b> (SPIKA) se tasse bien et sort en grande quantité.</p>
+<p>Puis dimensionnez sur votre journée la plus chargée de l'été, avec une marge : la production annoncée baisse quand le local et l'eau sont chauds.</p>`,
+    },
+    {
+      q: 'Mon eau est très calcaire : quelle machine et quel filtre ?',
+      r: `<p>Le calcaire est la première cause de baisse de production d'une machine à glaçons. Sur l'eau dure de la Crau et des Alpilles, posez un <b>filtre</b> anticalcaire avec la machine, choisi sur sa production, et faites changer la cartouche régulièrement.</p>
+<p>Si l'eau est vraiment très dure, la <b>QUASAR</b>, à palettes, est la machine la plus tolérante : le calcaire reste dans le bac au lieu d'entartrer le circuit.</p>`,
+    },
+    {
+      q: 'Comment entretenir une machine à glaçons ?',
+      r: `<p>C'est un appareil alimentaire : la réserve se nettoie et se désinfecte régulièrement, et le circuit d'eau se détartre au moins une fois par an. Le condenseur doit aussi rester propre, sinon la machine chauffe et produit moins.</p>
+<p>Nous faisons ces opérations dans le cadre du <b>contrat d'entretien</b>, avec le changement de cartouche du filtre.</p>`,
+    },
+  ],
+
   foster: [
     {
       q: 'Mon armoire perd du froid l’été : est-elle en panne ?',
@@ -1059,6 +1115,10 @@ export const marquesPied = ['rational', 'winterhalter', 'unox', 'infrico', 'robo
 //  • AMBASSADE DE BOURGOGNE — l'année de création de la marque elle-même n'a
 //    pas pu être établie (les dates disponibles concernent le site de Lacanche).
 //    Le champ `depuis` est donc volontairement absent.
+//
+//  • ITV — fondation (1981), fondateur et siège relevés sur itv.es (page
+//    « Conócenos ») le 30/10/2026. SODILAME achète via CODIGEL : `agree` est
+//    laissé à false tant que la direction n'a pas confirmé un agrément direct.
 //
 //  • PANNES FRÉQUENTES — aucune marque ne publie de statistiques de panne. Le
 //    jour où l'on voudra en parler, la source sera le journal d'intervention

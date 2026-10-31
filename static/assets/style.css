@@ -491,6 +491,7 @@ footer .fbrand .bs{font-size:.57rem;letter-spacing:.155em;text-transform:upperca
 .cond-row .cl{font-size:.9rem;font-weight:600;color:var(--ink)}
 .cond-row .cl i{color:var(--gold);font-style:normal}
 .cond-row .prix{font-size:1.05rem;color:var(--navy);text-align:right;font-variant-numeric:tabular-nums}
+.cond-row .eco-part{display:block;font-size:.72rem;font-weight:500;color:var(--muted);white-space:nowrap}
 .cond-row .prix-nc{font-size:.82rem;color:var(--muted);text-align:right;font-style:italic}
 .cond-row .ajout{grid-column:1/-1;justify-self:end}
 .cond-row .ajout svg{width:16px;height:16px}

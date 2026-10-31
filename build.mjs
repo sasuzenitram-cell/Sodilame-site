@@ -1556,7 +1556,7 @@ ${ariane(fil)}
       <h2>Pourquoi cette liste et pas une autre</h2>
       <p>Un distributeur peut référencer trois cents marques : il suffit de les commander. Entretenir un parc, c'est autre chose. Il faut connaître la machine, avoir suivi la formation du constructeur, tenir les pièces d'usure en stock et savoir où trouver les autres en vingt-quatre heures.</p>
       <p>Chaque marque de cette page représente donc un engagement : celui de pouvoir intervenir dessus. Quand un fabricant ne nous le permet pas, nous ne le vendons pas — c'est plus honnête que de livrer un appareil et de renvoyer le client vers un numéro national.</p>
-      <p>Nous sommes <b>distributeur agréé</b> des marques listées ici, et nous intervenons dans les ${ZONE_DEPARTEMENTS.join(', ')}.</p>
+      <p>${marques.every((m) => m.agree) ? 'Nous sommes <b>distributeur agréé</b> des marques listées ici' : 'Nous vendons, installons et dépannons les marques listées ici, et sommes <b>distributeur agréé</b> de la plupart d’entre elles'}, et nous intervenons dans les ${ZONE_DEPARTEMENTS.join(', ')}.</p>
     </div>
   </div>
 </section>
@@ -1729,7 +1729,7 @@ ${blocContact({
   return page(
     {
       titre: `${m.nom} — ${m.domestique ? 'installation' : 'vente, installation et dépannage'} | ${site.nom}`,
-      description: `${site.nom}, distributeur agréé ${m.nom} dans les Bouches-du-Rhône, le Gard et le Vaucluse. ${m.resume} Devis, installation, mise en service et dépannage par nos techniciens.`,
+      description: `${site.nom}, ${m.agree ? 'distributeur agréé' : 'vente, installation et dépannage'} ${m.nom} dans les Bouches-du-Rhône, le Gard et le Vaucluse. ${m.resume} Devis, installation, mise en service et dépannage par nos techniciens.`,
       chemin: `/marques/${m.slug}`,
       schemas: [schemaAriane(fil), schemaMarque(m), ...(faqDe(m.slug).length ? [schemaFaq(faqDe(m.slug))] : [])],
     },
@@ -2112,7 +2112,10 @@ const euros = (n) => {
 };
 const prixTexte = (c) =>
   typeof c.prix === 'number'
-    ? `<b class="prix">${euros(c.prix)} HT</b>`
+    ? `<b class="prix">${euros(c.prix)} HT${
+        // Éco-participation DEEE : affichée à part, facturée en plus (CODIGEL).
+        typeof c.ecoPart === 'number' && c.ecoPart > 0 ? `<small class="eco-part">+ éco-part. ${euros(c.ecoPart)} HT</small>` : ''
+      }</b>`
     : `<span class="prix-nc">Prix sur demande</span>`;
 /** Le plus petit prix connu d'un produit, ou null. */
 const prixMini = (p) => {

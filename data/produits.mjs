@@ -55,6 +55,7 @@ import { produitsMiele } from './miele.mjs';
 import { produitsRational } from './rational.mjs';
 import { produitsFoster } from './foster.mjs';
 import { produitsInfrico } from './infrico.mjs';
+import { produitsCodigel } from './codigel.mjs';
 
 export const categoriesProduits = [
   {
@@ -473,6 +474,21 @@ export const categoriesProduits = [
       "Le buffet du petit-déjeuner se compose module par module : du froid pour les produits laitiers et la charcuterie, du chaud pour les œufs et les viennoiseries, du neutre pour le pain et la vaisselle. Les modules BasicBuffet sont sur roulettes : la ligne se range après le service.",
     conseil:
       "Écrans de protection, plateaux et décorations s'ajoutent en option. Envoyez-nous votre configuration : nous chiffrons la ligne complète avant la commande.",
+  },
+  {
+    slug: 'machines-a-glacons',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Machines à glaçons',
+    nomCourt: 'Machines à glaçons',
+    icone: 'froid',
+    titreSeo: 'Machines à glaçons professionnelles ITV — vente, installation et entretien',
+    description:
+      "Machines à glaçons professionnelles ITV — glaçons pleins, cylindriques, gros glaçons de 40 g, glaçons creux, cubes et glace en grains, de 22 à 182 kg par jour — installées et entretenues par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Une machine à glaçons se choisit sur deux choses : le glaçon qu'on veut servir, et ce qu'il en faut le jour le plus chargé de l'été. Glaçon plein pour le bar, gros glaçon de 40 g pour les cocktails, cube pour les débits importants, glace en grains pour le banc de poisson : chaque gamme ITV fait un type de glace.",
+    conseil:
+      "Comptez votre consommation d'un samedi d'août, pas d'un mardi de mars, et ajoutez une marge : la production annoncée baisse quand le local et l'eau sont chauds. Sur notre eau calcaire, posez un filtre avec la machine. Chaque machine est vendue avec son forfait d'installation ; l'éco-participation DEEE s'ajoute au prix affiché.",
   },
 
   // =========================================================================
@@ -1285,6 +1301,10 @@ export const produits = [
   // INFRICO — fiches, versions et prix dans data/infrico.mjs
   // =========================================================================
   ...produitsInfrico,
+  // =========================================================================
+  // CODIGEL (machines à glaçons ITV) — fiches, versions et prix dans data/codigel.mjs
+  // =========================================================================
+  ...produitsCodigel,
 ];
 
 // ---------------------------------------------------------------------------
@@ -1461,6 +1481,14 @@ const PRIX_FORFAITS = {
   'AEX 1000': 250,
   'NEC1002RV': 250,
   'NEC1002FV': 250,
+  // ITV (CODIGEL) — grille de la direction du 30/10/2026 : comme le froid, 150 €.
+  'STELLA': 150,
+  'GALA': 150,
+  'DELTA-MAX': 150,
+  'ELEGANCE': 150,
+  'QUASAR': 150,
+  'SPIKA': 150,
+  'ICE QUEEN': 150,
 };
 
 const LIBELLE_FORFAIT = 'Forfait';
@@ -1534,6 +1562,7 @@ export const machinesCatalogue = [
   { slug: 'vitrine-refrigeree', nom: 'Vitrine réfrigérée', icone: 'froid' },
   { slug: 'cave-a-vin', nom: 'Cave à vin', icone: 'froid' },
   { slug: 'buffet', nom: 'Buffet', icone: 'froid' },
+  { slug: 'machine-a-glacons', nom: 'Machine à glaçons', icone: 'froid' },
 ];
 
 export const marquesCatalogue = [...new Set(produitsPublics.map((p) => p.marque))].sort();
@@ -1608,9 +1637,9 @@ export const rayonsBoutique = [
     nom: 'Froid',
     icone: 'froid',
     service: 'froid-professionnel',
-    marques: ['foster', 'infrico', 'atosa'],
-    aVenir: ['Chambres froides', 'Machines à glaçons'],
-    accroche: 'Armoires, tables et cellules de refroidissement, installées et entretenues par nos frigoristes.',
+    marques: ['foster', 'infrico', 'itv', 'atosa'],
+    aVenir: ['Chambres froides'],
+    accroche: 'Armoires, tables, cellules de refroidissement et machines à glaçons, installées et entretenues par nos frigoristes.',
   },
   {
     slug: 'cuisson',

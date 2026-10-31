@@ -550,6 +550,57 @@ console.log('\n═══ Sélection Infrico ═══');
   verifier('forfaits Infrico conformes à la grille (150 / 250 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
 }
 
+console.log('\n═══ Sélection ITV (CODIGEL) ═══');
+{
+  const fs = await import('node:fs');
+  const { refsCodigelManquantes, produitsCodigel } = await import('../data/codigel.mjs');
+  const { tarifCodigel } = await import('../data/codigel-tarif.mjs');
+  const { photosCodigel } = await import('../data/codigel-visuels.mjs');
+
+  verifier('toutes les références CODIGEL sont au tarif généré', !refsCodigelManquantes.length, refsCodigelManquantes.join(', '));
+  const champs = new Set(Object.values(tarifCodigel).flatMap((t) => Object.keys(t)));
+  verifier('le tarif CODIGEL généré ne contient que des données publiques',
+    [...champs].every((c) => ['prix', 'libelle', 'fiche', 'ean', 'eco'].includes(c)), [...champs].join(', '));
+  const brut = fs.readFileSync('data/codigel-tarif.mjs', 'utf8').split('\n').filter((l) => !l.startsWith('//')).join('\n');
+  verifier('aucune trace de prix de revient dans le tarif CODIGEL', !/cost|revient|achat|-\s?50\s?%|remise|\d+\s?%/i.test(brut));
+
+  const conds = produitsCodigel.flatMap((p) => p.conditionnements.map((c) => ({ p, c })));
+  verifier(`${conds.length} versions ITV, toutes avec un prix public`, conds.every(({ c }) => typeof c.prix === 'number' && c.prix > 0));
+  verifier('chaque libellé commence par la référence ITV et tient dans 80 caractères',
+    conds.every(({ c }) => c.label.startsWith(c.refFabricant + ' · ') && c.label.length <= 80));
+  verifier('aucun libellé de version en double dans une fiche',
+    produitsCodigel.every((p) => new Set(p.conditionnements.map((c) => c.label)).size === p.conditionnements.length));
+  // Décision du 30/10/2026 : l'éco-participation DEEE est affichée avec le prix.
+  const machines = produitsCodigel.filter((p) => p.type === 'machine');
+  verifier('chaque machine ITV porte son éco-participation',
+    machines.every((m) => m.conditionnements.every((c) => typeof c.ecoPart === 'number' && c.ecoPart > 0 && c.ecoPart < c.prix / 20)));
+  verifier('ni refroidissement par eau ni tête de production dans la sélection',
+    !conds.some(({ c }) => /\dE(-|$)|^(SCALA|NG|MAC|KITCHEN)/.test(c.refFabricant)), conds.map(({ c }) => c.refFabricant).join(','));
+  verifier('aucun libellé du tarif (en majuscules) affiché sur les fiches',
+    produitsCodigel.every((p) => !/MACHINE À GLAÇONS|DE MARQUE|PROD\. \(/.test(JSON.stringify([p.nom, p.resume, p.description, p.caracteristiques, p.conditionnements.map((c) => c.label)]))));
+
+  verifier(`${produitsCodigel.length} fiches ITV, chacune avec sa photo`,
+    produitsCodigel.every((p) => p.photo && fs.existsSync(`static/assets/produits/${p.photo}.jpg`)),
+    produitsCodigel.filter((p) => !p.photo).map((p) => p.ref).join(', '));
+  verifier('photos ITV sans métadonnées EXIF',
+    Object.values(photosCodigel).every((f) => !fs.readFileSync(`static/assets/produits/${f}.jpg`).includes('Exif')));
+  const liens = conds.map(({ c }) => c.ficheFabricant).filter(Boolean);
+  verifier('fiches techniques ITV : uniquement des PDF du serveur CODIGEL',
+    liens.length > 40 && liens.every((u) => /^https:\/\/cdnapi\.interactiv-database\.fr\/[\w/.-]+\.pdf$/.test(u)));
+
+  const fautes = [];
+  for (const p of produitsCodigel) {
+    const h = fs.readFileSync(fichier(p), 'utf8');
+    if (!h.includes('© ITV')) fautes.push(`${p.ref} : crédit absent`);
+    if (p.type === 'machine' && !h.includes('éco-part.')) fautes.push(`${p.ref} : éco-participation absente`);
+  }
+  verifier('fiches ITV : crédit et éco-participation affichés', !fautes.length, fautes.slice(0, 6).join(' · '));
+  verifier('chaque machine ITV a son forfait de 150 € HT (grille du froid)',
+    machines.length === 7 && machines.every((m) => forfaitDe(m)?.conditionnements[0].prix === 150));
+  verifier('les accessoires ITV sont sur commande, sans forfait',
+    produitsCodigel.filter((p) => p.type !== 'machine').every((p) => p.surCommande && !forfaitDe(p)));
+}
+
 console.log('\n═══ En-tête de la boutique ═══');
 {
   const fs = await import('node:fs');
