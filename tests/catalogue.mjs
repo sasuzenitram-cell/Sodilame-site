@@ -617,6 +617,43 @@ console.log('\n═══ Rayon Consommables : arrivée du QR code, filtre par ma
     h.indexOf('id="catalogue"') > 0 && h.indexOf('id="catalogue"') < h.indexOf('Les catégories'));
 }
 
+console.log('\n═══ Froid médical Infrico Medcare ═══');
+{
+  const fs = await import('node:fs');
+  const { refsMedcareManquantes, produitsMedcare } = await import('../data/medcare.mjs');
+  const { tarifMedcare } = await import('../data/medcare-tarif.mjs');
+  const { photosMedcare } = await import('../data/medcare-visuels.mjs');
+
+  verifier('toutes les références Medcare sont au tarif généré', !refsMedcareManquantes.length, refsMedcareManquantes.join(', '));
+  const champs = new Set(Object.values(tarifMedcare).flatMap((t) => Object.keys(t)));
+  verifier('le tarif Medcare généré ne contient que des données publiques',
+    [...champs].every((c) => ['prix', 'volume', 'niveaux', 'temp'].includes(c)), [...champs].join(', '));
+  const brut = fs.readFileSync('data/medcare-tarif.mjs', 'utf8').split('\n').filter((l) => !l.startsWith('//')).join('\n');
+  verifier('aucune trace de remise ou de prix d’achat dans le tarif Medcare', !/cost|revient|achat|remise|\d+\s?%/i.test(brut));
+
+  const conds = produitsMedcare.flatMap((p) => p.conditionnements.map((c) => ({ p, c })));
+  verifier(`${conds.length} versions Medcare, toutes avec un prix public`, conds.every(({ c }) => typeof c.prix === 'number' && c.prix > 0));
+  verifier('chaque libellé commence par la référence Infrico et tient dans 80 caractères',
+    conds.every(({ c }) => c.label.startsWith(c.refFabricant + ' · ') && c.label.length <= 80));
+  verifier('toutes les fiches Medcare sont dans la collection Froid médical (rayon Froid)',
+    produitsMedcare.every((p) => p.categorie === 'froid-medical') && categoriesPubliques.find((c) => c.slug === 'froid-medical')?.rayon === 'froid');
+  // LTF80SD : prix du tarif 2026 incohérent, retiré en attendant Infrico.
+  verifier('LTF80SD absente tant que son prix n’est pas confirmé', !conds.some(({ c }) => c.refFabricant === 'LTF80SD'));
+  const machines = produitsMedcare.filter((p) => p.type === 'machine');
+  verifier(`${machines.length} enceintes Medcare, chacune avec sa photo`,
+    machines.length === 15 && machines.every((p) => p.photo && fs.existsSync(`static/assets/produits/${p.photo}.jpg`)));
+  verifier('photos Medcare sans métadonnées EXIF',
+    Object.values(photosMedcare).every((f) => !fs.readFileSync(`static/assets/produits/${f}.jpg`).includes('Exif')));
+  verifier('fiches techniques Medcare : uniquement des PDF infricodocuments.com/medcare',
+    machines.every((m) => m.conditionnements.every((c) => /^https:\/\/infricodocuments\.com\/medcare\/ficha-tecnica\/[A-Z0-9]+\.pdf$/.test(c.ficheFabricant))));
+  // Grille de la direction du 04/11/2026 : 1 porte 150 €, 2 portes 250 € HT.
+  const deux = ['PTR130', 'LTR130', 'LTF130', 'LERF / LTRF', 'BBMD130'];
+  const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== (deux.includes(m.ref) ? 250 : 150));
+  verifier('forfaits Medcare conformes à la grille (150 / 250 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
+  verifier('le datalogger est une option sur commande, sans forfait',
+    produitsMedcare.filter((p) => p.type !== 'machine').every((p) => p.surCommande && !forfaitDe(p)));
+}
+
 console.log('\n═══ En-tête de la boutique ═══');
 {
   const fs = await import('node:fs');

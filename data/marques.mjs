@@ -294,7 +294,7 @@ export const marques = [
     services: ['froid-professionnel', 'installation-mise-en-service', 'contrat-entretien-cuisine-professionnelle'],
     boutique: 'arrieres-bars',
     boutiqueTitre: 'Infrico en boutique',
-    boutiqueTexte: 'Arrière-bars, vitrines, caves à vin, armoires, tables, saladettes, cellules, vitrines pâtissières et buffets au prix public Infrico, avec la pose',
+    boutiqueTexte: 'Arrière-bars, vitrines, caves à vin, armoires, tables, saladettes, cellules, vitrines pâtissières, buffets et froid médical Medcare au prix public Infrico, avec la pose',
     boutiqueUrl: '/eshop/catalogue?marque=Infrico#catalogue',
   },
   {

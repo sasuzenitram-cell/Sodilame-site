@@ -56,6 +56,7 @@ import { produitsRational } from './rational.mjs';
 import { produitsFoster } from './foster.mjs';
 import { produitsInfrico } from './infrico.mjs';
 import { produitsCodigel } from './codigel.mjs';
+import { produitsMedcare } from './medcare.mjs';
 
 export const categoriesProduits = [
   {
@@ -489,6 +490,21 @@ export const categoriesProduits = [
       "Une machine à glaçons se choisit sur deux choses : le glaçon qu'on veut servir, et ce qu'il en faut le jour le plus chargé de l'été. Glaçon plein pour le bar, gros glaçon de 40 g pour les cocktails, cube pour les débits importants, glace en grains pour le banc de poisson : chaque gamme ITV fait un type de glace.",
     conseil:
       "Comptez votre consommation d'un samedi d'août, pas d'un mardi de mars, et ajoutez une marge : la production annoncée baisse quand le local et l'eau sont chauds. Sur notre eau calcaire, posez un filtre avec la machine. Chaque machine est vendue avec son forfait d'installation ; l'éco-participation DEEE s'ajoute au prix affiché.",
+  },
+  {
+    slug: 'froid-medical',
+    univers: 'materiel',
+    rayon: 'froid',
+    nom: 'Froid médical',
+    nomCourt: 'Froid médical',
+    icone: 'froid',
+    titreSeo: 'Froid médical Infrico Medcare : armoires de pharmacie, laboratoire, banque de sang, −86 °C',
+    description:
+      "Armoires de pharmacie, réfrigérateurs et congélateurs de laboratoire, banques de sang, congélateurs de plasma et ultra-congélateurs −86 °C Infrico Medcare, installés et entretenus par nos frigoristes dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Entre +2 et +8 °C, c'est le pharmacien, le biologiste ou l'établissement qui répond de la chaîne du froid. Un réfrigérateur ménager ne tient pas une température uniforme ; une enceinte médicale, si : régulation précise, sécurité antigel, alarmes, enregistrement des températures. De l'armoire à vaccins de l'officine à l'ultra-congélateur d'une biobanque, chaque famille Infrico Medcare répond à un usage.",
+    conseil:
+      "Dimensionnez l'enceinte sur votre stock réel, avec de la marge pour les campagnes de vaccination, et posez-la dans un local qui reste sous 30 °C l'été. Chaque enceinte est vendue avec son forfait de livraison, d'installation et de mise en service ; la qualification (cartographie des températures) se chiffre à part.",
   },
 
   // =========================================================================
@@ -1305,6 +1321,10 @@ export const produits = [
   // CODIGEL (machines à glaçons ITV) — fiches, versions et prix dans data/codigel.mjs
   // =========================================================================
   ...produitsCodigel,
+  // =========================================================================
+  // INFRICO MEDCARE (froid médical) — fiches, versions et prix dans data/medcare.mjs
+  // =========================================================================
+  ...produitsMedcare,
 ];
 
 // ---------------------------------------------------------------------------
@@ -1489,6 +1509,23 @@ const PRIX_FORFAITS = {
   'QUASAR': 150,
   'SPIKA': 150,
   'ICE QUEEN': 150,
+  // Froid médical Infrico Medcare — grille du froid (04/11/2026) : 1 porte
+  // 150 €, 2 portes 250 €.
+  PER: 150,
+  PTR: 150,
+  PTR130: 250,
+  LER: 150,
+  LTR: 150,
+  LTR130: 250,
+  LEF: 150,
+  LTF: 150,
+  LTF130: 250,
+  'LERF / LTRF': 250,
+  BBMD: 150,
+  BBMD130: 250,
+  PFMD: 150,
+  ULT: 150,
+  ULTP: 150,
 };
 
 const LIBELLE_FORFAIT = 'Forfait';
@@ -1563,6 +1600,7 @@ export const machinesCatalogue = [
   { slug: 'cave-a-vin', nom: 'Cave à vin', icone: 'froid' },
   { slug: 'buffet', nom: 'Buffet', icone: 'froid' },
   { slug: 'machine-a-glacons', nom: 'Machine à glaçons', icone: 'froid' },
+  { slug: 'froid-medical', nom: 'Enceinte médicale', icone: 'froid' },
 ];
 
 export const marquesCatalogue = [...new Set(produitsPublics.map((p) => p.marque))].sort();
@@ -1639,7 +1677,7 @@ export const rayonsBoutique = [
     service: 'froid-professionnel',
     marques: ['foster', 'infrico', 'itv', 'atosa'],
     aVenir: ['Chambres froides'],
-    accroche: 'Armoires, tables, cellules de refroidissement et machines à glaçons, installées et entretenues par nos frigoristes.',
+    accroche: 'Armoires, tables, cellules de refroidissement, machines à glaçons et froid médical, installés et entretenus par nos frigoristes.',
   },
   {
     slug: 'cuisson',
