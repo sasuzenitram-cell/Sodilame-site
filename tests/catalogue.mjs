@@ -601,6 +601,22 @@ console.log('\n═══ Sélection ITV (CODIGEL) ═══');
     produitsCodigel.filter((p) => p.type !== 'machine').every((p) => p.surCommande && !forfaitDe(p)));
 }
 
+console.log('\n═══ Rayon Consommables : arrivée du QR code, filtre par marque ═══');
+{
+  const fs = await import('node:fs');
+  const qr = fs.readFileSync('public/qr/index.html', 'utf8');
+  // Demande de la direction du 04/11/2026 : « Commander mes produits lessiviels » mène
+  // directement aux consommables.
+  verifier('le QR code mène à /eshop/consommables', /class="act produits" href="\/eshop\/consommables"/.test(qr));
+  const h = fs.readFileSync('public/eshop/consommables/index.html', 'utf8');
+  const conso = categoriesPubliques.filter((c) => c.rayon === 'consommables').flatMap((c) => produitsDeCategorie(c.slug));
+  const marquesConso = [...new Set(conso.map((p) => p.marque))];
+  verifier(`filtre par marque sur les consommables (${marquesConso.length} marques)`,
+    h.includes('id="filtre-marque"') && marquesConso.every((m) => h.includes(`data-filtre="marque" data-valeur="${m}"`)));
+  verifier('les produits passent avant les catégories sur les consommables',
+    h.indexOf('id="catalogue"') > 0 && h.indexOf('id="catalogue"') < h.indexOf('Les catégories'));
+}
+
 console.log('\n═══ En-tête de la boutique ═══');
 {
   const fs = await import('node:fs');

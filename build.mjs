@@ -19,7 +19,7 @@ import {
   ESHOP, URL_PANIER, URL_CATALOGUE, urlCollection, urlProduit, rayonsBoutique, collectionsDuRayon, urlRayon, rayonDe,
 } from './data/produits.mjs';
 import { pageQr, pagePanne, pageAudit } from './src/qr.mjs';
-import { SCRIPT_FILTRES, groupeFiltres } from './src/catalogue.mjs';
+import { SCRIPT_FILTRES, SCRIPT_FILTRE_MARQUE, groupeFiltres } from './src/catalogue.mjs';
 import {
   page, ariane, schemaAriane, schemaLocalBusiness, schemaFaq, blocFaq, blocSecteurs,
   blocEtapes, blocFormules, blocMySodilame, blocCtaFinal, blocContact, blocLivraison, formulaire,
@@ -2438,25 +2438,44 @@ function rayonPage(r) {
   const service = r.service ? services.find((x) => x.slug === r.service) : null;
   const autres = rayonsBoutique.filter((x) => x.slug !== r.slug);
 
-  const contenu = cols.length
-    ? `<section>
+  // Filtre par marque (04/11/2026) : dès que le rayon en compte deux.
+  const marquesListe = [...new Set(liste.map((p) => p.marque))].sort((a, b) => a.localeCompare(b, 'fr'));
+  const filtreMarque =
+    marquesListe.length > 1
+      ? `<div class="filtres" id="filtre-marque" hidden>
+      ${groupeFiltres('Marque', 'marque', marquesListe.map((m) => ({ slug: m, nom: m, n: liste.filter((p) => p.marque === m).length })), esc)}
+      <div class="fbilan">
+        <span id="compte-marque">${liste.length} références</span>
+        <button type="button" id="reinit-marque" class="freinit" hidden>Toutes les marques</button>
+      </div>
+    </div>`
+      : '';
+  const blocCategories = (classe) => `<section${classe}>
   <div class="wrap">
-    ${noticePrix}
+    ${r.produitsEnTete ? '' : noticePrix}
     <div class="sec-head"><p class="eyebrow">Rayon ${esc(r.nom)}</p><h2>Les catégories</h2></div>
     <div class="grid3">
       ${cols.map(carteCollection).join('\n      ')}
     </div>
   </div>
-</section>
-
-<section class="alt">
+</section>`;
+  const blocProduits = (classe) => `<section${classe}>
   <div class="wrap">
+    ${r.produitsEnTete ? noticePrix : ''}
     <div class="sec-head"><p class="eyebrow">${liste.length} références</p><h2>Tout le rayon ${esc(r.nom)}</h2></div>
+    ${filtreMarque}
     <div class="grid3" id="catalogue">
       ${liste.map(carteProduit).join('\n      ')}
     </div>
   </div>
-</section>`
+</section>${filtreMarque ? `\n<script>${SCRIPT_FILTRE_MARQUE}</script>` : ''}`;
+
+  // Consommables : le client vient commander (QR code des machines) — les
+  // produits d'abord, filtrables par marque, les catégories ensuite.
+  const contenu = cols.length
+    ? r.produitsEnTete
+      ? `${blocProduits('')}\n\n${blocCategories(' class="alt"')}`
+      : `${blocCategories('')}\n\n${blocProduits(' class="alt"')}`
     : `<section>
   <div class="wrap">
     <div class="grid-art">

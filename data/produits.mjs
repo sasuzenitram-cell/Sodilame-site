@@ -1693,6 +1693,9 @@ export const rayonsBoutique = [
     service: null,
     marques: [],
     aVenir: [],
+    // Page d'arrivée du QR code (« Commander mes produits lessiviels », /qr) : les
+    // produits en tête, avec le filtre par marque.
+    produitsEnTete: true,
     accroche: 'Détergents, rinçage, lessives et produits d’entretien, livrés sans frais de port par nos techniciens.',
   },
 ];

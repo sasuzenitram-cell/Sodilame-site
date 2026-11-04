@@ -190,3 +190,51 @@ export function groupeFiltres(legende, axe, options, esc) {
         </div>
       </div>`;
 }
+
+// ---------------------------------------------------------------------------
+// Filtre par marque d'une page de rayon (/eshop/<rayon>), demandé le
+// 04/11/2026 pour le rayon Consommables : le client qui arrive du QR code
+// retrouve d'un clic les produits de sa marque. Un seul choix à la fois ;
+// ?marque= garde le filtre dans l'adresse (lien partageable, retour arrière).
+// La barre est masquée sans JavaScript, comme celle du catalogue.
+// ---------------------------------------------------------------------------
+export const SCRIPT_FILTRE_MARQUE = `
+(function () {
+  var barre = document.getElementById('filtre-marque');
+  var grille = document.getElementById('catalogue');
+  if (!barre || !grille) return;
+  var boutons = [].slice.call(barre.querySelectorAll('[data-filtre="marque"]'));
+  var cartes = [].slice.call(grille.querySelectorAll('[data-produit]'));
+  var compte = document.getElementById('compte-marque');
+  var reinit = document.getElementById('reinit-marque');
+  var total = cartes.length;
+  function appliquer(m, maj) {
+    var n = 0;
+    cartes.forEach(function (c) {
+      var ok = !m || c.getAttribute('data-marque') === m;
+      c.hidden = !ok;
+      if (ok) n++;
+    });
+    boutons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-valeur') === m)); });
+    compte.textContent = n + (n > 1 ? ' références' : ' référence') + (m ? ' ' + m : '');
+    reinit.hidden = !m;
+    if (maj && window.history && history.replaceState) {
+      var u = new URL(location.href);
+      if (m) u.searchParams.set('marque', m); else u.searchParams.delete('marque');
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    }
+  }
+  boutons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var m = b.getAttribute('data-valeur');
+      appliquer(b.getAttribute('aria-pressed') === 'true' ? '' : m, true);
+    });
+  });
+  reinit.addEventListener('click', function () { appliquer('', true); });
+  var initial = new URLSearchParams(location.search).get('marque') || '';
+  if (!boutons.some(function (b) { return b.getAttribute('data-valeur') === initial; })) initial = '';
+  appliquer(initial, false);
+  barre.hidden = false;
+  void total;
+})();
+`;
