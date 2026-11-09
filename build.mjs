@@ -1598,6 +1598,20 @@ function marquePage(m) {
     ? `Nous installons le matériel ${m.nom} dans les cuisines privées`
     : `Nous vendons, installons et dépannons le matériel ${m.nom}`;
 
+  // Bloc SAV. « SAV <marque> » pèse 49 impressions sur 7 jours pour zéro clic
+  // (Search Console, 25–31/10/2026) : l'intention est la panne, pas l'achat.
+  // Le texte est décliné par univers et porte les gammes propres à la marque,
+  // parce qu'un paragraphe identique sur 19 pages ferait franchir au test de
+  // recouvrement son seuil de 90 % — Girbau et Danube sont déjà à 79 %.
+  const symptomes = {
+    cuisson: 'Four qui ne monte plus en température, brûleur qui s’éteint, sonde qui dérive, porte qui ne tient plus l’étanchéité',
+    froid: 'Enceinte qui ne tient plus sa température, groupe qui tourne sans jamais descendre, givrage anormal, condenseur encrassé',
+    laverie: 'Lavage qui ne nettoie plus, rinçage trop froid, doseur déréglé, pompe de vidange bloquée',
+    blanchisserie: 'Tambour qui ne tourne plus, essorage en défaut d’équilibrage, résistance hors service, vidange qui reste ouverte',
+    preparation: 'Moteur qui chauffe, sécurité qui coupe au démarrage, cuve qui ne se verrouille plus, joint qui ne fait plus le vide',
+    ventilation: 'Débit qui s’effondre, caisson qui vibre, moteur en défaut, filtres saturés',
+  };
+
   // Deux lignes courtes plutôt qu'une longue : « Allemagne — Landsberg am Lech,
   // Bavière » sur une seule ligne débordait de la carte, le libellé de gauche
   // étant en nowrap.
@@ -1613,7 +1627,7 @@ function marquePage(m) {
 <div class="phero">
   <div class="wrap">
     <p class="eyebrow on-dark">${esc(univers ? univers.nom : 'Marque')}${m.agree ? ' · Distributeur agréé' : ''}</p>
-    <h1>${esc(m.nom)} — ${m.domestique ? 'installation en cuisine privée' : 'vente, installation et dépannage'} en Provence</h1>
+    <h1>${esc(m.nom)} ${m.domestique ? '— installation en cuisine privée en Provence' : 'en Provence : vente, SAV et pièces détachées'}</h1>
     <p>${esc(m.accroche)}</p>
   </div>
 </div>
@@ -1647,6 +1661,17 @@ ${ariane(fil)}
             : `Étude et chiffrage, livraison, installation et raccordement, mise en service et prise en main par votre équipe, puis dépannage et entretien. Nous tenons les pièces d'usure courantes à notre atelier de ${A.ville}, et nos techniciens sont formés sur les matériels que nous installons.`
         }</p>
         ${blocZoneMarque(m)}
+${
+  m.domestique
+    ? ''
+    : `
+        <h2>SAV ${esc(m.nom)} : faire réparer un appareil en panne</h2>
+        <p>${esc(symptomes[m.univers] || 'Appareil à l’arrêt ou qui ne tient plus ses performances')} : décrivez la panne au téléphone, nous identifions le modèle sur sa plaque — les ${m.gammes
+          .slice(0, 2)
+          .map((g) => `<b>${esc(g)}</b>`)
+          .join(' et ')} comprises — nous vérifions la pièce dans notre stock de ${esc(A.ville)}, puis c'est un technicien formé sur ${esc(m.nom)} qui se déplace.</p>
+        <p>Nous réparons le matériel ${esc(m.nom)} que nous avons installé comme celui que vous avez acheté ailleurs, dans les ${ZONE_DEPARTEMENTS.join(', ')}. Et si la réparation n’est plus rentable au regard de l’âge de l’appareil, nous le disons et nous chiffrons le remplacement plutôt que d’empiler les interventions.</p>`
+}
 
         <h3>Qui l'utilise chez nous</h3>
         <p>${m.clients.map((c) => esc(c)).join(' · ')}</p>
