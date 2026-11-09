@@ -77,15 +77,40 @@ export const svg = (nom, cls = '') =>
 // ---------------------------------------------------------------------------
 // <head>
 // ---------------------------------------------------------------------------
+
+// Google affiche environ 160 caractères de méta-description et coupe le reste
+// en plein mot. Au 09/11/2026, 100 pages du site dépassaient la tolérance de
+// check.mjs (175), jusqu'à 320 caractères sur les pages catégorie de la
+// boutique : la phrase utile était tronquée à l'affichage. On coupe donc
+// nous-mêmes, sur une fin de phrase quand il y en a une, sur un mot sinon.
+// Le plafond est appliqué ici plutôt que dans chaque gabarit, pour qu'aucune
+// page future ne puisse y échapper.
+export function metaCourte(texte, max = 165) {
+  const t = String(texte ?? '').replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  const tranche = t.slice(0, max + 1);
+  const finDePhrase = Math.max(tranche.lastIndexOf('. '), tranche.lastIndexOf('! '), tranche.lastIndexOf('? '));
+  if (finDePhrase > max * 0.55) return tranche.slice(0, finDePhrase + 1).trim();
+  const dernierEspace = tranche.lastIndexOf(' ');
+  let coupe = tranche.slice(0, dernierEspace > 0 ? dernierEspace : max);
+  // Une coupe qui tombe sur un mot de liaison se lit mal (« … le Gard et »).
+  // On retire donc le mot orphelin, autant de fois que nécessaire.
+  const liaisons = /\s+(et|ou|de|du|des|d|le|la|les|l|un|une|en|à|au|aux|dans|pour|par|sur|avec|sans|chez|plus|ainsi|que|qui|dont)$/i;
+  let garde = 0;
+  while (liaisons.test(coupe) && garde++ < 4) coupe = coupe.replace(liaisons, '');
+  return coupe.replace(/[\s,;:—–-]+$/, '').trim();
+}
+
 function head({ titre, description, chemin, schemas = [], noindex = false, typeOg = 'website', theme = '' }) {
   const canon = url(chemin);
+  const desc = metaCourte(description);
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(titre)}</title>
-<meta name="description" content="${esc(description)}">
+<meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${canon}">
 <meta name="robots" content="${noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large'}">
 <meta name="author" content="${site.nom}">
@@ -95,7 +120,7 @@ ${site.googleVerification ? `<meta name="google-site-verification" content="${si
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="${site.nom}">
 <meta property="og:title" content="${esc(titre)}">
-<meta property="og:description" content="${esc(description)}">
+<meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${canon}">
 <meta property="og:image" content="${url('/assets/logo-sodilame-600.png')}">
 <meta name="twitter:card" content="summary">
