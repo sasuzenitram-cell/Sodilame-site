@@ -1113,7 +1113,7 @@ ${blocContact({ titre: 'Faisons connaissance', texte: "Un projet, une reprise d'
 
   return page(
     {
-      titre: `L'entreprise — ${site.nom}, cuisines professionnelles depuis ${site.anneeCreation}`,
+      titre: `${site.nom}, installateur de cuisines professionnelles depuis ${site.anneeCreation}`,
       description: `${site.nom}, installateur de cuisines professionnelles à ${A.ville} depuis ${site.anneeCreation} : techniciens salariés, stock de pièces sur place, contrats d'entretien.`,
       chemin: '/a-propos',
       schemas: [schemaAriane(fil), schemaLocalBusiness()],
@@ -1728,8 +1728,16 @@ ${blocContact({
 
   return page(
     {
-      titre: `${m.nom} — ${m.domestique ? 'installation' : 'vente, installation et dépannage'} | ${site.nom}`,
-      description: `${site.nom}, ${m.agree ? 'distributeur agréé' : 'vente, installation et dépannage'} ${m.nom} dans les Bouches-du-Rhône, le Gard et le Vaucluse. ${m.resume} Devis, installation, mise en service et dépannage par nos techniciens.`,
+      // « SAV <marque> » est la requête réellement tapée (Search Console, 25–31/10/2026) :
+      // 49 impressions sur 7 jours, aucun clic, position moyenne 44. Le mot « SAV » était
+      // absent des 19 titres. Gaggenau reste à part : garantie constructeur incompatible
+      // avec un usage commercial, donc aucune promesse de dépannage CHR sur cette page.
+      titre: m.domestique
+        ? `${m.nom} — installation en Provence | ${site.nom}`
+        : `SAV ${m.nom} : dépannage et pièces en Provence | ${site.nom}`,
+      description: m.domestique
+        ? `${site.nom}, installation et entretien ${m.nom} pour cuisines privées haut de gamme en Provence : mas, villas, maisons d'hôtes. Devis sous 24 h ouvrées.`
+        : `${site.nom}, ${m.agree ? 'distributeur agréé' : 'revendeur'} ${m.nom} : SAV, réparation et pièces détachées dans les Bouches-du-Rhône, le Gard et le Vaucluse. Devis sous 24 h ouvrées.`,
       chemin: `/marques/${m.slug}`,
       schemas: [schemaAriane(fil), schemaMarque(m), ...(faqDe(m.slug).length ? [schemaFaq(faqDe(m.slug))] : [])],
     },
@@ -1788,8 +1796,11 @@ ${blocFaq(
 
   return page(
     {
-      titre: `Contact — ${site.nom}, cuisine professionnelle à ${A.ville}`,
-      description: `Contactez ${site.nom} : ${site.telephone}, ${A.rue}, ${A.codePostal} ${A.ville}. Devis gratuit, audit de parc offert, réponse sous 24 h ouvrées.`,
+      // 44 impressions en 7 jours pour 2,3 % de CTR à la position 6,9 : ces visiteurs
+      // cherchent à joindre l'entreprise. Le numéro passe dans le titre, donc appelable
+      // depuis la page de résultats sans ouvrir le site.
+      titre: `Contact ${site.nom} — ${site.telephone} · ${A.ville}`,
+      description: `Dépannage de cuisine professionnelle en Provence : ${site.telephone}. ${A.rue}, ${A.codePostal} ${A.ville}. Devis gratuit, réponse sous 24 h ouvrées.`,
       chemin: '/contact',
       schemas: [
         schemaAriane(fil),
@@ -3005,9 +3016,43 @@ ${
     : blocCtaFinal('Une machine à faire régler en même temps ?', "Le technicien qui vous livre peut contrôler votre doseur et vos températures dans la foulée. Parlez-nous-en à la commande.")
 }`;
 
+  // Titre produit. L'ancien gabarit `${p.marque} ${p.nom} (${p.ref})` répétait la
+  // référence quand p.nom la contenait déjà — « Pastilles d'autonettoyage A15MC (A15MC) »,
+  // « ProCare Universal 81 C (ProCare Universal 81 C) » — et produisait des titres de 76 à
+  // 109 caractères, tronqués par Google vers 60. Or la référence est précisément ce qui est
+  // tapé (« a15mc » position 4,5 ; « f300 » position 45) : elle passe donc en tête, sans
+  // doublon, et le titre est plafonné à 72 caractères en retirant d'abord la marque, qui
+  // reste présente dans le H1 et le fil d'Ariane.
+  const libelleSansRef = p.nom
+    .split(p.ref)
+    .join(' ')
+    .replace(/\(\s*\)/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([,.;:])/g, '$1')
+    .trim();
+  const titreProduit = (() => {
+    const suffixe = ` | ${site.nom}`;
+    const libelle = libelleSansRef || p.nom;
+    // 1. référence + marque + libellé complet
+    const complet = `${p.ref} ${p.marque} — ${libelle}${suffixe}`;
+    if (complet.length <= 72) return complet;
+    // 2. sans la marque, qui reste dans le H1 et le fil d'Ariane — et qui est
+    //    souvent déjà incluse dans p.nom (« Infrico Medcare … »)
+    const sansMarque = `${p.ref} — ${libelle}${suffixe}`;
+    if (sansMarque.length <= 72) return sansMarque;
+    // 3. libellé tronqué sur une frontière de mot, jamais en plein mot
+    const prefixe = `${p.ref} — `;
+    const place = 72 - prefixe.length - suffixe.length;
+    let coupe = libelle.slice(0, place);
+    const espace = coupe.lastIndexOf(' ');
+    if (espace > place * 0.5) coupe = coupe.slice(0, espace);
+    coupe = coupe.replace(/[\s,;:—–-]+$/, '');
+    return `${prefixe}${coupe}${suffixe}`;
+  })();
+
   return page(
     {
-      titre: `${p.marque} ${p.nom} (${p.ref}) | ${site.nom}`,
+      titre: titreProduit,
       description: machine
         ? `${p.resume} Livrée, installée et mise en service par ${site.nom} dans les Bouches-du-Rhône, le Gard et le Vaucluse.`
         : p.surCommande
