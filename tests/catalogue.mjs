@@ -601,6 +601,44 @@ console.log('\n═══ Sélection ITV (CODIGEL) ═══');
     produitsCodigel.filter((p) => p.type !== 'machine').every((p) => p.surCommande && !forfaitDe(p)));
 }
 
+console.log('\n═══ Sélection Gamko ═══');
+{
+  const fs = await import('node:fs');
+  const { refsGamkoManquantes, produitsGamko } = await import('../data/gamko.mjs');
+  const { tarifGamko } = await import('../data/gamko-tarif.mjs');
+  const { visuelsGamko } = await import('../data/gamko-visuels.mjs');
+
+  verifier('toutes les références Gamko sont au tarif généré', !refsGamkoManquantes.length, refsGamkoManquantes.join(', '));
+  const champs = new Set(Object.values(tarifGamko).flatMap((t) => Object.keys(t)));
+  verifier('le tarif Gamko généré ne contient que des données publiques', [...champs].every((c) => ['prix', 'libelle', 'eco'].includes(c)), [...champs].join(', '));
+  const brut = fs.readFileSync('data/gamko-tarif.mjs', 'utf8').split('\n').filter((l) => !l.startsWith('//')).join('\n');
+  verifier('aucune trace de prix de revient dans le tarif Gamko', !/cost|revient|achat|remise|\d+\s?%/i.test(brut));
+
+  const conds = produitsGamko.flatMap((p) => p.conditionnements.map((c) => ({ p, c })));
+  verifier(`${conds.length} versions Gamko, toutes avec un prix public`, conds.every(({ c }) => typeof c.prix === 'number' && c.prix > 0));
+  verifier('chaque libellé commence par la référence Gamko et tient dans 80 caractères',
+    conds.every(({ c }) => c.label.startsWith(c.refFabricant + ' · ') && c.label.length <= 80));
+  verifier('aucun libellé du tarif (en majuscules) affiché sur les fiches',
+    produitsGamko.every((p) => !/DE MARQUE|REFROIDISSEUR DE|VITRINE BOISSONS|PTES/.test(JSON.stringify([p.nom, p.resume, p.description, p.caracteristiques, p.conditionnements.map((c) => c.label)]))));
+  // Décision du 09/11/2026 : ni E3 sans groupe, ni machines à glaçons Gamko (ITV en boutique).
+  verifier('ni E3 sans groupe ni machine à glaçons Gamko', !conds.some(({ c }) => /VS(CS)?84$|^GS\d|^G\d{3}SB/.test(c.refFabricant)));
+  const machines = produitsGamko.filter((p) => p.type === 'machine');
+  verifier('chaque machine Gamko porte son éco-participation',
+    machines.every((m) => m.conditionnements.every((c) => typeof c.ecoPart === 'number' && c.ecoPart > 0 && c.ecoPart < c.prix / 20)));
+  const sansPhoto = produitsGamko.filter((p) => !p.photo).map((p) => p.ref);
+  verifier('fiches Gamko sans photo : seulement les options E3 et le module plonge', sansPhoto.every((r) => ['Options E3', 'XCB'].includes(r)), sansPhoto.join(', '));
+  verifier('photos Gamko présentes et sans EXIF',
+    produitsGamko.filter((p) => p.photo).every((p) => fs.existsSync(`static/assets/produits/${p.photo}.jpg`) && !fs.readFileSync(`static/assets/produits/${p.photo}.jpg`).includes('Exif')));
+  const liens = conds.flatMap(({ c }) => [c.ficheFabricant, c.etiquetteEnergie]).filter(Boolean);
+  verifier('documents Gamko : uniquement des liens gamko.com',
+    liens.length > 100 && liens.every((u) => u.startsWith('https://www.gamko.com/')));
+  // Grille du froid (09/11/2026).
+  const deux = ['Maxiglass 250', 'Maxiglass 275', 'Maxiglass 315', 'Maxiglass 500 haute', 'XC1000', 'XC1350', 'XC1700 / XC2200', 'XCB'];
+  const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== (deux.includes(m.ref) ? 250 : 150));
+  verifier('forfaits Gamko conformes à la grille (150 / 250 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
+  verifier('options Gamko sur commande, sans forfait', produitsGamko.filter((p) => p.type !== 'machine').every((p) => p.surCommande && !forfaitDe(p)));
+}
+
 console.log('\n═══ Rayon Consommables : arrivée du QR code, filtre par marque ═══');
 {
   const fs = await import('node:fs');

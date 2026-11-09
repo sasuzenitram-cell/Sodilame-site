@@ -57,6 +57,7 @@ import { produitsFoster } from './foster.mjs';
 import { produitsInfrico } from './infrico.mjs';
 import { produitsCodigel } from './codigel.mjs';
 import { produitsMedcare } from './medcare.mjs';
+import { produitsGamko } from './gamko.mjs';
 
 export const categoriesProduits = [
   {
@@ -408,9 +409,9 @@ export const categoriesProduits = [
     nom: 'Arrière-bars et mobilier de bar',
     nomCourt: 'Arrière-bars',
     icone: 'froid',
-    titreSeo: 'Arrière-bars réfrigérés, refroidisseurs de bouteilles et mobilier de bar Infrico',
+    titreSeo: 'Arrière-bars réfrigérés, refroidisseurs de bouteilles et postes cocktail Gamko et Infrico',
     description:
-      "Refroidisseurs de bouteilles, arrière-bars vitrés, stations cocktail, meubles machine à café et comptoirs réfrigérés Infrico, installés par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+      "Refroidisseurs de bouteilles Gamko E3 et GM Line, givreurs de verres, postes cocktail Flexbar, arrière-bars vitrés, meubles machine à café et comptoirs réfrigérés Infrico, installés par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
     intro:
       "Derrière un bar, tout se joue en quelques secondes : la bouteille doit être fraîche, à portée de main, et le meuble ne doit pas gêner le passage. Bac à bouteilles ouvert par le dessus ou arrière-bar à portes vitrées : le choix dépend de la façon dont on sert, et la longueur suit celle du comptoir.",
     conseil:
@@ -423,9 +424,9 @@ export const categoriesProduits = [
     nom: 'Vitrines à boissons et de comptoir',
     nomCourt: 'Vitrines',
     icone: 'froid',
-    titreSeo: 'Vitrines réfrigérées à boissons, vitrines à tapas et vitrines de comptoir Infrico',
+    titreSeo: 'Vitrines réfrigérées à boissons Gamko Maxiglass et Infrico, vitrines à tapas et de comptoir',
     description:
-      "Vitrines réfrigérées à boissons positives et négatives, vitrines à tapas, vitrines de comptoir et vitrines à ingrédients pizza Infrico, livrées et installées dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+      "Vitrines à boissons Gamko Maxiglass et Infrico, positives et négatives, vitrines à tapas, vitrines de comptoir et vitrines à ingrédients pizza, livrées et installées dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
     intro:
       "Une vitrine vend : ce que le client voit, il le commande. Vitrine à boissons pour le libre-service, vitrine à tapas sur le comptoir, vitrine à ingrédients sur le poste pizza — chacune a son emplacement et sa température.",
     conseil:
@@ -1325,6 +1326,10 @@ export const produits = [
   // INFRICO MEDCARE (froid médical) — fiches, versions et prix dans data/medcare.mjs
   // =========================================================================
   ...produitsMedcare,
+  // =========================================================================
+  // GAMKO (froid de bar) — fiches, versions et prix dans data/gamko.mjs
+  // =========================================================================
+  ...produitsGamko,
 ];
 
 // ---------------------------------------------------------------------------
@@ -1526,6 +1531,26 @@ const PRIX_FORFAITS = {
   PFMD: 150,
   ULT: 150,
   ULTP: 150,
+  // Gamko — grille du froid (09/11/2026) : arrière-bars, givreurs,
+  // mini-refroidisseurs et vitrines 1 porte 150 € ; vitrines 2-3 portes et
+  // postes cocktail 250 €.
+  'E3/22': 150,
+  'E3/222': 150,
+  'E3/2222': 150,
+  'GM portes': 150,
+  'GM tiroirs': 150,
+  'Maxiglass 150': 150,
+  'Maxiglass 250': 250,
+  'Maxiglass 275': 250,
+  'Maxiglass 315': 250,
+  'Maxiglass 300 haute': 150,
+  'Maxiglass 500 haute': 250,
+  'GF3/100': 150,
+  VKHC: 150,
+  XC1000: 250,
+  XC1350: 250,
+  'XC1700 / XC2200': 250,
+  XCB: 250,
 };
 
 const LIBELLE_FORFAIT = 'Forfait';
@@ -1675,7 +1700,7 @@ export const rayonsBoutique = [
     nom: 'Froid',
     icone: 'froid',
     service: 'froid-professionnel',
-    marques: ['foster', 'infrico', 'itv', 'atosa'],
+    marques: ['foster', 'infrico', 'gamko', 'itv', 'atosa'],
     aVenir: ['Chambres froides'],
     accroche: 'Armoires, tables, cellules de refroidissement, machines à glaçons et froid médical, installés et entretenus par nos frigoristes.',
   },

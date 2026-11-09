@@ -37,6 +37,9 @@
 //          visuels produit, sur décision de la direction et sous sa
 //          responsabilité. À remplacer par le logo remis par Foster s'il en
 //          fournit un.
+//        — Gamko : pas de portail revendeur (groupe ITW, comme Foster). Logo
+//          du site public gamko.com, repris le 09/11/2026 avec les visuels
+//          produit, sur décision de la direction et sous sa responsabilité.
 //        — ITV : pas de portail revendeur (achat via CODIGEL). Logo du site
 //          public ITV (itv.es), dont le texte blanc a été passé en gris foncé
 //          pour rester lisible sur fond clair ; repris le 30/10/2026 avec les
@@ -327,6 +330,37 @@ export const marques = [
     boutiqueTitre: 'Armoires, tables et cellules en boutique',
     boutiqueTexte: 'Armoires EcoPro G3, armoires à chariots, tables réfrigérées, saladettes et cellules de refroidissement au prix public Foster, avec la pose',
     boutiqueUrl: '/eshop/catalogue?marque=Foster#catalogue',
+  },
+  {
+    slug: 'gamko',
+    nom: 'Gamko',
+    logo: { fichier: 'gamko.png', largeur: 600, hauteur: 199, alt: 'Logo Gamko' },
+    univers: 'froid',
+    agree: true,
+    pays: 'Pays-Bas',
+    depuis: 1958,
+    lieu: 'Etten-Leur, Brabant-Septentrional',
+    site: 'https://www.gamko.com/fr',
+    resume: 'Le froid de bar : refroidisseurs de bouteilles, vitrines à boissons, postes cocktail.',
+    accroche:
+      "Le spécialiste néerlandais du froid derrière le bar — le refroidisseur de bouteilles que les brasseries installent depuis soixante ans.",
+    familles: ['Refroidisseurs de bouteilles', 'Vitrines à boissons', 'Givreurs de verres', 'Postes cocktail', 'Refroidisseurs de fûts'],
+    gammes: ['E3', 'GM Line', 'Maxiglass', 'GF', 'Flexbar'],
+    description: [
+      "Gamko est née en 1958 près de Breda, aux Pays-Bas, et fabrique depuis à Etten-Leur. La marque a grandi avec les brasseries, qui équipaient les bars de ses refroidisseurs ; elle appartient aujourd'hui au groupe ITW, comme Foster.",
+      "Sa gamme couvre tout le froid du bar : refroidisseurs de bouteilles E3 et GM Line sous le comptoir, vitrines à boissons Maxiglass pour vendre, givreurs de verres, et le mobilier de bar Flexbar, dont les postes cocktail.",
+    ],
+    aRetenir: [
+      "Les refroidisseurs E3 réévaporent leurs condensats : <b>pas d'évacuation à prévoir</b> derrière le bar, ce qui simplifie la pose sous un comptoir existant.",
+      "Les vitrines Maxiglass sont <b>monocoques</b> : pas de joint de carrosserie où la saleté s'accumule, et une isolation continue.",
+      "Les modèles récents tournent au <b>R600a</b>, un fluide naturel : hors règlement F-Gas, donc pas de contrôle d'étanchéité périodique à ce titre.",
+    ],
+    clients: ['Bars et cafés', 'Brasseries', 'Bars à cocktails', 'Hôtels', 'Discothèques et salles'],
+    services: ['froid-professionnel', 'installation-mise-en-service', 'contrat-entretien-cuisine-professionnelle'],
+    boutique: 'arrieres-bars',
+    boutiqueTitre: 'Gamko en boutique',
+    boutiqueTexte: 'Refroidisseurs de bouteilles E3 et GM Line, vitrines Maxiglass, givreurs de verres et postes cocktail Flexbar au prix public Gamko, avec la pose',
+    boutiqueUrl: '/eshop/catalogue?marque=Gamko#catalogue',
   },
   {
     slug: 'itv',
@@ -834,6 +868,22 @@ export const faqMarques = {
     },
   ],
 
+  gamko: [
+    {
+      q: 'Refroidisseur à portes pleines ou vitrées ?',
+      r: `<p>Les portes <b>vitrées</b> vendent : le client voit les bouteilles, et l'éclairage LED les met en valeur. Elles consomment un peu plus et réchauffent un peu plus vite à l'ouverture.</p>
+<p>Les portes <b>pleines</b> isolent mieux et conviennent au stockage, là où le client ne voit pas l'arrière du bar.</p>`,
+    },
+    {
+      q: 'Faut-il une évacuation d’eau pour un refroidisseur de bouteilles E3 ?',
+      r: `<p>Non : les E3 réévaporent automatiquement l'eau de dégivrage. Il faut en revanche de l'air autour du groupe et une prise dédiée. Les postes cocktail et les modules plonge, eux, se raccordent à l'eau et à l'évacuation : nous relevons tout cela avant la commande.</p>`,
+    },
+    {
+      q: 'À quoi sert un givreur de verres ?',
+      r: `<p>Il refroidit les verres entre −14 et −10 °C : la bière ou le cocktail reste froid plus longtemps, et le verre givré se voit en salle. C'est un argument de vente autant qu'un confort de service, surtout en terrasse l'été.</p>`,
+    },
+  ],
+
   itv: [
     {
       q: 'Quelle machine à glaçons choisir pour mon bar ?',
@@ -1115,6 +1165,9 @@ export const marquesPied = ['rational', 'winterhalter', 'unox', 'infrico', 'robo
 //  • AMBASSADE DE BOURGOGNE — l'année de création de la marque elle-même n'a
 //    pas pu être établie (les dates disponibles concernent le site de Lacanche).
 //    Le champ `depuis` est donc volontairement absent.
+//
+//  • GAMKO — fondation (1958, Breda), siège (Etten-Leur) et appartenance au
+//    groupe ITW relevés sur gamko.com (« Notre histoire ») le 09/11/2026.
 //
 //  • ITV — fondation (1981), fondateur et siège relevés sur itv.es (page
 //    « Conócenos ») le 30/10/2026. SODILAME achète via CODIGEL : `agree` est
