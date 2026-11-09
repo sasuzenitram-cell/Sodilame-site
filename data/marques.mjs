@@ -40,6 +40,10 @@
 //        — Gamko : pas de portail revendeur (groupe ITW, comme Foster). Logo
 //          du site public gamko.com, repris le 09/11/2026 avec les visuels
 //          produit, sur décision de la direction et sous sa responsabilité.
+//        — Winterhalter : logo vectoriel du site public winterhalter.com
+//          (le portail revendeur n'en propose pas de téléchargement), repris
+//          le 09/11/2026 avec les visuels produit du portail revendeur, sur
+//          décision de la direction et sous sa responsabilité.
 //        — ITV : pas de portail revendeur (achat via CODIGEL). Logo du site
 //          public ITV (itv.es), dont le texte blanc a été passé en gris foncé
 //          pour rester lisible sur fond clair ; repris le 30/10/2026 avec les
@@ -426,6 +430,7 @@ export const marques = [
   {
     slug: 'winterhalter',
     nom: 'Winterhalter',
+    logo: { fichier: 'winterhalter.png', largeur: 600, hauteur: 135, alt: 'Logo Winterhalter' },
     univers: 'laverie',
     agree: true,
     pays: 'Allemagne',
@@ -439,7 +444,7 @@ export const marques = [
     gammes: ['UC Series', 'PT Series', 'UF Series', 'GS 630', 'MT Series'],
     description: [
       "Entreprise familiale de troisième génération, Winterhalter fabrique des machines de lavage depuis 1957 et rien d'autre. Les frontaux UC couvrent le bar et la petite restauration, les machines à capot PT la plonge de restaurant, les séries MT les cuisines centrales.",
-      "Nous distribuons aussi leurs détergents et liquides de rinçage, et nos techniciens règlent les doseurs lors de leur passage.",
+      "Nous distribuons aussi leurs adoucisseurs, osmoseurs, détergents et liquides de rinçage, et nos techniciens règlent les doseurs lors de leur passage.",
     ],
     aRetenir: [
       "Le quatrième étage de filtration retient les particules les plus fines — le <b>marc de café</b> en particulier. C'est un argument réel en bar et en brasserie, où c'est lui qui encrasse tout le reste.",
@@ -448,8 +453,10 @@ export const marques = [
     ],
     clients: ['Bars et brasseries', 'Restaurants', 'Hôtels', 'Boulangeries et boucheries', 'Restauration collective'],
     services: ['laverie-restauration', 'installation-mise-en-service', 'contrat-entretien-cuisine-professionnelle'],
-    boutique: 'detergents-lave-vaisselle',
-    boutiqueTexte: 'Détergents et liquides de rinçage Winterhalter en boutique',
+    boutique: 'lave-vaisselle-professionnel',
+    boutiqueTitre: 'Winterhalter en boutique',
+    boutiqueTexte: 'Lave-verres et lave-vaisselle UC, capots PT, lave-ustensiles UF et GS 630, adoucisseurs, osmoseurs et produits lessiviels au prix public Winterhalter, avec la pose',
+    boutiqueUrl: '/eshop/catalogue?marque=Winterhalter#catalogue',
   },
   {
     slug: 'comenda',

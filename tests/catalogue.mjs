@@ -370,9 +370,10 @@ console.log('\n═══ Sélection Miele Professional ═══');
   verifier('aucun libellé de version en double dans une fiche',
     produitsMiele.every((p) => new Set(p.conditionnements.map((c) => c.label)).size === p.conditionnements.length));
 
-  // Décision de la direction (28/10/2026) : ni lave-verres, ni machines à capot.
-  verifier('ni lave-verres ni machine à capot en ligne',
-    !produits.some((p) => /^PTD 70?1\b|^PTD 901/.test(p.ref) || /lave-verres frontal|à capot/i.test(p.nom)));
+  // Décision de la direction (28/10/2026) : ni lave-verres, ni machines à capot
+  // Miele (ces machines sont vendues en Winterhalter).
+  verifier('ni lave-verres ni machine à capot Miele en ligne',
+    !produits.some((p) => p.marque.startsWith('Miele') && (/^PTD 70?1\b|^PTD 901/.test(p.ref) || /lave-verres frontal|à capot/i.test(p.nom))));
 
   const fautes = [];
   for (const p of produitsMiele) {
@@ -637,6 +638,62 @@ console.log('\n═══ Sélection Gamko ═══');
   const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== (deux.includes(m.ref) ? 250 : 150));
   verifier('forfaits Gamko conformes à la grille (150 / 250 € HT)', !ecarts.length, ecarts.map((m) => m.ref).join(', '));
   verifier('options Gamko sur commande, sans forfait', produitsGamko.filter((p) => p.type !== 'machine').every((p) => p.surCommande && !forfaitDe(p)));
+}
+
+console.log('\n═══ Sélection Winterhalter ═══');
+{
+  const fs = await import('node:fs');
+  const { produitsWinterhalter, versionsSansPrix, articlesLessivielsWinterhalter } = await import('../data/winterhalter.mjs');
+  const { tarifWinterhalter } = await import('../data/winterhalter-tarif.mjs');
+  const { photosWinterhalter } = await import('../data/winterhalter-visuels.mjs');
+
+  verifier('toutes les versions Winterhalter ont un prix lu dans le tarif', !versionsSansPrix.length, versionsSansPrix.join(', '));
+  verifier('le tarif Winterhalter généré ne contient que des montants',
+    Object.values(tarifWinterhalter).every((x) => Number.isInteger(x) && x > 0));
+  const brut = fs.readFileSync('data/winterhalter-tarif.mjs', 'utf8').split('\n').filter((l) => !l.startsWith('//')).join('\n');
+  verifier('aucune trace de prix d’achat dans le tarif Winterhalter', !/cost|revient|achat|remise|\d+\s?%/i.test(brut));
+
+  const conds = produitsWinterhalter.flatMap((p) => p.conditionnements.map((c) => ({ p, c })));
+  verifier(`${conds.length} versions Winterhalter, toutes avec un prix public`, conds.every(({ c }) => typeof c.prix === 'number' && c.prix > 0));
+  verifier('chaque libellé commence par la référence Winterhalter et tient dans 80 caractères',
+    conds.every(({ c }) => c.label.startsWith(c.refFabricant + ' · ') && c.label.length <= 80));
+  // Prix composés : machine + options, deux montants du tarif.
+  const prixDe = (ref) => conds.find(({ c }) => c.refFabricant === ref)?.c.prix;
+  const T = tarifWinterhalter;
+  verifier('UC-M Energy + adoucisseur = UC-M + UC-ERG_10 + UC-WAUF_10',
+    prixDe('UC-M Energy + adoucisseur') === T['UC-M'] + T['UC-ERG_10'] + T['UC-WAUF_10']);
+  verifier('hors sélection absents : avancement, tunnels, PT Utensil, Ver’net',
+    !conds.some(({ c }) => /^(CTR|MTR|MTF|STR)|Utensil|Ver.?net|PT-A_75/i.test(c.refFabricant)));
+
+  const machines = produitsWinterhalter.filter((p) => p.type === 'machine');
+  // Grille de la direction (09/11/2026).
+  const grille = { 'UC-S': 350, 'UC-M': 350, 'UC-L': 350, 'UC-XL': 350, 'UC Excellence': 350, 'GS 630': 350,
+    'PT-M': 550, 'PT-L': 550, 'PT-XL': 550, 'UF-M': 750, 'UF-L': 750, 'UF-XL': 750,
+    'MonoMatik 3': 750, 'DuoMatik 3': 750, 'AT Excellence': 750 };
+  const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== grille[m.ref]);
+  verifier(`forfaits Winterhalter conformes à la grille (${machines.length} machines)`,
+    machines.length === Object.keys(grille).length && !ecarts.length, ecarts.map((m) => m.ref).join(', '));
+  verifier('options et consommables Winterhalter sur commande, sans forfait',
+    produitsWinterhalter.filter((p) => p.type !== 'machine').every((p) => p.surCommande && !forfaitDe(p)));
+  verifier('lave-ustensiles et traitement de l’eau dans le rayon Laverie',
+    ['lave-ustensiles', 'traitement-eau-laverie'].every((s) => categoriesPubliques.find((c) => c.slug === s)?.rayon === 'laverie'));
+
+  verifier('chaque fiche Winterhalter a sa photo, sans EXIF',
+    produitsWinterhalter.every((p) => p.photo && fs.existsSync(`static/assets/produits/${p.photo}.jpg`)
+      && !fs.readFileSync(`static/assets/produits/${p.photo}.jpg`).includes('Exif')));
+  const utilisees = new Set(produitsWinterhalter.map((p) => p.photo));
+  verifier('aucune photo Winterhalter inutilisée', Object.values(photosWinterhalter).every((f) => utilisees.has(f)));
+  const liens = conds.map(({ c }) => c.ficheFabricant).filter(Boolean);
+  verifier('documents Winterhalter : brochures publiques media.winterhalter.com',
+    liens.length > 50 && liens.every((u) => u.startsWith('https://media.winterhalter.com/mc/mediabase?assetId=')));
+
+  // Lessiviels déjà en ligne : prix public du tarif 2026, sauf A15MC (conditionnement à vérifier).
+  const lessiviels = produits.filter((p) => p.marque === 'Winterhalter' && articlesLessivielsWinterhalter[p.ref]);
+  verifier(`${lessiviels.length} lessiviels Winterhalter au prix public, avec leur n° d’article`,
+    lessiviels.length === Object.keys(articlesLessivielsWinterhalter).length
+      && lessiviels.every((p) => p.conditionnements.every((c) => typeof c.prix === 'number' && c.prix > 0 && c.refFabricant)));
+  verifier('B220e proposé aussi en bidon de 10 L',
+    produits.find((p) => p.marque === 'Winterhalter' && p.ref === 'B220e')?.conditionnements.some((c) => c.label === 'Bidon de 10 L'));
 }
 
 console.log('\n═══ Rayon Consommables : arrivée du QR code, filtre par marque ═══');

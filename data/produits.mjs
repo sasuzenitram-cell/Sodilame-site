@@ -58,6 +58,7 @@ import { produitsInfrico } from './infrico.mjs';
 import { produitsCodigel } from './codigel.mjs';
 import { produitsMedcare } from './medcare.mjs';
 import { produitsGamko } from './gamko.mjs';
+import { produitsWinterhalter, appliquerTarifLessiviels } from './winterhalter.mjs';
 
 export const categoriesProduits = [
   {
@@ -226,13 +227,43 @@ export const categoriesProduits = [
     nom: 'Lave-vaisselle professionnels',
     nomCourt: 'Lave-vaisselle',
     icone: 'laverie',
-    titreSeo: 'Lave-vaisselle professionnels Miele — vente et installation',
+    titreSeo: 'Lave-verres et lave-vaisselle professionnels Winterhalter et Miele — vente et installation',
     description:
-      "Lave-vaisselle frontaux à surchauffeur et lave-vaisselle à eau renouvelée, livrés, installés et mis en service par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+      "Lave-verres et lave-vaisselle frontaux Winterhalter UC, lave-vaisselle à capot PT, lave-vaisselle Miele à surchauffeur et à eau renouvelée, livrés, installés et mis en service par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
     intro:
-      "Deux principes de lavage, deux usages. Le lave-vaisselle à surchauffeur (PTD) lave en quelques minutes dans un bain maintenu en température : c'est la machine du débit, au bar comme au restaurant. Le lave-vaisselle à eau renouvelée (PFD) change son eau à chaque cycle : c'est celle des crèches, des EHPAD et des établissements de santé.",
+      "Le frontal se glisse sous un comptoir : c'est le lave-verres du bar et le lave-vaisselle de la petite restauration. Le lave-vaisselle à capot prend le relais dès que la plonge enchaîne les paniers, entre une table d'entrée et une table de sortie. Et pour les crèches, les EHPAD et les établissements de santé, le lave-vaisselle à eau renouvelée change son eau à chaque cycle.",
     conseil:
       "Chaque machine de cette famille est vendue avec son forfait de livraison, d'installation et de mise en service : nous la recevons à l'atelier, la préparons, la livrons, la raccordons et la réglons sur votre eau, puis nous montrons son fonctionnement à votre équipe. Sur l'eau de notre région, c'est ce réglage qui décide de l'aspect de votre vaisselle pendant les dix ans qui suivent.",
+  },
+  {
+    slug: 'lave-ustensiles',
+    univers: 'materiel',
+    rayon: 'laverie',
+    nom: 'Lave-ustensiles et lave-batterie',
+    nomCourt: 'Lave-ustensiles',
+    icone: 'laverie',
+    titreSeo: 'Lave-ustensiles professionnels Winterhalter UF et GS 630 — vente et installation',
+    description:
+      "Lave-ustensiles Winterhalter UF-M, UF-L, UF-XL et combiné GS 630 pour bacs, plaques, casseroles et caisses, livrés, installés et mis en service par nos techniciens dans les Bouches-du-Rhône, le Gard et le Vaucluse.",
+    intro:
+      "Le lave-ustensiles lave ce que le lave-vaisselle ne passe pas : bacs Gastronorm, plaques de cuisson, casseroles, grilles et caisses. C'est la machine qui supprime le trempage du soir et le récurage à la main, en cuisine comme en boulangerie ou en boucherie.",
+    conseil:
+      "Un lave-ustensiles se choisit sur la plus grande pièce à laver, pas sur la vaisselle courante : mesurez vos plus grands bacs et plaques avant de choisir la hauteur de passage. Il consomme beaucoup d'eau chaude et de puissance : nous vérifions l'alimentation électrique et l'évacuation au relevé, avant la commande.",
+  },
+  {
+    slug: 'traitement-eau-laverie',
+    univers: 'materiel',
+    rayon: 'laverie',
+    nom: 'Adoucisseurs et osmoseurs',
+    nomCourt: 'Traitement de l’eau',
+    icone: 'goutte',
+    titreSeo: 'Adoucisseurs et osmoseurs Winterhalter pour lave-verres et lave-vaisselle',
+    description:
+      "Adoucisseurs Winterhalter MonoMatik et DuoMatik, osmoseurs AT Excellence pour lave-verres et lave-vaisselle professionnels, posés et réglés sur votre eau par nos techniciens.",
+    intro:
+      "L'eau de la Crau, des Alpilles et du Gard est dure. Sans traitement, elle entartre le surchauffeur et laisse un voile blanc sur les verres. L'adoucisseur retire le calcaire avant la machine ; l'osmoseur va plus loin et déminéralise l'eau de rinçage, pour des verres qui sèchent sans trace et n'ont plus à être essuyés.",
+    conseil:
+      "Le traitement se choisit sur une mesure de dureté, faite sur place : nous la faisons au relevé. Un osmoseur ajouté à un lave-verres peut entrer dans le champ des aides à la prévention des risques professionnels : voir notre article sur le lave-verres avec osmoseur subventionné.",
   },
   {
     slug: 'accessoires-blanchisserie',
@@ -1330,7 +1361,14 @@ export const produits = [
   // GAMKO (froid de bar) — fiches, versions et prix dans data/gamko.mjs
   // =========================================================================
   ...produitsGamko,
+  // =========================================================================
+  // WINTERHALTER (laverie) — fiches, versions et prix dans data/winterhalter.mjs
+  // =========================================================================
+  ...produitsWinterhalter,
 ];
+
+// Prix publics Winterhalter (tarif 2026) des produits lessiviels ci-dessus.
+appliquerTarifLessiviels(produits);
 
 // ---------------------------------------------------------------------------
 // FORFAITS DE LIVRAISON, D'INSTALLATION ET DE MISE EN SERVICE
@@ -1551,6 +1589,24 @@ const PRIX_FORFAITS = {
   XC1350: 250,
   'XC1700 / XC2200': 250,
   XCB: 250,
+  // Winterhalter — grille de la direction (09/11/2026) : frontaux UC et UC
+  // Excellence 350 € ; capots PT 550 € ; lave-ustensiles UF 750 € ; GS 630
+  // 350 € ; adoucisseur ou osmoseur posé seul (« package CARSAT ») 750 €.
+  'UC-S': 350,
+  'UC-M': 350,
+  'UC-L': 350,
+  'UC-XL': 350,
+  'UC Excellence': 350,
+  'PT-M': 550,
+  'PT-L': 550,
+  'PT-XL': 550,
+  'UF-M': 750,
+  'UF-L': 750,
+  'UF-XL': 750,
+  'GS 630': 350,
+  'MonoMatik 3': 750,
+  'DuoMatik 3': 750,
+  'AT Excellence': 750,
 };
 
 const LIBELLE_FORFAIT = 'Forfait';
@@ -1729,7 +1785,7 @@ export const rayonsBoutique = [
     service: 'laverie-restauration',
     marques: ['winterhalter', 'comenda', 'miele-professional'],
     aVenir: [],
-    accroche: 'Lave-vaisselle professionnels et paniers, livrés, installés et réglés sur votre eau.',
+    accroche: 'Lave-verres, lave-vaisselle, lave-ustensiles et traitement de l’eau, livrés, installés et réglés sur votre eau.',
   },
   {
     slug: 'buanderie',
