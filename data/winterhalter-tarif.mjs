@@ -2,7 +2,7 @@
 // FICHIER GÉNÉRÉ — ne pas modifier à la main.
 //   python3 outils/winterhalter-tarif.py winterhalter_tarifs_2026.pdf
 // Source : catalogue « TARIFS 2026 » Winterhalter France (prix publics HT au
-// 1er janvier 2026), lu le 2026-11-09. Clé = référence Winterhalter
+// 1er janvier 2026), lu le 2026-11-10. Clé = référence Winterhalter
 // (n° d'article, ou modèle quand le catalogue n'en donne pas). Aucun prix
 // d'achat ici.
 // ---------------------------------------------------------------------------
@@ -14,6 +14,7 @@ export const tarifWinterhalter = {
   "UC-ERG_10": 1071,
   "UC-SPA_10": 365,
   "UC-WAUF_10": 1379,
+  "UC-SL_30": 56,
   "UC-S Excellence-i": 10286,
   "UC-M Excellence-i": 11735,
   "UC-S Excellence-iPlus": 10970,
@@ -41,8 +42,11 @@ export const tarifWinterhalter = {
   "UF-B_69": 659,
   "75004683": 2495,
   "75004684": 3402,
+  "5501178": 155,
+  "85000436": 167,
   "20000826": 1602,
   "20000932": 3373,
+  "20006716": 1732,
   "200V0001": 3222,
   "201V0001": 5210,
   "3305017": 29,

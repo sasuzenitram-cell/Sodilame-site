@@ -259,11 +259,11 @@ export const categoriesProduits = [
     icone: 'goutte',
     titreSeo: 'Adoucisseurs et osmoseurs Winterhalter pour lave-verres et lave-vaisselle',
     description:
-      "Adoucisseurs Winterhalter MonoMatik et DuoMatik, osmoseurs AT Excellence pour lave-verres et lave-vaisselle professionnels, posés et réglés sur votre eau par nos techniciens.",
+      "Adoucisseurs Winterhalter MonoMatik, DuoMatik et BiBloc Compact, osmoseurs AT Excellence pour lave-verres et lave-vaisselle professionnels, posés et réglés sur votre eau par nos techniciens.",
     intro:
       "L'eau de la Crau, des Alpilles et du Gard est dure. Sans traitement, elle entartre le surchauffeur et laisse un voile blanc sur les verres. L'adoucisseur retire le calcaire avant la machine ; l'osmoseur va plus loin et déminéralise l'eau de rinçage, pour des verres qui sèchent sans trace et n'ont plus à être essuyés.",
     conseil:
-      "Le traitement se choisit sur une mesure de dureté, faite sur place : nous la faisons au relevé. Un osmoseur ajouté à un lave-verres peut entrer dans le champ des aides à la prévention des risques professionnels : voir notre article sur le lave-verres avec osmoseur subventionné.",
+      "Le traitement se choisit sur une mesure de dureté, faite sur place : nous la faisons au relevé. Un osmoseur ajouté à un lave-verres peut entrer dans le champ des aides à la prévention des risques professionnels : l'ensemble complet est proposé en pack CARSAT, dans la collection des lave-vaisselle, et notre article sur le lave-verres avec osmoseur subventionné détaille la démarche.",
   },
   {
     slug: 'accessoires-blanchisserie',
@@ -1607,6 +1607,9 @@ const PRIX_FORFAITS = {
   'MonoMatik 3': 750,
   'DuoMatik 3': 750,
   'AT Excellence': 750,
+  'BiBloc Compact': 750,
+  // Pack CARSAT (10/11/2026) : lave-verres + osmoseur + adoucisseur, une seule pose.
+  'Pack CARSAT': 750,
 };
 
 const LIBELLE_FORFAIT = 'Forfait';

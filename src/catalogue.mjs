@@ -192,49 +192,104 @@ export function groupeFiltres(legende, axe, options, esc) {
 }
 
 // ---------------------------------------------------------------------------
-// Filtre par marque d'une page de rayon (/eshop/<rayon>), demandé le
-// 04/11/2026 pour le rayon Consommables : le client qui arrive du QR code
-// retrouve d'un clic les produits de sa marque. Un seul choix à la fois ;
-// ?marque= garde le filtre dans l'adresse (lien partageable, retour arrière).
-// La barre est masquée sans JavaScript, comme celle du catalogue.
+// BARRE DE TRI — fine et discrète, au-dessus de chaque grille de produits
+// (rayons, collections, catalogue). Demande de la direction du 10/11/2026 :
+// trier par prix, filtrer par marque.
+//
+//   — « Marque » (un menu, une marque à la fois) : seulement s'il y en a au
+//     moins deux dans la grille, et pas sur /eshop/catalogue, qui a déjà ses
+//     boutons de marque. ?marque= garde le choix dans l'adresse (lien du QR
+//     code, retour arrière).
+//   — « Trier » : pertinence (ordre de la page), prix croissant ou
+//     décroissant, marque. Les articles sans prix passent en dernier.
+//
+// Elle remplace le filtre par boutons des rayons (04/11/2026). Masquée sans
+// JavaScript, comme les autres filtres.
 // ---------------------------------------------------------------------------
-export const SCRIPT_FILTRE_MARQUE = `
+
+/** La barre. `marques` : liste des marques de la grille (menu affiché si > 1). */
+export function barreTri({ marques = [], total, compte = true }, esc) {
+  const menuMarque = marques.length > 1
+    ? `<label class="tri-champ">Marque
+        <select id="tri-marque">
+          <option value="">Toutes</option>
+          ${marques.map((m) => `<option value="${esc(m)}">${esc(m)}</option>`).join('\n          ')}
+        </select>
+      </label>`
+    : '';
+  return `<div class="tri-barre" id="tri-barre" hidden>
+      ${compte ? `<span class="tri-compte" id="tri-compte">${total} références</span>` : '<span class="tri-compte"></span>'}
+      ${menuMarque}
+      <label class="tri-champ">Trier
+        <select id="tri-ordre">
+          <option value="">Pertinence</option>
+          <option value="prix-asc">Prix croissant</option>
+          <option value="prix-desc">Prix décroissant</option>
+          <option value="marque">Marque</option>
+        </select>
+      </label>
+    </div>`;
+}
+
+export const SCRIPT_TRI = `
 (function () {
-  var barre = document.getElementById('filtre-marque');
+  var barre = document.getElementById('tri-barre');
   var grille = document.getElementById('catalogue');
   if (!barre || !grille) return;
-  var boutons = [].slice.call(barre.querySelectorAll('[data-filtre="marque"]'));
   var cartes = [].slice.call(grille.querySelectorAll('[data-produit]'));
-  var compte = document.getElementById('compte-marque');
-  var reinit = document.getElementById('reinit-marque');
-  var total = cartes.length;
-  function appliquer(m, maj) {
-    var n = 0;
+  cartes.forEach(function (c, i) { c._ordre = i; });
+  var menuMarque = document.getElementById('tri-marque');
+  var menuOrdre = document.getElementById('tri-ordre');
+  var compte = document.getElementById('tri-compte');
+  var marques = menuMarque ? [].map.call(menuMarque.options, function (o) { return o.value; }) : [];
+
+  function prix(c) {
+    var v = parseFloat(c.getAttribute('data-prix'));
+    return isNaN(v) ? null : v;
+  }
+  function trier() {
+    var o = menuOrdre.value;
+    var l = cartes.slice().sort(function (a, b) {
+      if (o === 'prix-asc' || o === 'prix-desc') {
+        var pa = prix(a), pb = prix(b);
+        if (pa === null && pb === null) return a._ordre - b._ordre;
+        if (pa === null) return 1;
+        if (pb === null) return -1;
+        return o === 'prix-asc' ? pa - pb || a._ordre - b._ordre : pb - pa || a._ordre - b._ordre;
+      }
+      if (o === 'marque') return a.getAttribute('data-marque').localeCompare(b.getAttribute('data-marque'), 'fr') || a._ordre - b._ordre;
+      return a._ordre - b._ordre;
+    });
+    l.forEach(function (c) { grille.appendChild(c); });
+  }
+  function filtrer() {
+    // Sur /eshop/catalogue, le filtrage appartient au script des filtres.
+    if (!menuMarque) return;
+    var m = menuMarque.value, n = 0;
     cartes.forEach(function (c) {
-      var ok = !m || c.getAttribute('data-marque') === m;
+      var ok = c.dataset.horsCatalogue !== '1' && (!m || c.getAttribute('data-marque') === m);
       c.hidden = !ok;
       if (ok) n++;
     });
-    boutons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-valeur') === m)); });
-    compte.textContent = n + (n > 1 ? ' références' : ' référence') + (m ? ' ' + m : '');
-    reinit.hidden = !m;
-    if (maj && window.history && history.replaceState) {
-      var u = new URL(location.href);
-      if (m) u.searchParams.set('marque', m); else u.searchParams.delete('marque');
-      history.replaceState(null, '', u.pathname + u.search + u.hash);
-    }
+    if (compte) compte.textContent = n + (n > 1 ? ' références' : ' référence') + (m ? ' ' + m : '');
   }
-  boutons.forEach(function (b) {
-    b.addEventListener('click', function () {
-      var m = b.getAttribute('data-valeur');
-      appliquer(b.getAttribute('aria-pressed') === 'true' ? '' : m, true);
-    });
-  });
-  reinit.addEventListener('click', function () { appliquer('', true); });
-  var initial = new URLSearchParams(location.search).get('marque') || '';
-  if (!boutons.some(function (b) { return b.getAttribute('data-valeur') === initial; })) initial = '';
-  appliquer(initial, false);
+  function url() {
+    if (!menuMarque || !window.history || !history.replaceState) return;
+    var u = new URL(location.href);
+    if (menuMarque.value) u.searchParams.set('marque', menuMarque.value); else u.searchParams.delete('marque');
+    history.replaceState(null, '', u.pathname + u.search + u.hash);
+  }
+  function appliquer() { filtrer(); trier(); }
+
+  if (menuMarque) {
+    var initial = new URLSearchParams(location.search).get('marque') || '';
+    menuMarque.value = marques.indexOf(initial) > 0 ? initial : '';
+    menuMarque.addEventListener('change', function () { appliquer(); url(); });
+    // panier.js signale ici les produits retirés de la vente.
+    if (!window.sodilameCatalogue) window.sodilameCatalogue = { recalculer: appliquer };
+  }
+  menuOrdre.addEventListener('change', trier);
+  appliquer();
   barre.hidden = false;
-  void total;
 })();
 `;

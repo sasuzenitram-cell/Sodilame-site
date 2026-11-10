@@ -19,7 +19,7 @@ import {
   ESHOP, URL_PANIER, URL_CATALOGUE, urlCollection, urlProduit, rayonsBoutique, collectionsDuRayon, urlRayon, rayonDe,
 } from './data/produits.mjs';
 import { pageQr, pagePanne, pageAudit } from './src/qr.mjs';
-import { SCRIPT_FILTRES, SCRIPT_FILTRE_MARQUE, groupeFiltres } from './src/catalogue.mjs';
+import { SCRIPT_FILTRES, SCRIPT_TRI, barreTri, groupeFiltres } from './src/catalogue.mjs';
 import {
   page, ariane, schemaAriane, schemaLocalBusiness, schemaFaq, blocFaq, blocSecteurs,
   blocEtapes, blocFormules, blocMySodilame, blocCtaFinal, blocContact, blocLivraison, formulaire,
@@ -2217,7 +2217,7 @@ function carteProduit(p) {
       ? `<span class="cond">${p.conditionnements.length} conditionnements</span>`
       : `<span class="cond">${esc(c0.label)}</span>`;
   return `<a class="card prod" href="${urlProduit(p)}"
-        data-produit data-ref="${esc(p.ref)}" data-famille="${esc(p.categorie)}" data-marque="${esc(p.marque)}" data-machines="${esc((p.machines || []).join(' '))}" data-texte="${esc([categorieDuProduit(p)?.nom, ...p.conditionnements.map((c) => c.label)].join(' '))}">
+        data-produit data-ref="${esc(p.ref)}" data-prix="${mini ?? ''}" data-famille="${esc(p.categorie)}" data-marque="${esc(p.marque)}" data-machines="${esc((p.machines || []).join(' '))}" data-texte="${esc([categorieDuProduit(p)?.nom, ...p.conditionnements.map((c) => c.label)].join(' '))}">
         ${vignetteProduit(p)}
         <span class="prod-top"><span class="marque">${esc(p.marque)}</span><span class="ref">${esc(p.ref)}</span></span>
         <h3>${esc(p.nom)}</h3>
@@ -2248,26 +2248,9 @@ function retraitVente(p) {
         </div>`;
 }
 
-// Bandeau d'explication des prix. Trois états, et c'est le deuxième qui compte :
-// dès qu'un seul article porte un prix, le catalogue devient mixte, et un
-// visiteur qui voit « 25,00 € HT » sur un article et « Prix sur demande » sur
-// les autres se demande ce qu'on lui cache. Le bandeau doit alors rester, avec
-// un autre texte — pas disparaître.
-//
-// Les prix réels vivent en base. Le bandeau livré porte donc la liste des
-// articles sans prix au moment du build (forfaits compris) : panier.js la
-// confronte à /api/catalogue et ne retire le bandeau que lorsque plus aucun
-// article n'est « sur demande ».
-const NOTICE_TOUS = `<b>Tarifs en cours de mise en ligne.</b> Composez votre commande normalement : nous vous confirmons le montant exact par retour de mail, avant toute expédition et avant toute facturation.`;
-const NOTICE_MIXTE = `<b>Tous les tarifs ne sont pas encore en ligne.</b> Les articles affichés « Prix sur demande » se commandent exactement comme les autres : nous vous confirmons le montant par retour de mail, avant toute expédition et avant toute facturation.`;
-const clesTarifs = produits.flatMap((p) => p.conditionnements.map((c) => ({ cle: `${p.ref}__${c.label}`, prix: c.prix })));
-const clesSansPrix = clesTarifs.filter((x) => typeof x.prix !== 'number').map((x) => x.cle);
-const noticePrix =
-  clesSansPrix.length === 0
-    ? ''
-    : `<div class="notice-prix" data-total="${clesTarifs.length}" data-sans-prix="${esc(JSON.stringify(clesSansPrix))}">${
-        clesSansPrix.length === clesTarifs.length ? NOTICE_TOUS : NOTICE_MIXTE
-      }</div>`;
+// Bandeau d'explication des prix (« Tous les tarifs ne sont pas encore en
+// ligne ») : retiré le 10/11/2026, presque tous les prix étant en ligne. Les
+// articles encore sans prix affichent « Prix sur demande » sur leur fiche.
 
 const nbCollection = (slug) => produitsDeCategorie(slug).length;
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? 's' : ''}`;
@@ -2374,7 +2357,6 @@ ${ariane(fil)}
 
 <section id="rayons">
   <div class="wrap">
-    ${noticePrix}
     ${rayonsEnLigne
       .map(
         (r) => `<div class="univers-bloc" id="rayon-${r.slug}">
@@ -2474,21 +2456,10 @@ function rayonPage(r) {
   const service = r.service ? services.find((x) => x.slug === r.service) : null;
   const autres = rayonsBoutique.filter((x) => x.slug !== r.slug);
 
-  // Filtre par marque (04/11/2026) : dès que le rayon en compte deux.
+  // Barre de tri (10/11/2026) : marque (dès deux marques) et prix.
   const marquesListe = [...new Set(liste.map((p) => p.marque))].sort((a, b) => a.localeCompare(b, 'fr'));
-  const filtreMarque =
-    marquesListe.length > 1
-      ? `<div class="filtres" id="filtre-marque" hidden>
-      ${groupeFiltres('Marque', 'marque', marquesListe.map((m) => ({ slug: m, nom: m, n: liste.filter((p) => p.marque === m).length })), esc)}
-      <div class="fbilan">
-        <span id="compte-marque">${liste.length} références</span>
-        <button type="button" id="reinit-marque" class="freinit" hidden>Toutes les marques</button>
-      </div>
-    </div>`
-      : '';
   const blocCategories = (classe) => `<section${classe}>
   <div class="wrap">
-    ${r.produitsEnTete ? '' : noticePrix}
     <div class="sec-head"><p class="eyebrow">Rayon ${esc(r.nom)}</p><h2>Les catégories</h2></div>
     <div class="grid3">
       ${cols.map(carteCollection).join('\n      ')}
@@ -2497,14 +2468,14 @@ function rayonPage(r) {
 </section>`;
   const blocProduits = (classe) => `<section${classe}>
   <div class="wrap">
-    ${r.produitsEnTete ? noticePrix : ''}
     <div class="sec-head"><p class="eyebrow">${liste.length} références</p><h2>Tout le rayon ${esc(r.nom)}</h2></div>
-    ${filtreMarque}
+    ${barreTri({ marques: marquesListe, total: liste.length }, esc)}
     <div class="grid3" id="catalogue">
       ${liste.map(carteProduit).join('\n      ')}
     </div>
   </div>
-</section>${filtreMarque ? `\n<script>${SCRIPT_FILTRE_MARQUE}</script>` : ''}`;
+</section>
+<script>${SCRIPT_TRI}</script>`;
 
   // Consommables : le client vient commander (QR code des machines) — les
   // produits d'abord, filtrables par marque, les catégories ensuite.
@@ -2611,9 +2582,9 @@ ${ariane(fil)}
 
 <section>
   <div class="wrap">
-    ${noticePrix}
     ${c.intro ? `<p class="lead collec-intro">${esc(c.intro)}</p>` : ''}
     ${c.conseil ? `<div class="conseil-famille"><b>Le conseil de nos techniciens.</b> ${esc(c.conseil)}</div>` : ''}
+    ${liste.length > 1 ? barreTri({ marques: [...new Set(liste.map((p) => p.marque))].sort((a, b) => a.localeCompare(b, 'fr')), total: liste.length }, esc) : ''}
     <div class="grid3" id="catalogue">
       ${liste.map(carteProduit).join('\n      ')}
     </div>
@@ -2623,6 +2594,7 @@ ${ariane(fil)}
     </p>
   </div>
 </section>
+${liste.length > 1 ? `<script>${SCRIPT_TRI}</script>` : ''}
 
 ${blocRealisations(realisationsDeCollection(c.slug), { alt: true })}
 
@@ -2699,7 +2671,6 @@ ${ariane(fil)}
 
 <section id="boutique">
   <div class="wrap">
-    ${noticePrix}
     <div class="filtres" id="barre-filtres" hidden>
       <div class="frecherche">
         <label for="recherche">Rechercher</label>
@@ -2722,6 +2693,7 @@ ${ariane(fil)}
       )
       .join('\n    ')}
 
+    ${barreTri({ compte: false }, esc)}
     <div class="grid3" id="catalogue">
       ${produitsPublics.map(carteProduit).join('\n      ')}
     </div>
@@ -2735,7 +2707,8 @@ ${ariane(fil)}
 </section>
 
 ${blocCtaFinal('Un doute sur une référence ?', "Appelez-nous ou envoyez une photo de la plaque signalétique de votre machine : nous confirmons la bonne référence avant de livrer.")}
-<script>${SCRIPT_FILTRES}</script>`;
+<script>${SCRIPT_FILTRES}</script>
+<script>${SCRIPT_TRI}</script>`;
 
   return page(
     {
@@ -2766,6 +2739,15 @@ ${blocCtaFinal('Un doute sur une référence ?', "Appelez-nous ou envoyez une ph
 // ===========================================================================
 // E-SHOP — fiche produit /eshop/<famille>/<produit>
 // ===========================================================================
+// Encart de renvoi vers une autre fiche de la même marque (champ `encart` :
+// titre, texte, versRef = réf. de la fiche visée, lien = texte du lien).
+function encartProduit(p) {
+  const e = p.encart;
+  const cible = e && produitsPublics.find((x) => x.ref === e.versRef && x.marque === p.marque);
+  if (!cible) return '';
+  return `<div class="callout"><p><b>${esc(e.titre)}</b> ${esc(e.texte)} <a href="${urlProduit(cible)}">${esc(e.lien)}</a></p></div>`;
+}
+
 function produitPage(p) {
   const c = categorieDuProduit(p);
   const machine = estMachine(p);
@@ -2966,8 +2948,7 @@ ${ariane(fil)}
   <div class="wrap">
     <div class="grid-art">
       <article class="prose">
-        ${noticePrix}
-        <h2>${machine ? 'Cette machine' : 'À quoi sert ce produit'}</h2>
+            <h2>${machine ? 'Cette machine' : 'À quoi sert ce produit'}</h2>
         <p>${esc(p.description)}</p>
 
         <h2>${machine ? 'Pour quels établissements' : 'Machines et usages concernés'}</h2>
@@ -2985,6 +2966,7 @@ ${ariane(fil)}
         </div>`
             : ''
         }
+        ${encartProduit(p)}
 
         ${blocDocs}
         ${blocFichesFabricant}

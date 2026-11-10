@@ -1,6 +1,6 @@
 // FICHIER GÉNÉRÉ par outils/winterhalter-visuels.py — ne pas modifier à la main.
 // Visuels de la médiathèque du portail revendeur Winterhalter, repris le
-// 2026-11-09 sur décision de la direction. Fichiers :
+// 2026-11-10 sur décision de la direction. Fichiers :
 // static/assets/produits/winterhalter/.
 export const photosWinterhalter = {
   "a70ls": "winterhalter/a70ls",
@@ -10,6 +10,7 @@ export const photosWinterhalter = {
   "f8700": "winterhalter/f8700",
   "gs630": "winterhalter/gs630",
   "mono": "winterhalter/mono",
+  "pack": "winterhalter/pack",
   "ptl": "winterhalter/ptl",
   "ptm": "winterhalter/ptm",
   "ptxl": "winterhalter/ptxl",

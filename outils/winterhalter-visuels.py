@@ -121,6 +121,36 @@ for cle, v in sorted(sources.items()):
     (d_img / f'{cle}.jpg').write_bytes(recadrer(octets, cle in FOND_GRIS, cle in FONDU))
     photos[cle] = f'winterhalter/{cle}'
 
+
+
+def composer(cles, hauteurs):
+    """Vue d'ensemble (pack) : les photos déjà recadrées, posées côte à côte sur
+    une même ligne de sol, à l'échelle relative donnée par `hauteurs`."""
+    morceaux = []
+    for cle, h in zip(cles, hauteurs):
+        im = Image.open(d_img / f'{cle}.jpg').convert('RGB')
+        diff = ImageChops.difference(im, Image.new('RGB', im.size, 'white')).convert('L').point(lambda v: 255 if v > 14 else 0)
+        im = im.crop(diff.getbbox())
+        morceaux.append(im.resize((round(im.width * h / im.height), h), Image.LANCZOS))
+    ecart = 40
+    w = sum(m.width for m in morceaux) + ecart * (len(morceaux) - 1)
+    h = max(m.height for m in morceaux)
+    bande = Image.new('RGB', (w, h), 'white')
+    x = 0
+    for m in morceaux:
+        bande.paste(m, (x, h - m.height))
+        x += m.width + ecart
+    sortie = io.BytesIO()
+    bande.save(sortie, 'JPEG', quality=95)
+    return recadrer(sortie.getvalue())
+
+
+# Pack CARSAT : lave-verres UC-M et osmoseur AT Excellence-S (l'adoucisseur
+# BiBloc n'a pas de visuel exploitable).
+if {'ucm', 'ats'} <= photos.keys():
+    (d_img / 'pack.jpg').write_bytes(composer(['ucm', 'ats'], [1000, 640]))
+    photos['pack'] = 'winterhalter/pack'
+
 (racine / 'data/winterhalter-visuels.mjs').write_text(
     f"""// FICHIER GÉNÉRÉ par outils/winterhalter-visuels.py — ne pas modifier à la main.
 // Visuels de la médiathèque du portail revendeur Winterhalter, repris le

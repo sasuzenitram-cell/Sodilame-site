@@ -79,6 +79,7 @@ SOURCES = {
     'UC-ERG_10': (12, sur_la_ligne, 'UC-ERG_10'),
     'UC-SPA_10': (12, sur_la_ligne, 'UC-SPA_10'),
     'UC-WAUF_10': (12, sur_la_ligne, 'UC-WAUF_10'),
+    'UC-SL_30': (12, sur_la_ligne, 'UC-SL_30'),
     # UC Excellence-i / iPlus (p. 11)
     'UC-S Excellence-i': (13, serie, (r'Prix\s+\[EURO\]', 0)),
     'UC-M Excellence-i': (13, serie, (r'Prix\s+\[EURO\]', 1)),
@@ -109,9 +110,13 @@ SOURCES = {
     'UF-B_69': (45, sur_la_ligne, 'UF-B_69'),
     '75004683': (45, sur_la_ligne, '75004683'),
     '75004684': (46, sur_la_ligne, '75004684'),
+    # Paniers à verres du pack CARSAT (p. 89)
+    '5501178': (91, sur_la_ligne, '5501178'),
+    '85000436': (91, sur_la_ligne, '85000436'),
     # Traitement de l'eau (p. 61-65)
     '20000826': (63, sur_la_ligne, '20000826'),
     '20000932': (63, sur_la_ligne, '20000932'),
+    '20006716': (63, sur_la_ligne, '20006716'),
     '200V0001': (64, serie, (r'Prix \[EURO\]', 0)),
     '201V0001': (64, serie, (r'Prix \[EURO\]', 1)),
     '3305017': (67, sur_la_ligne, '3305017'),

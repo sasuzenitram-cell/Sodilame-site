@@ -29,7 +29,8 @@
 //
 // Forfaits (grille de la direction du 09/11/2026, HT) : UC et UC Excellence
 // 350 € ; PT 550 € ; UF 750 € ; GS 630 350 € ; adoucisseur ou osmoseur posé
-// seul (« package CARSAT », ajouté à un lave-verres UC) 750 €.
+// seul 750 €. Pack CARSAT (10/11/2026 : lave-verres UC-S/M/L + osmoseur +
+// adoucisseur, une seule pose) 750 €.
 // ---------------------------------------------------------------------------
 import { tarifWinterhalter as T } from './winterhalter-tarif.mjs';
 // Visuels du portail revendeur : décision de la direction, sous sa responsabilité.
@@ -52,6 +53,20 @@ const ATT_MACHINE =
 const ATT_EAU =
   "Sur l'eau dure de la Crau et des Alpilles, un lave-verres sans traitement d'eau voile les verres et s'entartre. Le traitement se choisit sur une mesure de dureté, faite sur place : nous la faisons au relevé, avant la commande.";
 const ATT_OPT = "Option montée en usine : à commander avec la machine, ou à faire chiffrer pour une machine déjà en place.";
+
+// Renvoi vers le pack CARSAT, sur les fiches des machines qui le composent.
+const ENCART_PACK = {
+  titre: 'Existe en pack CARSAT.',
+  texte: 'Lave-verres UC-S, UC-M ou UC-L, osmoseur et adoucisseur réunis : l’ensemble « lave-verres avec osmoseur » visé par les aides à la prévention de l’Assurance Maladie.',
+  versRef: 'Pack CARSAT',
+  lien: 'Voir le pack lave-verres + osmoseur',
+};
+
+// Pack CARSAT : lave-verres UC + 2 cannes d'aspiration (UC-SL_30) + osmoseur
+// AT Excellence-S (200V0001) + adoucisseur BiBloc Compact (20006716) + 2
+// paniers à verres (5501178 en 400 x 400, 85000436 en 500 x 500). Composition
+// du devis type de la direction (10/11/2026) ; chaque montant est lu au tarif.
+const pack = (m, panier) => T[m] + T['UC-SL_30'] + T['200V0001'] + T['20006716'] + 2 * T[panier];
 
 const UC_COMMUN = [
   'Programmes lave-verres, lave-vaisselle ou mixte, au même prix',
@@ -102,6 +117,7 @@ const fiches = [
     ],
     attention: ATT_MACHINE,
     versions: ucVersions('UC-S'),
+    encart: ENCART_PACK,
   },
   {
     cle: 'ucm',
@@ -124,6 +140,7 @@ const fiches = [
     ],
     attention: ATT_MACHINE,
     versions: ucVersions('UC-M'),
+    encart: ENCART_PACK,
   },
   {
     cle: 'ucl',
@@ -146,6 +163,7 @@ const fiches = [
     ],
     attention: ATT_MACHINE,
     versions: ucVersions('UC-L'),
+    encart: ENCART_PACK,
   },
   {
     cle: 'ucxl',
@@ -195,6 +213,35 @@ const fiches = [
       v('UC-M Excellence-i', 'osmoseur intégré, paniers 500 x 500', T['UC-M Excellence-i']),
       v('UC-S Excellence-iPlus', 'osmoseur + adoucisseur, paniers 400 x 400', T['UC-S Excellence-iPlus']),
       v('UC-M Excellence-iPlus', 'osmoseur + adoucisseur, paniers 500 x 500', T['UC-M Excellence-iPlus']),
+    ],
+  },
+
+  {
+    cle: 'pack',
+    doc: 'uc',
+    type: 'machine',
+    machines: ['lave-verres', 'adoucisseur'],
+    ref: 'Pack CARSAT',
+    categorie: 'lave-vaisselle-professionnel',
+    nom: 'Pack CARSAT Winterhalter : lave-verres UC, osmoseur et adoucisseur',
+    resume: 'Lave-verres UC, osmoseur AT Excellence-S et adoucisseur BiBloc : des verres qui n’ont plus à être essuyés.',
+    description:
+      "Le pack réunit ce qu'il faut pour que les verres sortent brillants et n'aient plus à être essuyés au torchon : un lave-verres frontal UC (S, M ou L), un osmoseur AT Excellence-S qui déminéralise l'eau de rinçage, et un adoucisseur BiBloc Compact qui le protège en amont. S'y ajoutent deux cannes d'aspiration pour brancher directement les bidons de détergent et de rinçage, et deux paniers à verres. C'est l'équipement « lave-verres avec osmoseur » que vise la subvention Prévention des risques ergonomiques de l'Assurance Maladie : conditions et démarche dans notre article sur le lave-verres avec osmoseur subventionné. Le premier bidon de détergent F420e (12 kg) et le premier bidon de rinçage B100N (5 L) sont offerts, et la formation de votre équipe est comprise dans le forfait.",
+    usages: ['Bars et cafés', 'Brasseries', 'Bars à vin', 'Hôtels — bar et office'],
+    caracteristiques: [
+      'Lave-verres UC-S (paniers 400 x 400), UC-M ou UC-L (paniers 500 x 500)',
+      'Osmoseur AT Excellence-S : 90 L/h de perméat minimum, filtre à sédiments inclus',
+      'Adoucisseur BiBloc Compact : 2 x 4,5 L de résine, bac à sel de 8 kg',
+      '2 cannes d’aspiration avec sonde de niveau, détergent et rinçage',
+      '2 paniers à verres (4 rangées en UC-S, 5 rangées en UC-M et UC-L)',
+      'Offerts : premier bidon de détergent F420e 12 kg et de rinçage B100N 5 L',
+    ],
+    attention:
+      "L'aide de l'Assurance Maladie a ses conditions (effectif, cahier des charges, enveloppe limitée) et la demande vous appartient : vérifiez votre éligibilité avant de commander, notre article détaille la démarche. Sur l'eau dure de la région, nous mesurons la dureté au relevé, avant la commande.",
+    versions: [
+      v('UC-S pack CARSAT', 'osmoseur AT-S, adoucisseur BiBloc, paniers 400 x 400', pack('UC-S', '5501178')),
+      v('UC-M pack CARSAT', 'osmoseur AT-S, adoucisseur BiBloc, paniers 500 x 500', pack('UC-M', '85000436')),
+      v('UC-L pack CARSAT', 'osmoseur AT-S, adoucisseur BiBloc, passage 404 mm', pack('UC-L', '85000436')),
     ],
   },
 
@@ -456,6 +503,26 @@ const fiches = [
     versions: [v('20000932', 'DuoMatik 3', T['20000932'])],
   },
   {
+    cle: 'bibloc',
+    type: 'machine',
+    machines: ['adoucisseur', 'lave-verres'],
+    ref: 'BiBloc Compact',
+    categorie: 'traitement-eau-laverie',
+    nom: 'Adoucisseur Winterhalter BiBloc Compact',
+    resume: 'L’adoucisseur compact à deux bonbonnes, en amont d’un lave-verres et de son osmoseur.',
+    description:
+      "Le BiBloc Compact est un adoucisseur à deux petites bonbonnes de résine (2 x 4,5 L), qui se régénère en 11 minutes. Son format étroit le loge sous un comptoir de bar, à côté du lave-verres ou en amont d'un osmoseur AT Excellence, qu'il protège du calcaire. C'est l'adoucisseur de notre pack CARSAT.",
+    usages: ['Lave-verres frontaux', 'Osmoseurs AT Excellence', 'Bars et brasseries'],
+    caracteristiques: [
+      'Deux bonbonnes de 4,5 L de résine',
+      'Régénération en 11 minutes',
+      'Bac à sel de 8 kg',
+      'Eau d’alimentation jusqu’à 35 °C, pression dynamique 1,5 à 6 bar',
+    ],
+    attention: ATT_EAU,
+    versions: [v('20006716', 'BiBloc Compact', T['20006716'])],
+  },
+  {
     cle: 'ats',
     doc: 'eau',
     type: 'machine',
@@ -475,6 +542,8 @@ const fiches = [
     ],
     attention: ATT_EAU,
     versions: [v('200V0001', 'AT Excellence-S, 90 L/h', T['200V0001']), v('201V0001', 'AT Excellence-M, 180 L/h', T['201V0001'])],
+
+    encart: ENCART_PACK,
   },
   {
     cle: 'selfin',
@@ -606,6 +675,8 @@ const SLUGS = {
   'GS 630': 'winterhalter-gs-630-lave-ustensiles-lave-vaisselle',
   'MonoMatik 3': 'winterhalter-monomatik-3-adoucisseur',
   'DuoMatik 3': 'winterhalter-duomatik-3-adoucisseur',
+  'BiBloc Compact': 'winterhalter-bibloc-compact-adoucisseur',
+  'Pack CARSAT': 'winterhalter-pack-carsat-lave-verres-osmoseur-adoucisseur',
   'AT Excellence': 'winterhalter-at-excellence-osmoseur',
   'Sel régénérant fin': 'winterhalter-sel-regenerant-fin-sachets',
   F8700: 'winterhalter-f8700-detergent-universel-eau-dure',

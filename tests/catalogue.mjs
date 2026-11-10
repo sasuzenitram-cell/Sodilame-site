@@ -134,7 +134,7 @@ console.log('\n═══ Page /eshop/catalogue générée ═══');
 
   // On cible le motif exact des cartes : `data-produit` seul apparaît aussi
   // dans le sélecteur du script embarqué.
-  const cartes = (html.match(/data-produit\s+data-ref="[^"]+"\s+data-famille=/g) || []).length;
+  const cartes = (html.match(/data-produit\s+data-ref="[^"]+"\s+data-prix="[^"]*"\s+data-famille=/g) || []).length;
   verifier(`les ${produits.length} produits sont dans le HTML livré`, cartes === produits.length, `${cartes} trouvés`);
 
   verifier('la barre de filtres est présente', html.includes('id="barre-filtres"'));
@@ -669,7 +669,7 @@ console.log('\n═══ Sélection Winterhalter ═══');
   // Grille de la direction (09/11/2026).
   const grille = { 'UC-S': 350, 'UC-M': 350, 'UC-L': 350, 'UC-XL': 350, 'UC Excellence': 350, 'GS 630': 350,
     'PT-M': 550, 'PT-L': 550, 'PT-XL': 550, 'UF-M': 750, 'UF-L': 750, 'UF-XL': 750,
-    'MonoMatik 3': 750, 'DuoMatik 3': 750, 'AT Excellence': 750 };
+    'MonoMatik 3': 750, 'DuoMatik 3': 750, 'AT Excellence': 750, 'BiBloc Compact': 750, 'Pack CARSAT': 750 };
   const ecarts = machines.filter((m) => forfaitDe(m)?.conditionnements[0].prix !== grille[m.ref]);
   verifier(`forfaits Winterhalter conformes à la grille (${machines.length} machines)`,
     machines.length === Object.keys(grille).length && !ecarts.length, ecarts.map((m) => m.ref).join(', '));
@@ -678,9 +678,18 @@ console.log('\n═══ Sélection Winterhalter ═══');
   verifier('lave-ustensiles et traitement de l’eau dans le rayon Laverie',
     ['lave-ustensiles', 'traitement-eau-laverie'].every((s) => categoriesPubliques.find((c) => c.slug === s)?.rayon === 'laverie'));
 
-  verifier('chaque fiche Winterhalter a sa photo, sans EXIF',
-    produitsWinterhalter.every((p) => p.photo && fs.existsSync(`static/assets/produits/${p.photo}.jpg`)
+  // BiBloc Compact : pas de visuel exploitable (seule image : celle du tarif, cotée).
+  verifier('chaque fiche Winterhalter a sa photo (sauf BiBloc), sans EXIF',
+    produitsWinterhalter.filter((p) => p.ref !== 'BiBloc Compact').every((p) => p.photo && fs.existsSync(`static/assets/produits/${p.photo}.jpg`)
       && !fs.readFileSync(`static/assets/produits/${p.photo}.jpg`).includes('Exif')));
+
+  // Pack CARSAT (10/11/2026) : composition du devis type de la direction.
+  verifier('pack CARSAT UC-M = UC-M + 2 cannes + AT Excellence-S + BiBloc + 2 paniers (12 395 € HT)',
+    prixDe('UC-M pack CARSAT') === T['UC-M'] + T['UC-SL_30'] + T['200V0001'] + T['20006716'] + 2 * T['85000436']
+      && prixDe('UC-M pack CARSAT') === 12395);
+  const h = fs.readFileSync('public/eshop/lave-vaisselle-professionnel/winterhalter-uc-m-lave-verres-lave-vaisselle-frontal/index.html', 'utf8');
+  verifier('les fiches UC renvoient vers le pack CARSAT',
+    h.includes('href="/eshop/lave-vaisselle-professionnel/winterhalter-pack-carsat-lave-verres-osmoseur-adoucisseur"'));
   const utilisees = new Set(produitsWinterhalter.map((p) => p.photo));
   verifier('aucune photo Winterhalter inutilisée', Object.values(photosWinterhalter).every((f) => utilisees.has(f)));
   const liens = conds.map(({ c }) => c.ficheFabricant).filter(Boolean);
@@ -707,7 +716,7 @@ console.log('\n═══ Rayon Consommables : arrivée du QR code, filtre par ma
   const conso = categoriesPubliques.filter((c) => c.rayon === 'consommables').flatMap((c) => produitsDeCategorie(c.slug));
   const marquesConso = [...new Set(conso.map((p) => p.marque))];
   verifier(`filtre par marque sur les consommables (${marquesConso.length} marques)`,
-    h.includes('id="filtre-marque"') && marquesConso.every((m) => h.includes(`data-filtre="marque" data-valeur="${m}"`)));
+    h.includes('id="tri-marque"') && marquesConso.every((m) => h.includes(`<option value="${m}">`)));
   verifier('les produits passent avant les catégories sur les consommables',
     h.indexOf('id="catalogue"') > 0 && h.indexOf('id="catalogue"') < h.indexOf('Les catégories'));
 }
@@ -796,18 +805,21 @@ console.log('\n═══ Forfaits : grille de la direction ═══');
     produits.filter((p) => p.type === 'machine' && /linge|repassage/.test(p.categorie)).every((m) => typeof prixDe(m.ref) === 'number'));
 }
 
-console.log('\n═══ Bandeau des prix ═══');
+console.log('\n═══ Bandeau des prix retiré, barre de tri ═══');
 {
   const fs = await import('node:fs');
-  const js = fs.readFileSync('static/assets/panier.js', 'utf8');
-  // L'ancienne version retirait le bandeau dès le PREMIER prix reçu : un
-  // catalogue mixte perdait son explication au moment où elle servait.
-  verifier('le bandeau n’est plus retiré au premier prix',
-    !/tarifs\.some\(function \(t\) \{ return typeof t\.prix === 'number'; \}\)/.test(js));
-  verifier('le bandeau compare la liste des articles sans prix', js.includes('majNotices(carte)') && js.includes('sansPrix'));
-  const h = fs.readFileSync('public/eshop/index.html', 'utf8');
-  verifier('le bandeau livré porte la liste des articles sans prix',
-    /class="notice-prix" data-total="\d+" data-sans-prix="/.test(h));
+  // Décision du 10/11/2026 : presque tous les prix sont en ligne.
+  const pages = ['public/eshop/index.html', 'public/eshop/laverie/index.html', 'public/eshop/catalogue/index.html',
+    'public/eshop/lave-vaisselle-professionnel/index.html', 'public/eshop/lave-vaisselle-professionnel/winterhalter-uc-m-lave-verres-lave-vaisselle-frontal/index.html'];
+  verifier('plus de bandeau « Tous les tarifs ne sont pas encore en ligne »',
+    pages.every((f) => !/notice-prix|Tous les tarifs ne sont pas encore en ligne|Tarifs en cours de mise en ligne/.test(fs.readFileSync(f, 'utf8'))));
+  const ray = fs.readFileSync('public/eshop/laverie/index.html', 'utf8');
+  verifier('rayon : barre de tri avec marque et prix', ray.includes('id="tri-barre"') && ray.includes('id="tri-marque"') && ray.includes('value="prix-asc"'));
+  const cat = fs.readFileSync('public/eshop/catalogue/index.html', 'utf8');
+  verifier('catalogue : tri par prix, sans second filtre de marque', cat.includes('value="prix-desc"') && !cat.includes('id="tri-marque"'));
+  const cartes = [...cat.matchAll(/data-produit data-ref="[^"]*" data-prix="([^"]*)"/g)].map((m) => m[1]);
+  verifier(`chaque carte porte son prix de tri (${cartes.length} cartes)`,
+    cartes.length === produits.length && cartes.every((v) => v === '' || Number(v) > 0));
 }
 
 console.log('\n═══ Redirections des anciennes URL ═══');

@@ -237,6 +237,7 @@ export const articles = [
 <li>Nous assurons ensuite l'entretien et le remplacement des membranes et des cartouches</li>
 </ul>
 <p>Nous ne montons pas le dossier à votre place — c'est une démarche qui vous appartient — mais nous vous remettons tout ce dont il a besoin.</p>
+<p>L'ensemble que nous installons le plus souvent — lave-verres Winterhalter UC, osmoseur AT Excellence et adoucisseur — est présenté avec son prix dans notre boutique : voir le <a href="/eshop/lave-vaisselle-professionnel/winterhalter-pack-carsat-lave-verres-osmoseur-adoucisseur">pack lave-verres + osmoseur</a>.</p>
 
 <h2>Et si vous n'êtes pas éligible ?</h2>
 <p>L'investissement reste rentable sans subvention, pour une raison qui n'a rien à voir avec la sécurité : <b>le temps d'essuyage</b>. Comptez ce que représente, sur une année, une demi-heure d'essuyage par service. Ajoutez la casse évitée, les verres qui restent présentables plus longtemps, et l'absence d'arrêt de travail à gérer un soir de coup de feu.</p>
